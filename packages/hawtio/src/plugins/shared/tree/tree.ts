@@ -50,6 +50,11 @@ export class MBeanTree {
     })
 
     this.sortTree()
+
+    // Post-process loaded tree
+    treeProcessorRegistry.process(this)
+
+    log.debug('Populated JMX tree:', this.tree)
   }
 
   private populateDomain(name: string, domain: IJmxDomain) {
@@ -58,9 +63,6 @@ export class MBeanTree {
     Object.entries(domain).forEach(([propList, mbean]) => {
       domainNode.populateMBean(propList, mbean)
     })
-
-    // Execute any post-processors for the domain
-    treeProcessorRegistry.process(name, domainNode)
   }
 
   private getOrCreateNode(name: string): MBeanNode {

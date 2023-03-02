@@ -2,7 +2,7 @@ import { hawtio } from '@hawtiosrc/core'
 // import { helpRegistry } from '@hawtiosrc/help/registry'
 import { treeProcessorRegistry, workspace } from '@hawtiosrc/plugins/shared'
 import { jmxDomain } from './globals'
-import { processTreeDomain } from './tree-processor'
+import { camelTreeProcessor } from './tree-processor'
 // import { preferencesRegistry } from '@hawtiosrc/preferences/registry'
 import { Camel } from './Camel'
 // import { CamelPreferences } from './CamelPreferences'
@@ -20,7 +20,7 @@ export const camel = () => {
     },
   })
 
-  treeProcessorRegistry.add(jmxDomain, processTreeDomain)
+  treeProcessorRegistry.add('camel', camelTreeProcessor)
   // helpRegistry.add('camel', 'Camel', help, 11)
   // preferencesRegistry.add('camel', 'Camel', ConnectPreferences, 11)
 }

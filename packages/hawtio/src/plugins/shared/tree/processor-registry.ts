@@ -1,14 +1,14 @@
-import { MBeanNode } from './node'
+import { MBeanTree } from './tree'
 
-export type TreeProcessor = (node: MBeanNode) => void
+export type TreeProcessor = (tree: MBeanTree) => Promise<void>
 
 export type TreeProcessors = {
-  [domain: string]: TreeProcessor[]
+  [name: string]: TreeProcessor
 }
 
 export interface ITreeProcessorRegistry {
-  add(domain: string, processor: TreeProcessor): void
-  process(domain: string, node: MBeanNode): void
+  add(name: string, processor: TreeProcessor): void
+  process(tree: MBeanTree): void
   getProcessors(): TreeProcessors
   reset(): void
 }
@@ -16,20 +16,12 @@ export interface ITreeProcessorRegistry {
 class TreeProcessorRegistry implements ITreeProcessorRegistry {
   private processors: TreeProcessors = {}
 
-  add(domain: string, processor: TreeProcessor) {
-    if (!this.processors[domain]) {
-      this.processors[domain] = []
-    }
-    this.processors[domain].push(processor)
+  add(name: string, processor: TreeProcessor) {
+    this.processors[name] = processor
   }
 
-  process(domain: string, node: MBeanNode) {
-    const processors = this.processors[domain]
-    if (!processors) {
-      return
-    }
-
-    processors.forEach(processor => processor(node))
+  process(tree: MBeanTree) {
+    Object.values(this.processors).forEach(processor => processor(tree))
   }
 
   getProcessors(): TreeProcessors {

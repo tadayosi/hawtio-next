@@ -1,9 +1,9 @@
 import { jolokiaService } from '@hawtiosrc/plugins/connect/jolokia-service'
-import { MBeanNode } from '@hawtiosrc/plugins/shared'
+import { MBeanNode, MBeanTree, TreeProcessor } from '@hawtiosrc/plugins/shared'
 import React from 'react'
 import { jmxDomain } from './globals'
+import { getIcon, IconNames } from './icons'
 import { routesService } from './routes-service'
-import { IconNames, getIcon } from './icons'
 
 /**
  * Fetch the camel version and add it to the tree to avoid making a blocking call
@@ -37,10 +37,12 @@ function setChildIcon(node: MBeanNode | null, childIcon: React.ReactNode) {
   })
 }
 
-export function processTreeDomain(domainNode: MBeanNode) {
-  if (domainNode.name !== jmxDomain) {
+export const camelTreeProcessor: TreeProcessor = async (tree: MBeanTree) => {
+  const domainNode = tree.get(jmxDomain)
+  if (!domainNode) {
     return
   }
+
   domainNode.icon = getIcon(IconNames.CamelIcon)
   domainNode.expandedIcon = domainNode.icon
 
