@@ -4,6 +4,7 @@ import { getCookie } from '@hawtiosrc/util/cookies'
 import {
   escapeMBeanPath,
   onListSuccess,
+  onSearchSuccess,
   onSimpleSuccess,
   onSimpleSuccessAndError,
   onSuccess,
@@ -46,7 +47,7 @@ const DEFAULT_UPDATE_RATE = 5000
 
 const JOLOKIA_PATHS = ['jolokia', '/hawtio/jolokia', '/jolokia'] as const
 
-enum JolokiaListMethod {
+export enum JolokiaListMethod {
   /** The default LIST+EXEC Jolokia operations. */
   DEFAULT,
   /** The optimised list operations provided by Hawtio RBACRegistry MBean. */
@@ -71,10 +72,12 @@ export const STORAGE_KEY_UPDATE_RATE = 'connect.jolokia.updateRate'
 
 export interface IJolokiaService {
   getJolokiaUrl(): Promise<string | null>
+  getListMethod(): Promise<JolokiaListMethod>
   list(options: ISimpleOptions): Promise<unknown>
   readAttributes(mbean: string): Promise<AttributeValues>
   readAttribute(mbean: string, attribute: string): Promise<unknown>
   execute(mbean: string, operation: string, args?: unknown[]): Promise<unknown>
+  search(mbeanPattern: string): Promise<string[]>
   register(request: IRequest, callback: IResponseFn): Promise<number>
   unregister(handle: number): void
 }
@@ -302,8 +305,12 @@ class JolokiaService implements IJolokiaService {
     return opts
   }
 
-  async getJolokiaUrl(): Promise<string | null> {
+  getJolokiaUrl(): Promise<string | null> {
     return this.jolokiaUrl
+  }
+
+  async getListMethod(): Promise<JolokiaListMethod> {
+    return this.config.method
   }
 
   async list(options: ISimpleOptions): Promise<unknown> {
@@ -364,6 +371,16 @@ class JolokiaService implements IJolokiaService {
           // TODO: move to OperationService
           (response: IErrorResponse) => reject(response.stacktrace || response.error),
         ),
+      )
+    })
+  }
+
+  async search(mbeanPattern: string): Promise<string[]> {
+    const jolokia = await this.jolokia
+    return new Promise(resolve => {
+      jolokia.search(
+        mbeanPattern,
+        onSearchSuccess((response: string[]) => resolve(response)),
       )
     })
   }

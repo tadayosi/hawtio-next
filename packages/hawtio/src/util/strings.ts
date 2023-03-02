@@ -8,7 +8,7 @@ export function isString(value: unknown): value is string {
 /**
  * Return true if the string is either null or empty.
  */
-export function isBlank(str: string): boolean {
+export function isBlank(str?: string): boolean {
   if (str === undefined || str === null) {
     return true
   }

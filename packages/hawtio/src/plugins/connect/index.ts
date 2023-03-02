@@ -18,4 +18,4 @@ export const connect = () => {
   preferencesRegistry.add('connect', 'Connect', ConnectPreferences, 11)
 }
 
-export { jolokiaService } from './jolokia-service'
+export { JolokiaListMethod, jolokiaService } from './jolokia-service'
