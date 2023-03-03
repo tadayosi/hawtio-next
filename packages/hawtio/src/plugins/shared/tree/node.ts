@@ -1,13 +1,33 @@
 import { Logger } from '@hawtiosrc/core'
 import { escapeDots, escapeTags } from '@hawtiosrc/util/jolokia'
+import { isEmpty } from '@hawtiosrc/util/objects'
 import { stringSorter, trimQuotes } from '@hawtiosrc/util/strings'
 import { TreeViewDataItem } from '@patternfly/react-core'
-import { CubeIcon, FolderIcon, FolderOpenIcon } from '@patternfly/react-icons'
+import { CubeIcon, FolderIcon, FolderOpenIcon, LockIcon } from '@patternfly/react-icons'
 import { IJmxMBean } from 'jolokia.js'
 import React from 'react'
 import { pluginName } from '../globals'
 
 const log = Logger.get(`${pluginName}-tree`)
+
+const Icons = {
+  folder: React.createElement(FolderIcon),
+  folderOpen: React.createElement(FolderOpenIcon),
+  mbean: React.createElement(CubeIcon),
+  locked: React.createElement(LockIcon),
+} as const
+
+export type OptimisedJmxDomains = {
+  [domainName: string]: OptimisedJmxDomain
+}
+
+export type OptimisedJmxDomain = {
+  [propertyList: string]: OptimisedJmxMBean
+}
+
+export interface OptimisedJmxMBean extends IJmxMBean {
+  opByString?: { [name: string]: unknown }
+}
 
 export class MBeanNode implements TreeViewDataItem {
   owner: string
@@ -20,7 +40,7 @@ export class MBeanNode implements TreeViewDataItem {
 
   // MBean info
   objectName?: string
-  mbean?: IJmxMBean
+  mbean?: OptimisedJmxMBean
 
   constructor(owner: string, id: string, name: string, folder: boolean) {
     this.id = id
@@ -36,13 +56,13 @@ export class MBeanNode implements TreeViewDataItem {
     this.owner = owner
   }
 
-  populateMBean(propList: string, mbean: IJmxMBean) {
+  populateMBean(propList: string, mbean: OptimisedJmxMBean) {
     log.debug('  JMX tree mbean:', propList)
     const props = new PropertyList(this, propList)
     this.createMBeanNode(props.getPaths(), props, mbean)
   }
 
-  private createMBeanNode(paths: string[], props: PropertyList, mbean: IJmxMBean) {
+  private createMBeanNode(paths: string[], props: PropertyList, mbean: OptimisedJmxMBean) {
     log.debug('    JMX tree property:', paths[0])
     if (paths.length === 1) {
       // final mbean node
@@ -59,9 +79,23 @@ export class MBeanNode implements TreeViewDataItem {
     child.createMBeanNode(paths, props, mbean)
   }
 
-  configureMBean(propList: PropertyList, mbean: IJmxMBean) {
+  private configureMBean(propList: PropertyList, mbean: OptimisedJmxMBean) {
     this.objectName = propList.objectName()
     this.mbean = mbean
+
+    // Also update icon based on canInvoke here
+    this.applyCanInvoke()
+  }
+
+  private applyCanInvoke() {
+    if (!this.mbean) {
+      return
+    }
+
+    // Update icon to locked if it cannot be invoked
+    if (this.mbean.canInvoke !== undefined && !this.mbean.canInvoke) {
+      this.setIcons(Icons.locked)
+    }
   }
 
   get(name: string): MBeanNode | null {
@@ -184,13 +218,46 @@ export class MBeanNode implements TreeViewDataItem {
     this.children.push(child)
   }
 
-  setIcons(icon: React.ReactNode) {
+  /**
+   * Recursive method to flatten MBeans.
+   */
+  flatten(mbeans: Record<string, MBeanNode>) {
+    if (this.objectName) {
+      mbeans[this.objectName] = this
+    }
+    this.children?.forEach(child => child.flatten(mbeans))
+  }
+
+  /**
+   * Returns true if RBACDecorator has been already applied to this node at server side.
+   * If the node doesn't have mbean or mbean.op, it always returns true.
+   * https://github.com/hawtio/hawtio/blob/main/platforms/hawtio-osgi-jmx/src/main/java/io/hawt/osgi/jmx/RBACDecorator.java
+   */
+  isRBACDecorated(): boolean {
+    if (!this.mbean || !this.mbean.op || isEmpty(this.mbean.op)) {
+      return true
+    }
+
+    // RBACDecorator is considered as applied when mbean has both op and opByString fields
+    return this.mbean.opByString !== undefined && !isEmpty(this.mbean.opByString)
+  }
+
+  updateCanInvoke(canInvoke: boolean) {
+    if (!this.mbean) {
+      return
+    }
+
+    this.mbean.canInvoke = canInvoke
+    this.applyCanInvoke()
+  }
+
+  setIcons(icon: React.ReactNode, expandedIcon: React.ReactNode = icon) {
     this.icon = icon
-    this.expandedIcon = icon
+    this.expandedIcon = expandedIcon
   }
 }
 
-class PropertyList {
+export class PropertyList {
   private domain: MBeanNode
   private propList: string
   private paths: { key: string; value: string }[] = []
@@ -279,12 +346,6 @@ class PropertyList {
     return `${this.domain.name}:${this.propList}`
   }
 }
-
-const Icons = {
-  folder: React.createElement(FolderIcon),
-  folderOpen: React.createElement(FolderOpenIcon),
-  mbean: React.createElement(CubeIcon),
-} as const
 
 /**
  * Reorders objects by the given key according to the given order of values.

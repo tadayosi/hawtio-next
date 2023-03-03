@@ -1,6 +1,16 @@
-import { toString, trimQuotes } from './strings'
+import { isString, toString, trimQuotes } from './strings'
 
 describe('strings', () => {
+  test('isString', () => {
+    expect(isString(undefined)).toBe(false)
+    expect(isString(null)).toBe(false)
+    expect(isString({})).toBe(false)
+    expect(isString(true)).toBe(false)
+    expect(isString(1)).toBe(false)
+    expect(isString('')).toBe(true)
+    expect(isString('hello!')).toBe(true)
+  })
+
   test('toString', () => {
     expect(toString(null)).toEqual('{}')
     expect(toString({})).toEqual('{  }')

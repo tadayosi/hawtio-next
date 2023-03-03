@@ -25,7 +25,7 @@ class RBACService implements IRBACService {
     }
 
     if (mbeans.length === 1) {
-      log.info('Using MBean', mbeans[0], 'for client-side RBAC')
+      log.info('Use MBean', mbeans[0], 'for client-side RBAC')
       return mbeans[0]
     }
 
@@ -35,7 +35,7 @@ class RBACService implements IRBACService {
       log.info("Didn't discover any effective ACL MBeans; client-side RBAC is disabled")
       return ''
     }
-    log.info('Using MBean', chosen, 'for client-side RBAC')
+    log.info('Use MBean', chosen, 'for client-side RBAC')
     return chosen
   }
 

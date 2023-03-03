@@ -1,3 +1,4 @@
+import { log } from './globals'
 import { MBeanTree } from './tree'
 
 export type TreeProcessor = (tree: MBeanTree) => Promise<void>
@@ -8,7 +9,7 @@ export type TreeProcessors = {
 
 export interface ITreeProcessorRegistry {
   add(name: string, processor: TreeProcessor): void
-  process(tree: MBeanTree): void
+  process(tree: MBeanTree): Promise<void>
   getProcessors(): TreeProcessors
   reset(): void
 }
@@ -20,8 +21,13 @@ class TreeProcessorRegistry implements ITreeProcessorRegistry {
     this.processors[name] = processor
   }
 
-  process(tree: MBeanTree) {
-    Object.values(this.processors).forEach(processor => processor(tree))
+  async process(tree: MBeanTree) {
+    log.debug('Apply processors to tree:', this.processors)
+    // Apply processors in sequence to ensure consistency in the processed tree
+    for (const [name, processor] of Object.entries(this.processors)) {
+      log.debug('Apply processor:', name)
+      await processor(tree)
+    }
   }
 
   getProcessors(): TreeProcessors {

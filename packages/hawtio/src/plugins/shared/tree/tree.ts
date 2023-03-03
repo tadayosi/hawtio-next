@@ -1,12 +1,8 @@
-import { Logger } from '@hawtiosrc/core'
 import { escapeDots, escapeTags } from '@hawtiosrc/util/jolokia'
 import { stringSorter } from '@hawtiosrc/util/strings'
-import { IJmxDomain, IJmxDomains } from 'jolokia.js'
-import { pluginName } from '../globals'
-import { MBeanNode } from './node'
+import { log } from './globals'
+import { MBeanNode, OptimisedJmxDomain, OptimisedJmxDomains } from './node'
 import { treeProcessorRegistry } from './processor-registry'
-
-const log = Logger.get(`${pluginName}-tree`)
 
 export class MBeanTree {
   private tree: MBeanNode[] = []
@@ -15,7 +11,7 @@ export class MBeanTree {
     return new MBeanTree(id)
   }
 
-  static createFromDomains(id: string, domains: IJmxDomains): MBeanTree {
+  static createFromDomains(id: string, domains: OptimisedJmxDomains): MBeanTree {
     const mBeanTree = new MBeanTree(id)
     mBeanTree.populate(domains)
     return mBeanTree
@@ -41,7 +37,7 @@ export class MBeanTree {
 
   private constructor(private id: string) {}
 
-  private populate(domains: IJmxDomains) {
+  private populate(domains: OptimisedJmxDomains) {
     Object.entries(domains).forEach(([name, domain]) => {
       // Domain name is displayed in the tree, so let's escape it here.
       // Use a custom escaping method here as escaping '"' breaks Camel tree.
@@ -57,7 +53,7 @@ export class MBeanTree {
     log.debug('Populated JMX tree:', this.tree)
   }
 
-  private populateDomain(name: string, domain: IJmxDomain) {
+  private populateDomain(name: string, domain: OptimisedJmxDomain) {
     log.debug('JMX tree domain:', name)
     const domainNode = this.getOrCreateNode(name)
     Object.entries(domain).forEach(([propList, mbean]) => {
@@ -100,10 +96,6 @@ export class MBeanTree {
 
   /**
    * Searches this folder and all its descendants for the first folder to match the filter
-   * @method findDescendant
-   * @for Folder
-   * @param {Function} filter
-   * @return {Folder}
    */
   findDescendant(filter: (node: MBeanNode) => boolean): MBeanNode | null {
     let answer: MBeanNode | null = null
@@ -113,5 +105,14 @@ export class MBeanTree {
       }
     })
     return answer
+  }
+
+  /**
+   * Flattens the tree of nested folder and MBean nodes into a map of object names and MBeans.
+   */
+  flatten(): Record<string, MBeanNode> {
+    const mbeans: Record<string, MBeanNode> = {}
+    this.tree.forEach(node => node.flatten(mbeans))
+    return mbeans
   }
 }

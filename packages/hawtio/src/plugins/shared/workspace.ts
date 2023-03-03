@@ -1,10 +1,10 @@
 import { Logger } from '@hawtiosrc/core'
 import { jolokiaService } from '@hawtiosrc/plugins/connect/jolokia-service'
 import { isString } from '@hawtiosrc/util/strings'
-import { IErrorResponse, IJmxDomain, IJmxDomains, IJmxMBean, ISimpleOptions } from 'jolokia.js'
+import { IErrorResponse, ISimpleOptions } from 'jolokia.js'
 import { is, object } from 'superstruct'
 import { pluginName } from './globals'
-import { MBeanNode, MBeanTree } from './tree'
+import { MBeanNode, MBeanTree, OptimisedJmxDomain, OptimisedJmxDomains, OptimisedJmxMBean } from './tree'
 
 const log = Logger.get(`${pluginName}-workspace`)
 
@@ -42,21 +42,21 @@ class Workspace {
    *
    * @param value response value from Jolokia
    */
-  private unwindResponseWithRBACCache(value: unknown): IJmxDomains {
+  private unwindResponseWithRBACCache(value: unknown): OptimisedJmxDomains {
     if (is(value, object({ domains: object(), cache: object() }))) {
       // post process cached RBAC info
       for (const domainName in value.domains) {
-        const domain = value.domains[domainName] as IJmxDomain | MBeanCache
+        const domain = value.domains[domainName] as OptimisedJmxDomain | MBeanCache
         for (const mbeanName in domain) {
           const mbeanOrCache = domain[mbeanName]
           if (isString(mbeanOrCache)) {
-            domain[mbeanName] = value.cache[mbeanOrCache] as IJmxMBean
+            domain[mbeanName] = value.cache[mbeanOrCache] as OptimisedJmxMBean
           }
         }
       }
-      return value.domains as IJmxDomains
+      return value.domains as OptimisedJmxDomains
     }
-    return value as IJmxDomains
+    return value as OptimisedJmxDomains
   }
 
   async getTree(): Promise<MBeanTree> {

@@ -1,4 +1,3 @@
-import { MBeanNode } from './node'
 import { treeProcessorRegistry } from './processor-registry'
 import { MBeanTree } from './tree'
 
@@ -21,7 +20,7 @@ describe('treeProcessorRegistry', () => {
     treeProcessorRegistry.add('test1', testProcessor1)
 
     expect(treeProcessorRegistry.getProcessors()['test1']).toEqual(testProcessor1)
-    treeProcessorRegistry.process(tree)
+    await treeProcessorRegistry.process(tree)
     expect(testProcessor1.mock.calls).toHaveLength(1)
 
     // Add another processor
@@ -29,7 +28,7 @@ describe('treeProcessorRegistry', () => {
     treeProcessorRegistry.add('test2', testProcessor2)
 
     expect(treeProcessorRegistry.getProcessors()['test2']).toEqual(testProcessor2)
-    treeProcessorRegistry.process(tree)
+    await treeProcessorRegistry.process(tree)
     expect(testProcessor1.mock.calls).toHaveLength(2)
     expect(testProcessor2.mock.calls).toHaveLength(1)
   })

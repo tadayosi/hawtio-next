@@ -1,7 +1,9 @@
 import { Logger } from '@hawtiosrc/core'
 import {
+  IBulkOptions,
   IErrorResponse,
   IErrorResponseFn,
+  IJmxOperationArgument,
   IListOptions,
   IListResponseFn,
   IOptions,
@@ -42,6 +44,10 @@ export function onListSuccess(successFn: IListResponseFn, options: IListOptions 
 }
 
 export function onVersionSuccess(successFn: IVersionResponseFn, options: IVersionOptions = {}): IVersionOptions {
+  return onGenericSuccess(successFn, options)
+}
+
+export function onBulkSuccess(successFn: IResponseFn | IResponseFn[], options: IBulkOptions = {}): IBulkOptions {
   return onGenericSuccess(successFn, options)
 }
 
@@ -152,4 +158,9 @@ export function escapeTags(text: string): string {
  */
 export function escapeDots(text: string): string {
   return text.replace(/\./g, '-')
+}
+
+export function operationToString(operation: string, args: IJmxOperationArgument[]): string {
+  const argsStr = args.map(arg => arg.type).join(',')
+  return `${operation}(${argsStr})`
 }

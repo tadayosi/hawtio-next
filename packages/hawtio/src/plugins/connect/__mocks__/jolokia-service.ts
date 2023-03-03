@@ -1,4 +1,4 @@
-import { IRequest, IResponseFn, ISimpleOptions } from 'jolokia.js'
+import { IRequest, IResponse, IResponseFn, ISimpleOptions } from 'jolokia.js'
 import { AttributeValues, IJolokiaService, JolokiaListMethod } from '../jolokia-service'
 import jmxCamelResponse from './jmx-camel-tree.json'
 
@@ -32,6 +32,10 @@ class MockJolokiaService implements IJolokiaService {
   }
 
   async search(mbeanPattern: string): Promise<string[]> {
+    return []
+  }
+
+  async bulkRequest(requests: IRequest[]): Promise<IResponse[]> {
     return []
   }
 
