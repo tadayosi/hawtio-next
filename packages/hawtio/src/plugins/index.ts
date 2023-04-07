@@ -10,5 +10,9 @@ export const registerPlugins = () => {
   camel()
 }
 
-export { jolokiaService } from './connect'
+export * from './camel'
+export * from './connect'
+export * from './jmx'
+export * from './rbac'
 export { PluginNodeSelectionContext, usePluginNodeSelected } from './selectionNodeContext'
+export * from './shared'

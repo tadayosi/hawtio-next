@@ -28,12 +28,14 @@ yarn add @hawtio/react
 import '@hawtio/react/dist/index.css'
 import '@patternfly/react-core/dist/styles/base.css'
 
-import { hawtio, Hawtio, registerPlugins } from '@hawtio/react'
+import { configManager, hawtio, Hawtio } from '@hawtio/react'
+import { registerPlugins } from '@hawtio/react/dist/plugins'
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 
-// Bootstrap Hawtio
+// Activate builtin plugins
 registerPlugins()
+// Bootstrap Hawtio
 hawtio.bootstrap()
 
 const root = ReactDOM.createRoot(
