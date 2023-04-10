@@ -3,7 +3,6 @@ import { configManager } from './core'
 export * from './core'
 export * from './Hawtio'
 export { helpRegistry } from './help'
-export * from './plugins'
 export { preferencesRegistry } from './preferences'
 
 // Register Hawtio React component version
