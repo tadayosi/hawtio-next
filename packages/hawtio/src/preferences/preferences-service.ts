@@ -3,7 +3,7 @@ import { log } from './globals'
 const STORAGE_KEY_SHOW_VERTICAL_NAV_BY_DEFAULT = 'preferences.showVerticalNavByDefault'
 const SESSION_KEY_RESET_SUCCESS = 'preferences.resetSuccess'
 
-interface IPreferencesService {
+export interface IPreferencesService {
   isShowVerticalNavByDefault(): boolean
   saveShowVerticalNavByDefault(value: boolean): void
   reset(): void
