@@ -1,6 +1,6 @@
 /*.js
 !/packages/hawtio/scripts/*.js
-/*.cjs
+/**/*.cjs
 /app/*.js
 /app/*.cjs
 /**/ignore/**

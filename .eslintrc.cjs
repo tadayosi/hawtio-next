@@ -28,6 +28,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-redeclare': 'off',
+    '@typescript-eslint/require-await': 'error',
     'import/no-default-export': 'error',
     'react/prop-types': 'off',
     'testing-library/await-async-query': 'off',
