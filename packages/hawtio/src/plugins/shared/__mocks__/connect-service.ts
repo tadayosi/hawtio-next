@@ -1,19 +1,23 @@
-import 'jolokia.js'
 import Jolokia, { IJolokiaSimple } from '@jolokia.js/simple'
+import 'jolokia.js'
 import {
+  ConnectStatus,
   Connection,
   ConnectionCredentials,
   ConnectionTestResult,
   Connections,
   IConnectService,
   LoginResult,
-  ConnectStatus,
 } from '../connect-service'
 
 class MockConnectService implements IConnectService {
   constructor() {
     // eslint-disable-next-line no-console
     console.log('Using mock connect service')
+  }
+
+  getCurrentConnectionId(): string | null {
+    return null
   }
 
   getCurrentConnectionName(): string | null {
@@ -72,7 +76,7 @@ class MockConnectService implements IConnectService {
     return ''
   }
 
-  getJolokiaUrlFromName(name: string): string | null {
+  getJolokiaUrlFromId(name: string): string | null {
     return null
   }
 

@@ -12,6 +12,7 @@ import {
 } from '@hawtiosrc/util/jolokia'
 import { isObject, isString } from '@hawtiosrc/util/objects'
 import { parseBoolean } from '@hawtiosrc/util/strings'
+import Jolokia, { IJolokiaSimple, SimpleRequestOptions, SimpleResponseCallback } from '@jolokia.js/simple'
 import {
   BaseRequestOptions,
   ErrorCallback,
@@ -33,7 +34,6 @@ import {
   VersionResponseValue,
   WriteResponseValue,
 } from 'jolokia.js'
-import Jolokia, { IJolokiaSimple, SimpleRequestOptions, SimpleResponseCallback } from '@jolokia.js/simple'
 import { is, object } from 'superstruct'
 import {
   PARAM_KEY_CONNECTION,
@@ -237,10 +237,10 @@ class JolokiaService implements IJolokiaService {
     }
 
     // Check remote connection
-    const conn = connectService.getCurrentConnectionId()
-    if (conn) {
-      log.debug('Connection provided, not discovering Jolokia: con =', conn)
-      return connectService.getJolokiaUrlFromName(conn)
+    const connId = connectService.getCurrentConnectionId()
+    if (connId) {
+      log.debug('Connection provided, not discovering Jolokia: con =', connId)
+      return connectService.getJolokiaUrlFromId(connId)
     }
 
     // Discover Jolokia
@@ -335,26 +335,24 @@ class JolokiaService implements IJolokiaService {
     if (!options.headers) {
       options.headers = {}
     }
+    const headers: Record<string, string> = options.headers as Record<string, string>
 
     // Set Authorization header depending on current setup
     if ((await userService.isLogin()) && userService.getToken()) {
       log.debug('Set authorization header to token')
-      ;(options.headers as Record<string, string>)['Authorization'] = `Bearer ${userService.getToken()}`
+      headers['Authorization'] = `Bearer ${userService.getToken()}`
     }
 
     // for remote Jolokia authorization, we'll always use X-Jolokia-Authorization header
     if (connection && connection.username && connection.password) {
-      ;(options.headers as Record<string, string>)['X-Jolokia-Authorization'] = basicAuthHeaderValue(
-        connection.username,
-        connection.password,
-      )
+      headers['X-Jolokia-Authorization'] = basicAuthHeaderValue(connection.username, connection.password)
     }
 
     const token = getCookie('XSRF-TOKEN')
     if (token) {
       // For CSRF protection with Spring Security
       log.debug('Set XSRF token header from cookies')
-      ;(options.headers as Record<string, string>)['X-XSRF-TOKEN'] = token
+      headers['X-XSRF-TOKEN'] = token
     }
   }
 
@@ -780,7 +778,8 @@ class JolokiaService implements IJolokiaService {
     const fetchError = options.fetchError
     options.fetchError = (response: Response | null, error: DOMException | TypeError | string | null): void => {
       if (typeof fetchError === 'function') {
-        ;(fetchError as FetchErrorCallback)?.(response, error)
+        const callback = fetchError as FetchErrorCallback
+        callback?.(response, error)
       }
       // reject the relevant promise on any HTTP/communication error
       reject()
@@ -1104,7 +1103,8 @@ class DummyJolokia implements IJolokiaSimple {
       typeof params[params.length - 1] === 'object' &&
       'success' in (params[params.length - 1] as SimpleRequestOptions)
     ) {
-      ;(params[params.length - 1] as SimpleRequestOptions)?.success?.({})
+      const options: SimpleRequestOptions = params[params.length - 1] as SimpleRequestOptions
+      options?.success?.({})
     }
   }
 }

@@ -163,7 +163,11 @@ module.exports = (_, args) => {
         // Hawtio backend API mock
         let login = true
         devServer.app.get(`${publicPath}/user`, (_, res) => {
-          login ? res.send(`"${username}"`) : res.sendStatus(403)
+          if (login) {
+            res.send(`"${username}"`)
+          } else {
+            res.sendStatus(403)
+          }
         })
         devServer.app.post(`${publicPath}/auth/login`, (req, res) => {
           // Test authentication throttling with username 'throttled'
@@ -212,6 +216,17 @@ module.exports = (_, args) => {
           res.send(JSON.stringify(keycloakClientConfig)),
         )
         devServer.app.get(`${publicPath}/keycloak/validate-subject-matches`, (_, res) => res.send('true'))
+
+        // Testing preset connections
+        devServer.app.get(`${publicPath}/preset-connections`, (_, res) => {
+          res.type('application/json')
+          res.send(
+            JSON.stringify([
+              { name: 'test1', scheme: 'http', host: 'localhost', port: 8778, path: '/jolokia/' },
+              { name: 'test2' },
+            ]),
+          )
+        })
 
         // Hawtio backend middleware should be run before other middlewares (thus 'unshift')
         // in order to handle GET requests to the proxied Jolokia endpoint.

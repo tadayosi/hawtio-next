@@ -5,6 +5,7 @@ import { toString } from '@hawtiosrc/util/strings'
 import { joinPaths } from '@hawtiosrc/util/urls'
 import Jolokia, { IJolokiaSimple } from '@jolokia.js/simple'
 import { log } from './globals'
+
 export type Connections = {
   // key is ID, not name, so we can alter the name
   [key: string]: Connection
@@ -62,15 +63,17 @@ export const SESSION_KEY_CURRENT_CONNECTION = 'connect.currentConnection'
 export const PARAM_KEY_CONNECTION = 'con'
 export const PARAM_KEY_REDIRECT = 'redirect'
 
-const LOGIN_PATH = '/connect/login'
+const PATH_LOGIN = '/connect/login'
+const PATH_PRESET_CONNECTIONS = 'preset-connections'
 
 export interface IConnectService {
+  getCurrentConnectionId(): string | null
   getCurrentConnectionName(): string | null
   getCurrentConnection(): Promise<Connection | null>
   getCurrentCredentials(): Promise<ConnectionCredentials | null>
   loadConnections(): Connections
   saveConnections(connections: Connections): void
-  getConnection(name: string): Connection | null
+  getConnection(id: string): Connection | null
   connectionToUrl(connection: Connection): string
   checkReachable(connection: Connection): Promise<ConnectStatus>
   testConnection(connection: Connection): Promise<ConnectionTestResult>
@@ -79,16 +82,16 @@ export interface IConnectService {
   redirect(): void
   createJolokia(connection: Connection, checkCredentials?: boolean): IJolokiaSimple
   getJolokiaUrl(connection: Connection): string
-  getJolokiaUrlFromName(name: string): string | null
+  getJolokiaUrlFromId(name: string): string | null
   getLoginPath(): string
   export(connections: Connections): void
 }
 
 class ConnectService implements IConnectService {
-  private readonly currentConnection: string | null
+  private readonly currentConnectionId: string | null
 
   constructor() {
-    this.currentConnection = this.initCurrentConnection()
+    this.currentConnectionId = this.initCurrentConnection()
   }
 
   private initCurrentConnection(): string | null {
@@ -110,24 +113,86 @@ class ConnectService implements IConnectService {
     // Case when user may refresh the page after "con" parameter has already been cleared
     // Check remote connection from session storage
     conn = sessionStorage.getItem(SESSION_KEY_CURRENT_CONNECTION)
-    return conn ? JSON.parse(conn) : null
+    if (conn) {
+      return JSON.parse(conn)
+    }
+
+    // Processing preset connections should come at last to prevent processing
+    // them multiple times, because it may open new tab(s)/session(s) with `?con=`
+    // to auto-connect to them later.
+    this.loadPresetConnections()
+
+    return null
+  }
+
+  /**
+   * See: https://github.com/hawtio/hawtio/issues/3731
+   */
+  private async loadPresetConnections(): Promise<void> {
+    try {
+      const res = await fetch(PATH_PRESET_CONNECTIONS)
+      if (!res.ok) {
+        log.debug('Failed to load preset connections:', res.status, res.statusText)
+        return
+      }
+
+      const preset: Partial<Connection>[] = await res.json()
+      log.debug('Preset connections:', preset)
+      const connections = this.loadConnections()
+      const toOpen: Connection[] = []
+      preset.forEach(({ name, scheme, host, port, path }) => {
+        // name must be always defined
+        if (!name) {
+          return
+        }
+        let conn = Object.values(connections).find(c => c.name === name)
+        if (scheme && host && port && path) {
+          if (port < 0) {
+            // default ports
+            port = scheme === 'https' ? 443 : 80
+          }
+          if (!conn) {
+            conn = { id: '', name, scheme, host, port, path }
+            this.generateId(conn, connections)
+            connections[conn.id] = conn
+          } else {
+            conn.scheme = scheme
+            conn.host = host
+            conn.port = port
+            conn.path = path
+          }
+          toOpen.push(conn)
+        } else if (conn) {
+          // Open connection only when it exists
+          toOpen.push(conn)
+        }
+      })
+      this.saveConnections(connections)
+
+      // Open connections in new tabs
+      toOpen.forEach(c => this.connect(c))
+    } catch (err) {
+      // Silently ignore errors
+      log.debug('Error loading preset connections:', err)
+    }
   }
 
   getCurrentConnectionId(): string | null {
-    return this.currentConnection
+    return this.currentConnectionId
   }
 
   getCurrentConnectionName(): string | null {
-    const id = this.currentConnection
-    const connections = this.loadConnections()
-    if (!id || !connections[id!]) {
+    const id = this.currentConnectionId
+    if (!id) {
       return null
     }
-    return connections[id!]!.name ?? null
+    const connection = this.getConnection(id)
+    return connection?.name ?? null
   }
 
   async getCurrentConnection(): Promise<Connection | null> {
-    const conn = this.currentConnection ? this.getConnection(this.currentConnection) : null
+    const id = this.currentConnectionId
+    const conn = id ? this.getConnection(id) : null
     if (!conn) {
       return null
     }
@@ -225,9 +290,9 @@ class ConnectService implements IConnectService {
     }
   }
 
-  getConnection(name: string): Connection | null {
+  getConnection(id: string): Connection | null {
     const connections = this.loadConnections()
-    return connections[name] ?? null
+    return connections[id] ?? null
   }
 
   connectionToUrl(connection: Connection): string {
@@ -351,13 +416,13 @@ class ConnectService implements IConnectService {
     const result = await new Promise<LoginResult>(resolve => {
       // this special header is used to pass credentials to remote Jolokia agent when
       // Authorization header is already "taken" by OIDC/Keycloak authenticator
-      const headers = {
+      const headers: Record<string, string> = {
         'X-Jolokia-Authorization': basicAuthHeaderValue(username, password),
       }
       const token = getCookie('XSRF-TOKEN')
       if (token) {
         // For CSRF protection with Spring Security
-        ;(headers as Record<string, string>)['X-XSRF-TOKEN'] = token
+        headers['X-XSRF-TOKEN'] = token
       }
       this.createJolokia(connection, true).request(
         { type: 'version' },
@@ -421,7 +486,7 @@ class ConnectService implements IConnectService {
         port === url.port &&
         ['http:', 'https:'].includes(protocol) &&
         connectionKey !== '' &&
-        connectionKey === this.currentConnection
+        connectionKey === this.currentConnectionId
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_e) {
       log.error('Invalid URL')
@@ -483,16 +548,16 @@ class ConnectService implements IConnectService {
   }
 
   /**
-   * Get the Jolokia URL for the given connection name.
+   * Get the Jolokia URL for the given connection ID.
    */
-  getJolokiaUrlFromName(name: string): string | null {
-    const connection = this.getConnection(name)
+  getJolokiaUrlFromId(id: string): string | null {
+    const connection = this.getConnection(id)
     return connection ? this.getJolokiaUrl(connection) : null
   }
 
   getLoginPath(): string {
     const basePath = hawtio.getBasePath()
-    return `${basePath}${LOGIN_PATH}`
+    return `${basePath}${PATH_LOGIN}`
   }
 
   export(connections: Connections) {
