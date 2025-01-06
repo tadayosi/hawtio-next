@@ -1,7 +1,7 @@
 import { connectService } from '@hawtiosrc/plugins/shared'
 import { humanizeSeconds } from '@hawtiosrc/util/dates'
 import { Alert, Button, Form, FormAlert, FormGroup, Modal, TextInput } from '@patternfly/react-core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 export const ConnectLogin: React.FunctionComponent = () => {
   const [isOpen, setIsOpen] = useState(true)
@@ -10,8 +10,12 @@ export const ConnectLogin: React.FunctionComponent = () => {
   const [loginFailed, setLoginFailed] = useState(false)
   const [loginFailedMessage, setLoginFailedMessage] = useState('')
   const [isEnabled, setIsEnabled] = useState(true)
+  const [connectionName, setConnectionName] = useState<string | null>(null)
 
-  const connectionName = connectService.getCurrentConnectionName()
+  useEffect(() => {
+    connectService.getCurrentConnectionName().then(name => setConnectionName(name))
+  }, [])
+
   if (!connectionName) {
     return null
   }

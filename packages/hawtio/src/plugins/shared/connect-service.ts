@@ -67,8 +67,8 @@ const PATH_LOGIN = '/connect/login'
 const PATH_PRESET_CONNECTIONS = 'preset-connections'
 
 export interface IConnectService {
-  getCurrentConnectionId(): string | null
-  getCurrentConnectionName(): string | null
+  getCurrentConnectionId(): Promise<string | null>
+  getCurrentConnectionName(): Promise<string | null>
   getCurrentConnection(): Promise<Connection | null>
   getCurrentCredentials(): Promise<ConnectionCredentials | null>
   loadConnections(): Connections
@@ -79,7 +79,7 @@ export interface IConnectService {
   testConnection(connection: Connection): Promise<ConnectionTestResult>
   connect(connection: Connection): void
   login(username: string, password: string): Promise<LoginResult>
-  redirect(): void
+  redirect(): Promise<void>
   createJolokia(connection: Connection, checkCredentials?: boolean): IJolokiaSimple
   getJolokiaUrl(connection: Connection): string
   getJolokiaUrlFromId(name: string): string | null
@@ -88,13 +88,19 @@ export interface IConnectService {
 }
 
 class ConnectService implements IConnectService {
-  private readonly currentConnectionId: string | null
+  private readonly currentConnectionId: Promise<string | null>
 
   constructor() {
     this.currentConnectionId = this.initCurrentConnection()
   }
 
-  private initCurrentConnection(): string | null {
+  /**
+   * The precedence of the current connection is as follows:
+   * 1. URL query parameter: {@link PARAM_KEY_CONNECTION}
+   * 2. Session storage: {@link SESSION_KEY_CURRENT_CONNECTION}
+   * 3. Preset connections from the backend API: {@link PATH_PRESET_CONNECTIONS}
+   */
+  private async initCurrentConnection(): Promise<string | null> {
     // Check remote connection from URL query param
     const url = new URL(window.location.href)
     const searchParams = url.searchParams
@@ -120,20 +126,18 @@ class ConnectService implements IConnectService {
     // Processing preset connections should come at last to prevent processing
     // them multiple times, because it may open new tab(s)/session(s) with `?con=`
     // to auto-connect to them later.
-    this.loadPresetConnections()
-
-    return null
+    return this.loadPresetConnections()
   }
 
   /**
    * See: https://github.com/hawtio/hawtio/issues/3731
    */
-  private async loadPresetConnections(): Promise<void> {
+  private async loadPresetConnections(): Promise<string | null> {
     try {
       const res = await fetch(PATH_PRESET_CONNECTIONS)
       if (!res.ok) {
         log.debug('Failed to load preset connections:', res.status, res.statusText)
-        return
+        return null
       }
 
       const preset: Partial<Connection>[] = await res.json()
@@ -169,20 +173,24 @@ class ConnectService implements IConnectService {
       })
       this.saveConnections(connections)
 
-      // Open connections in new tabs
+      // Open the first connection in the current tab
+      // and open the rest in new tabs
+      const first = toOpen.shift()
       toOpen.forEach(c => this.connect(c))
+      return first?.id ?? null
     } catch (err) {
       // Silently ignore errors
       log.debug('Error loading preset connections:', err)
+      return null
     }
   }
 
-  getCurrentConnectionId(): string | null {
+  getCurrentConnectionId(): Promise<string | null> {
     return this.currentConnectionId
   }
 
-  getCurrentConnectionName(): string | null {
-    const id = this.currentConnectionId
+  async getCurrentConnectionName(): Promise<string | null> {
+    const id = await this.currentConnectionId
     if (!id) {
       return null
     }
@@ -191,7 +199,7 @@ class ConnectService implements IConnectService {
   }
 
   async getCurrentConnection(): Promise<Connection | null> {
-    const id = this.currentConnectionId
+    const id = await this.currentConnectionId
     const conn = id ? this.getConnection(id) : null
     if (!conn) {
       return null
@@ -470,23 +478,23 @@ class ConnectService implements IConnectService {
   /**
    * Redirect to the URL specified in the query parameter {@link PARAM_KEY_REDIRECT}.
    */
-  redirect() {
+  async redirect() {
     const url = new URL(window.location.href)
     let redirect = url.searchParams.get(PARAM_KEY_REDIRECT) ?? '/'
     let safeRedirect: boolean = false
 
     try {
       const { hostname, port, protocol, searchParams } = new URL(redirect)
-      let connectionKey = searchParams.get(PARAM_KEY_CONNECTION) ?? ''
-      if (connectionKey === '') {
-        connectionKey = sessionStorage.getItem(SESSION_KEY_CURRENT_CONNECTION) ?? ''
+      let connectionId = searchParams.get(PARAM_KEY_CONNECTION) ?? ''
+      if (connectionId === '') {
+        connectionId = sessionStorage.getItem(SESSION_KEY_CURRENT_CONNECTION) ?? ''
       }
       safeRedirect =
         hostname === url.hostname &&
         port === url.port &&
         ['http:', 'https:'].includes(protocol) &&
-        connectionKey !== '' &&
-        connectionKey === this.currentConnectionId
+        connectionId !== '' &&
+        connectionId === (await this.currentConnectionId)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_e) {
       log.error('Invalid URL')

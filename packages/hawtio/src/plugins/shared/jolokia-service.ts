@@ -237,7 +237,7 @@ class JolokiaService implements IJolokiaService {
     }
 
     // Check remote connection
-    const connId = connectService.getCurrentConnectionId()
+    const connId = await connectService.getCurrentConnectionId()
     if (connId) {
       log.debug('Connection provided, not discovering Jolokia: con =', connId)
       return connectService.getJolokiaUrlFromId(connId)

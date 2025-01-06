@@ -16,11 +16,11 @@ class MockConnectService implements IConnectService {
     console.log('Using mock connect service')
   }
 
-  getCurrentConnectionId(): string | null {
+  async getCurrentConnectionId(): Promise<string | null> {
     return null
   }
 
-  getCurrentConnectionName(): string | null {
+  async getCurrentConnectionName(): Promise<string | null> {
     return null
   }
 
@@ -64,8 +64,8 @@ class MockConnectService implements IConnectService {
     return { type: 'failure' }
   }
 
-  redirect() {
-    // no-op
+  async redirect() {
+    return
   }
 
   createJolokia(connection: Connection, checkCredentials?: boolean): IJolokiaSimple {

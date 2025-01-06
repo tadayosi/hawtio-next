@@ -218,6 +218,7 @@ module.exports = (_, args) => {
         devServer.app.get(`${publicPath}/keycloak/validate-subject-matches`, (_, res) => res.send('true'))
 
         // Testing preset connections
+        /*
         devServer.app.get(`${publicPath}/preset-connections`, (_, res) => {
           res.type('application/json')
           res.send(
@@ -227,6 +228,7 @@ module.exports = (_, args) => {
             ]),
           )
         })
+        */
 
         // Hawtio backend middleware should be run before other middlewares (thus 'unshift')
         // in order to handle GET requests to the proxied Jolokia endpoint.

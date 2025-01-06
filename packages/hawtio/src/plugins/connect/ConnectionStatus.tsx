@@ -9,29 +9,27 @@ import { Icon } from '@patternfly/react-core'
  */
 export const ConnectionStatus: React.FunctionComponent = () => {
   const [reachable, setReachable] = useState<ConnectStatus>('not-reachable')
+  const [connectionName, setConnectionName] = useState<string | null>(null)
   const [username, setUsername] = useState('')
 
-  const connectionId = connectService.getCurrentConnectionId()
-  const connectionName = connectService.getCurrentConnectionName()
-
   useEffect(() => {
+    connectService.getCurrentConnectionName().then(name => setConnectionName(name))
     connectService.getCurrentCredentials().then(credentials => {
       const username = credentials ? credentials.username : ''
       setUsername(username)
     })
-  }, [])
 
-  useEffect(() => {
     const check = async () => {
       const connection = await connectService.getCurrentConnection()
       if (connection) {
-        connectService.checkReachable(connection).then(result => setReachable(result))
+        const result = await connectService.checkReachable(connection)
+        setReachable(result)
       }
     }
     check() // initial fire
     const timer = setInterval(check, 20000)
     return () => clearInterval(timer)
-  }, [connectionId])
+  }, [])
 
   let icon = null
   switch (reachable) {
@@ -59,8 +57,8 @@ export const ConnectionStatus: React.FunctionComponent = () => {
   }
 
   return (
-    <>
+    <React.Fragment>
       {icon} {connectionName && connectionName} {username && `(${username})`}
-    </>
+    </React.Fragment>
   )
 }
