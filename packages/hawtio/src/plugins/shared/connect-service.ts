@@ -77,7 +77,7 @@ export interface IConnectService {
   connectionToUrl(connection: Connection): string
   checkReachable(connection: Connection): Promise<ConnectStatus>
   testConnection(connection: Connection): Promise<ConnectionTestResult>
-  connect(connection: Connection): void
+  connect(connection: Connection, current?: boolean): void
   login(username: string, password: string): Promise<LoginResult>
   redirect(): Promise<void>
   createJolokia(connection: Connection, checkCredentials?: boolean): IJolokiaSimple
@@ -126,18 +126,20 @@ class ConnectService implements IConnectService {
     // Processing preset connections should come at last to prevent processing
     // them multiple times, because it may open new tab(s)/session(s) with `?con=`
     // to auto-connect to them later.
-    return this.loadPresetConnections()
+    this.loadPresetConnections()
+
+    return null
   }
 
   /**
    * See: https://github.com/hawtio/hawtio/issues/3731
    */
-  private async loadPresetConnections(): Promise<string | null> {
+  private async loadPresetConnections(): Promise<void> {
     try {
       const res = await fetch(PATH_PRESET_CONNECTIONS)
       if (!res.ok) {
         log.debug('Failed to load preset connections:', res.status, res.statusText)
-        return null
+        return
       }
 
       const preset: Partial<Connection>[] = await res.json()
@@ -177,11 +179,14 @@ class ConnectService implements IConnectService {
       // and open the rest in new tabs
       const first = toOpen.shift()
       toOpen.forEach(c => this.connect(c))
-      return first?.id ?? null
+
+      // Open the first connection in the current tab
+      if (first) {
+        this.connect(first, true)
+      }
     } catch (err) {
       // Silently ignore errors
       log.debug('Error loading preset connections:', err)
-      return null
     }
   }
 
@@ -402,13 +407,18 @@ class ConnectService implements IConnectService {
       })
   }
 
-  connect(connection: Connection) {
+  connect(connection: Connection, current = false) {
     log.debug('Connecting with options:', toString(connection))
     const basepath = hawtio.getBasePath() ?? ''
     const url = `${basepath}/?${PARAM_KEY_CONNECTION}=${connection.id}`
-    log.debug('Opening URL:', url)
-    // let's open the same connection in the same tab (2nd parameter)
-    window.open(url, connection.id)
+    if (current) {
+      log.debug('Redirecting to URL:', url)
+      window.location.href = url
+    } else {
+      log.debug('Opening URL:', url)
+      // let's open the same connection in the same tab (2nd parameter)
+      window.open(url, connection.id)
+    }
   }
 
   /**
