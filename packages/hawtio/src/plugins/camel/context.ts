@@ -3,9 +3,9 @@ import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
 import { TreeViewDataItem } from '@patternfly/react-core'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import * as camelService from './camel-service'
-import { jmxDomain, pluginName, pluginPath } from './globals'
+import { jmxDomain, log, pluginName, pluginPath } from './globals'
 
 /**
  * Custom React hook for using Camel MBean tree.
@@ -15,6 +15,7 @@ export function useCamelTree() {
   const [loaded, setLoaded] = useState(false)
   const { selectedNode, setSelectedNode } = useContext(PluginNodeSelectionContext)
   const navigate = useNavigate()
+  const location = useLocation()
 
   /*
    * Need to preserve the selected node between re-renders since the
@@ -23,6 +24,9 @@ export function useCamelTree() {
    */
   const refSelectedNode = useRef<MBeanNode | null>()
   refSelectedNode.current = selectedNode
+  log.debug('>>>>>', refSelectedNode.current?.path().join('/'))
+  log.debug('=====', location)
+  log.debug('/////', history)
 
   const populateTree = async () => {
     const wkspTree: MBeanTree = await workspace.getTree()
