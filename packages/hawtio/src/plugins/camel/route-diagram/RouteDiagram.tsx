@@ -25,6 +25,8 @@ import { Annotation, RouteDiagramContext } from '../route-diagram-context'
 import { routesService } from '../routes-service'
 import './RouteDiagram.css'
 import { CamelNodeData, visualizationService } from './visualization-service'
+import { Button } from '@patternfly/react-core'
+import { getCamelVersion, isCamelVersionEQGT } from '../camel-service'
 
 export const RouteDiagram: React.FunctionComponent = () => {
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -233,6 +235,7 @@ const CamelNode: React.FunctionComponent<NodeProps<CamelNodeData>> = ({
       onMouseLeave={() => showStatistics && setVisible(false)}
       onDoubleClick={handleDoubleClick}
     >
+      <CamelNodeActions />
       <Handle type='target' position={targetPosition ?? Position.Top} />
       <Handle type='source' position={sourcePosition ?? Position.Bottom} id='a' />
       <div className='annotation'>{annotation?.element}</div>
@@ -303,5 +306,25 @@ const CamelNode: React.FunctionComponent<NodeProps<CamelNodeData>> = ({
         </NodeToolbar>
       )}
     </div>
+  )
+}
+
+const CamelNodeActions: React.FunctionComponent = () => {
+  const { selectedNode } = useContext(CamelContext)
+
+  if (!selectedNode) {
+    return null
+  }
+
+  const isCamel4_14 = isCamelVersionEQGT(selectedNode, 4, 14)
+  if (!isCamel4_14) {
+    return null
+  }
+
+  return (
+    <NodeToolbar position={Position.Right}>
+      <div>{getCamelVersion(selectedNode)}</div>
+      <Button variant='secondary' size='sm'>Disable</Button>
+    </NodeToolbar>
   )
 }
