@@ -1,4 +1,5 @@
 import { MBeanNode } from '@hawtiosrc/plugins/shared'
+import { Switch, Title } from '@patternfly/react-core'
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table'
 import React, { RefObject, useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import {
@@ -19,14 +20,13 @@ import {
 } from 'reactflow'
 import 'reactflow/dist/style.css'
 import { camelPreferencesService } from '../camel-preferences-service'
+import { getCamelVersion, isCamelVersionEQGT } from '../camel-service'
 import { CamelContext } from '../context'
 import { log } from '../globals'
 import { Annotation, RouteDiagramContext } from '../route-diagram-context'
 import { routesService } from '../routes-service'
 import './RouteDiagram.css'
 import { CamelNodeData, visualizationService } from './visualization-service'
-import { Button } from '@patternfly/react-core'
-import { getCamelVersion, isCamelVersionEQGT } from '../camel-service'
 
 export const RouteDiagram: React.FunctionComponent = () => {
   const canvasRef = useRef<HTMLDivElement>(null)
@@ -40,11 +40,9 @@ export const RouteDiagram: React.FunctionComponent = () => {
   )
 }
 
-type ReactFlowRouteDiagramProps = {
+const ReactFlowRouteDiagram: React.FunctionComponent<{
   parent: RefObject<HTMLDivElement>
-}
-
-const ReactFlowRouteDiagram: React.FunctionComponent<ReactFlowRouteDiagramProps> = props => {
+}> = ({ parent }) => {
   const { selectedNode } = useContext(CamelContext)
   const { setGraphNodeData, graphSelection, setGraphSelection } = useContext(RouteDiagramContext)
   const previousSelectedNodeRef = useRef<MBeanNode | null>(null)
@@ -68,11 +66,11 @@ const ReactFlowRouteDiagram: React.FunctionComponent<ReactFlowRouteDiagramProps>
    * width and height to state for use with fitView useEffect
    */
   useEffect(() => {
-    if (props.parent.current) {
-      const { width, height } = props.parent.current.getBoundingClientRect()
+    if (parent.current) {
+      const { width, height } = parent.current.getBoundingClientRect()
       setWrapperDimensions({ width, height })
     }
-  }, [props.parent])
+  }, [parent])
 
   /*
    * Only when we are sure the nodes have properly initialized
@@ -311,11 +309,20 @@ const CamelNode: React.FunctionComponent<NodeProps<CamelNodeData>> = ({
 
 const CamelNodeActions: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
+  const [enableEip, setEnableEip] = useState<boolean>(true)
+
+  useEffect(() => {
+    if (!selectedNode) return
+
+    // TODO: Route XML doesn't provide enabled/disabled info
+
+  }, [enableEip])
 
   if (!selectedNode) {
     return null
   }
 
+  log.debug('route-diagram - Camel version:', getCamelVersion(selectedNode))
   const isCamel4_14 = isCamelVersionEQGT(selectedNode, 4, 14)
   if (!isCamel4_14) {
     return null
@@ -323,8 +330,14 @@ const CamelNodeActions: React.FunctionComponent = () => {
 
   return (
     <NodeToolbar position={Position.Right}>
-      <div>{getCamelVersion(selectedNode)}</div>
-      <Button variant='secondary' size='sm'>Disable</Button>
+      <Title headingLevel='h4'>Node actions</Title>
+      <Switch
+        id="camel-route-diagram-camel-node-action-enable-disable-eip"
+        label="EIP enabled"
+        labelOff="EIP disabled"
+        isChecked={enableEip}
+        onChange={(_event, checked) => setEnableEip(checked)}
+      />
     </NodeToolbar>
   )
 }
