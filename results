@@ -1,0 +1,6 @@
+{
+  "name" : "@hawtio/next-root",
+  "version" : "0.0.0-redhat-00001",
+  "dependenciesMap" : { },
+  "devDependenciesMap" : { }
+}
