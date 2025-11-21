@@ -1,7 +1,7 @@
 import { eventService } from '@hawtiosrc/core'
 import { AttributeValues, Attributes, Chart, JmxContentMBeans, MBeanNode, Operations } from '@hawtiosrc/plugins/shared'
 import {
-  Divider,
+  Content,
   EmptyState,
   EmptyStateVariant,
   Nav,
@@ -9,7 +9,6 @@ import {
   NavList,
   PageGroup,
   PageSection,
-  Content,
   Title,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
@@ -158,21 +157,19 @@ export const CamelContent: React.FunctionComponent = () => {
 
   return (
     <PageGroup id='camel-content'>
-      <PageSection hasBodyWrapper={false} id='camel-content-header'>
+      <PageSection id='camel-content-header' hasBodyWrapper={false}>
         {camelService.isContext(selectedNode) && <CamelContentContextToolbar />}
         <Title headingLevel='h1'>{selectedNode.name}</Title>
         {selectedNode.objectName && <Content component='small'>{selectedNode.objectName}</Content>}
       </PageSection>
-      <Divider />
       {navItems.length > 1 && (
-        <PageSection hasBodyWrapper={false} type={'tabs'} hasShadowBottom>
+        <PageSection type='tabs' hasBodyWrapper={false}>
           {camelNav}
         </PageSection>
       )}
-      <Divider />
       <PageSection
-        hasBodyWrapper={false}
         id='camel-content-main'
+        hasBodyWrapper={false}
         padding={{ default: 'noPadding' }}
         hasOverflowScroll
         aria-label='camel-content-main'
