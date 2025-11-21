@@ -1,3 +1,19 @@
+#camel-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#camel-content-header > #camel-contexts-toolbar {
+  float: right;
+  padding-top: 0;
+  padding-bottom: 0.5em;
+}
+
+section#camel-content-header.pf-v6-c-page__main-section {
+  display: block;
+}
+
 #camel-content-main > article {
   overflow-y: inherit;
 }
@@ -5,22 +21,12 @@
 #camel-content-main .pf-v6-c-page__main {
   overflow-x: auto;
 }
-#camel-content {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-#camel-content-header > #camel-contexts-toolbar {
-  float: right;
-  padding-top: 0;
-  padding-bottom: 0.5em;
-}
+
 #camel-content-main,
 #camel-content-main > .pf-v6-c-panel,
 #camel-content-main > .pf-v6-c-panel .pf-v6-c-panel__main,
 #camel-content-main > .pf-v6-c-panel .pf-v6-c-panel__main > .pf-v6-c-panel__main-body {
   flex-grow: 1;
-
   display: flex;
   flex-direction: column;
 }
