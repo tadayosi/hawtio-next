@@ -1,63 +1,60 @@
 {
-  "name": "@hawtio/next-root",
-  "version": "0.0.0",
-  "private": true,
-  "author": "Hawtio developer team",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/hawtio/hawtio-next.git"
+  "name" : "@hawtio/next-root",
+  "version" : "0.0.0-redhat-00001",
+  "private" : true,
+  "author" : "Hawtio developer team",
+  "license" : "Apache-2.0",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/hawtio/hawtio-next.git"
   },
-  "workspaces": [
-    "packages/*",
-    "app"
-  ],
-  "scripts": {
-    "start": "concurrently -n hawtio,app \"yarn build:hawtio:watch\" \"yarn start:app\"",
-    "start:app": "yarn build:backend-middleware && yarn workspace app start",
-    "build": "yarn build:hawtio",
-    "build:all": "yarn workspaces foreach -v -Aipt --exclude @hawtio/next-root run build",
-    "build:app": "yarn workspace app build",
-    "build:hawtio": "yarn workspace @hawtio/react build",
-    "build:hawtio:watch": "yarn workspace @hawtio/react build:watch",
-    "build:backend-middleware": "yarn workspace @hawtio/backend-middleware build",
-    "test": "yarn test:hawtio",
-    "test:all": "yarn workspaces foreach -v -Aipt --exclude @hawtio/next-root --exclude app run test",
-    "test:hawtio": "yarn workspace @hawtio/react test",
-    "test:hawtio:watch": "yarn workspace @hawtio/react test:watch",
-    "test:backend-middleware": "yarn workspace @hawtio/backend-middleware test",
-    "lint": "yarn eslint packages/hawtio/src/ packages/hawtio/scripts/ app/src/",
-    "lint:fix": "yarn lint --fix",
-    "format:check": "yarn prettier --check .",
-    "format:fix": "yarn prettier --write .",
-    "release:hawtio": "yarn workspace @hawtio/react release",
-    "release:backend-middleware": "yarn workspace @hawtio/backend-middleware release",
-    "publish:hawtio": "yarn workspace @hawtio/react npm publish --tolerate-republish",
-    "publish:backend-middleware": "yarn workspace @hawtio/backend-middleware npm publish --tolerate-republish"
+  "workspaces" : [ "packages/*", "app" ],
+  "scripts" : {
+    "start" : "concurrently -n hawtio,app \"yarn build:hawtio:watch\" \"yarn start:app\"",
+    "start:app" : "yarn build:backend-middleware && yarn workspace app start",
+    "build" : "yarn build:hawtio",
+    "build:all" : "yarn workspaces foreach -v -Aipt --exclude @hawtio/next-root run build",
+    "build:app" : "yarn workspace app build",
+    "build:hawtio" : "yarn workspace @hawtio/react build",
+    "build:hawtio:watch" : "yarn workspace @hawtio/react build:watch",
+    "build:backend-middleware" : "yarn workspace @hawtio/backend-middleware build",
+    "test" : "yarn test:hawtio",
+    "test:all" : "yarn workspaces foreach -v -Aipt --exclude @hawtio/next-root --exclude app run test",
+    "test:hawtio" : "yarn workspace @hawtio/react test",
+    "test:hawtio:watch" : "yarn workspace @hawtio/react test:watch",
+    "test:backend-middleware" : "yarn workspace @hawtio/backend-middleware test",
+    "lint" : "yarn eslint packages/hawtio/src/ packages/hawtio/scripts/ app/src/",
+    "lint:fix" : "yarn lint --fix",
+    "format:check" : "yarn prettier --check .",
+    "format:fix" : "yarn prettier --write .",
+    "release:hawtio" : "yarn workspace @hawtio/react release",
+    "release:backend-middleware" : "yarn workspace @hawtio/backend-middleware release",
+    "publish:hawtio" : "yarn workspace @hawtio/react npm publish --tolerate-republish",
+    "publish:backend-middleware" : "yarn workspace @hawtio/backend-middleware npm publish --tolerate-republish"
   },
-  "devDependencies": {
-    "@eslint/compat": "^1.4.0",
-    "@types/node": "^24.9.2",
-    "concurrently": "^9.2.1",
-    "cz-conventional-changelog": "3.3.0",
-    "eslint": "^9.31.0",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^6.1.1",
-    "eslint-plugin-testing-library": "^7.13.3",
-    "prettier": "^3.6.2",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.46.2"
+  "devDependencies" : {
+    "@eslint/compat" : "^1.4.0",
+    "@types/node" : "^24.9.2",
+    "concurrently" : "^9.2.1",
+    "cz-conventional-changelog" : "3.3.0",
+    "eslint" : "^9.31.0",
+    "eslint-config-prettier" : "^10.1.8",
+    "eslint-plugin-import" : "^2.32.0",
+    "eslint-plugin-react" : "^7.37.5",
+    "eslint-plugin-react-hooks" : "^6.1.1",
+    "eslint-plugin-testing-library" : "^7.13.3",
+    "prettier" : "^3.6.2",
+    "typescript" : "^5.8.3",
+    "typescript-eslint" : "^8.46.2"
   },
-  "config": {
-    "commitizen": {
-      "path": "cz-conventional-changelog",
-      "maxLineWidth": 80
+  "config" : {
+    "commitizen" : {
+      "path" : "cz-conventional-changelog",
+      "maxLineWidth" : 80
     }
   },
-  "packageManager": "yarn@4.10.3",
-  "engines": {
-    "yarn": ">=4"
+  "packageManager" : "yarn@4.10.3",
+  "engines" : {
+    "yarn" : ">=4"
   }
 }
