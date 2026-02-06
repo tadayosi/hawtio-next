@@ -37,7 +37,7 @@ export const HawtioPage: React.FunctionComponent = () => {
     }
   }, [isLogin, userLoaded, navigate])
 
-  if (!isLogin || !userLoaded || !pluginsLoaded || !hawtconfigLoaded) {
+  if (!isLogin || !userLoaded || !pluginsLoaded || hawtconfigLoaded) {
     return <HawtioLoadingPage />
   }
 

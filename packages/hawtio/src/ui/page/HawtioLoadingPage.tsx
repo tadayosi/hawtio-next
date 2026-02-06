@@ -1,18 +1,20 @@
-import { Bullseye, Content, Page, Spinner } from '@patternfly/react-core'
+import { Bullseye, Content, Page, PageSection, Spinner } from '@patternfly/react-core'
 import React from 'react'
+import './HawtioLoadingPage.css'
 
 export const HawtioLoadingPage: React.FunctionComponent = () => (
-  <Page>
-    <Bullseye>
-      <div style={{ justifyContent: 'center' }}>
+  <Page
+    id='hawtio-loading-page'
+    mainContainerId='hawtio-loading-container'
+    sidebar={null}
+  >
+    <PageSection isFilled={true} className='hwt-loading-page-section'>
+      <Bullseye>
         <Spinner diameter='60px' aria-label='Loading Hawtio' />
-
-        <Content>
-          <Content className={'--pf-t--global--background--color--200'} component='h3'>
-            Loading ...
-          </Content>
+        <Content component='h3'>
+          Loading ...
         </Content>
-      </div>
-    </Bullseye>
+      </Bullseye>
+    </PageSection>
   </Page>
 )
