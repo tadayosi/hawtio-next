@@ -1,0 +1,9 @@
+#hawtio-loading-page {
+  background-color: var(--pf-t--global--background--color--primary--default);
+}
+
+#hawtio-loading-page > .pf-v6-c-page__main-container {
+  height: 100%;
+  width: 100%;
+  margin: 0px;
+}
