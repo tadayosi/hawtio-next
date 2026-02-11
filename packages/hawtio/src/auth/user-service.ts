@@ -42,7 +42,7 @@ export interface IUserService {
   getLoginMethod(): Promise<string>
   getToken(): string | null
   setToken(token: string): void
-  logout(): Promise<boolean>
+  logout(reason?: string): Promise<boolean>
 }
 
 class UserService implements IUserService {
@@ -171,14 +171,19 @@ class UserService implements IUserService {
     this.token = token
   }
 
-  async logout(): Promise<boolean> {
+  async logout(reason?: string): Promise<boolean> {
     const login = await this.user
     if (!login.isLogin) {
       log.debug('Not logged in')
       return false
     }
 
-    log.info('Log out:', login.username, 'Login method:', login.loginMethod)
+    log.info('Log out:', login.username, 'Login method:', login.loginMethod, 'Reason:', reason)
+
+    if (reason) {
+      // put a reason of the logout, so we can display it at the login screen
+      sessionStorage.setItem('logout.reason', reason)
+    }
 
     let attempted = false
     let proceed = false

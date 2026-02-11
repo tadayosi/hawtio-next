@@ -24,13 +24,18 @@ import { log } from './globals'
 export const HawtioLogin: React.FunctionComponent = () => {
   const navigate = useNavigate()
 
+  let loginFailedInitialMessage = ''
+  if (sessionStorage.getItem('logout.reason')) {
+    loginFailedInitialMessage = sessionStorage.getItem('logout.reason')!
+  }
+
   const { isLogin, userLoaded, isLoginError, loginError: loginErrorMessage } = useUser()
   const { hawtconfig, hawtconfigLoaded } = useHawtconfig()
   const { plugins, pluginsLoaded } = usePlugins()
   const [authenticationMethods, setAuthenticationMethods] = useState<AuthenticationMethod[]>([])
   const [authenticationMethodSelected, setAuthenticationMethodSelected] = useState(-1)
   const [authenticationMethodsLoaded, setAuthenticationMethodsLoaded] = useState(false)
-  const [loginError, setLoginError] = useState('')
+  const [loginError, setLoginError] = useState(loginFailedInitialMessage)
 
   useEffect(() => {
     if (isLogin) {

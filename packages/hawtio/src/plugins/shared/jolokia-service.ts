@@ -227,6 +227,8 @@ class JolokiaService implements IJolokiaService {
       return this.jolokia
     }
 
+    sessionStorage.removeItem('logout.reason')
+
     // Initialising Jolokia instance
     this.jolokia = this.createJolokia(jolokia => {
       // Checking versions
@@ -422,7 +424,11 @@ class JolokiaService implements IJolokiaService {
           userService.isLogin().then(login => {
             log.debug('Logging out due to fetch() error: status =', response.status)
             if (login) {
-              userService.logout()
+              if (response.status == 403) {
+                userService.logout('Insufficient permissions')
+              } else {
+                userService.logout()
+              }
             }
           })
         }

@@ -379,7 +379,7 @@ class OidcService implements IOidcService {
       }
     }
 
-    log.info('Getting localStore data, because we have params', urlParams)
+    log.debug('Getting localStore data, because we have params', urlParams)
     const loginDataString = localStorage.getItem('hawtio-oidc-login')
     localStorage.removeItem('hawtio-oidc-login')
     if (!loginDataString) {
