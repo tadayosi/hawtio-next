@@ -1060,7 +1060,7 @@ __metadata:
     jest: "npm:^30.2.0"
     jest-environment-jsdom: "npm:^30.2.0"
     jest-fetch-mock: "npm:^3.0.3"
-    jolokia.js: "npm:^2.4.2"
+    jolokia.js: "npm:^2.5.0"
     js-logger: "npm:^1.6.1"
     jwt-decode: "npm:^4.0.0"
     keycloak-js: "npm:^26.2.3"
@@ -9517,10 +9517,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jolokia.js@npm:2.4.2, jolokia.js@npm:^2.4.2":
+"jolokia.js@npm:2.4.2":
   version: 2.4.2
   resolution: "jolokia.js@npm:2.4.2"
   checksum: 10/7a266d855bf9e1c8e5da34aee5a9fc9c1398832e23bbf90f7334f30d1f917a02d5f94cf72a706f8e59bea3e0818b9b16bf5f002022fb2014f9176bc13b31942d
+  languageName: node
+  linkType: hard
+
+"jolokia.js@npm:^2.5.0":
+  version: 2.5.0
+  resolution: "jolokia.js@npm:2.5.0"
+  checksum: 10/218c689b8fe0412bd652d18134f5634f14cd8d939c00bc787581eae5105b0b5fb83a7e0c6a06a883674e5059941ddf8a2e38ddad33a2711cf781002be9b9e722
   languageName: node
   linkType: hard
 
