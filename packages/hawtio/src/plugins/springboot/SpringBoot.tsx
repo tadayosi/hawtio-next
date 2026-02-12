@@ -14,7 +14,7 @@ type NavItem = {
 }
 
 export const SpringBoot: React.FunctionComponent = () => {
-  const location = useLocation()
+  const { pathname, search } = useLocation()
   const [navItems, setNavItems] = useState<NavItem[]>([])
 
   useEffect(() => {
@@ -58,8 +58,8 @@ export const SpringBoot: React.FunctionComponent = () => {
         <Nav aria-label='Spring Boot Nav' variant='horizontal-subnav'>
           <NavList>
             {navItems.map(({ id, title }) => (
-              <NavItem key={id} isActive={location.pathname === `/springboot/${id}`}>
-                <NavLink to={id}>{title}</NavLink>
+              <NavItem key={id} isActive={pathname === `/springboot/${id}`}>
+                <NavLink to={{ pathname: id, search }}>{title}</NavLink>
               </NavItem>
             ))}
           </NavList>
@@ -70,7 +70,7 @@ export const SpringBoot: React.FunctionComponent = () => {
           {navItems.map(({ id, component }) => (
             <Route key={id} path={id} element={component} />
           ))}
-          <Route path='/' element={<Navigate to='health' />} />
+          <Route path='/' element={<Navigate to={{ pathname: 'health', search }} />} />
         </Routes>
       </PageSection>
     </React.Fragment>

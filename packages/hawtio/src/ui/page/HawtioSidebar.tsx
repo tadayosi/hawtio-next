@@ -5,7 +5,7 @@ import { PageContext } from './context'
 
 export const HawtioSidebar: React.FunctionComponent = () => {
   const { plugins } = useContext(PageContext)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
 
   const pathMatch = (path: string, pluginPath: string) => {
     if (!pluginPath.startsWith('/')) {
@@ -21,7 +21,7 @@ export const HawtioSidebar: React.FunctionComponent = () => {
           .filter(plugin => plugin.path != null)
           .map(plugin => (
             <NavItem key={plugin.id} isActive={pathMatch(pathname, plugin.path!)}>
-              <NavLink to={plugin.path!}>{plugin.title}</NavLink>
+              <NavLink to={{ pathname: plugin.path!, search }}>{plugin.title}</NavLink>
             </NavItem>
           ))}
       </NavList>

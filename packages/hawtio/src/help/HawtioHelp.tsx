@@ -9,7 +9,7 @@ import { helpRegistry } from './registry'
 helpRegistry.add('home', 'Home', help, 1)
 
 export const HawtioHelp: React.FunctionComponent = () => {
-  const location = useLocation()
+  const { pathname, search } = useLocation()
   const { plugins } = usePlugins()
 
   const helps = useMemo(() => {
@@ -32,8 +32,8 @@ export const HawtioHelp: React.FunctionComponent = () => {
         <Nav aria-label='Help Nav' variant='horizontal-subnav'>
           <NavList>
             {helps.map(help => (
-              <NavItem key={help.id} isActive={location.pathname === `/help/${help.id}`}>
-                <NavLink to={help.id}>{help.title}</NavLink>
+              <NavItem key={help.id} isActive={pathname === `/help/${help.id}`}>
+                <NavLink to={{ pathname: help.id, search }}>{help.title}</NavLink>
               </NavItem>
             ))}
           </NavList>
@@ -54,7 +54,7 @@ export const HawtioHelp: React.FunctionComponent = () => {
               }
             />
           ))}
-          <Route path='/' element={<Navigate to='home' />} />
+          <Route path='/' element={<Navigate to={{ pathname: 'home', search }} />} />
         </Routes>
       </PageSection>
     </PageGroup>

@@ -79,7 +79,7 @@ export const Connect: React.FunctionComponent = () => {
           {routes}
           {/* connect/login should be hidden to nav */}
           <Route key='login' path='login' element={<ConnectLogin />} />
-          <Route key='root' path='/' element={<Navigate to={navItems[0]?.id ?? ''} />} />
+          <Route key='root' path='/' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} />} />
         </Routes>
       </PageSection>
     </ConnectContext.Provider>

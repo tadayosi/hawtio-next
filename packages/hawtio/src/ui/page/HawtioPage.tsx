@@ -33,7 +33,7 @@ export const HawtioPage: React.FunctionComponent = () => {
   // otherwise "Cannot update a component (`BrowserRouter`) while rendering a different component" is thrown
   useEffect(() => {
     if (!isLogin && userLoaded) {
-      navigate('/login')
+      navigate({ pathname: '/login', search })
     }
   }, [isLogin, userLoaded, navigate])
 
@@ -92,7 +92,7 @@ export const HawtioPage: React.FunctionComponent = () => {
             <Route key='preferences' path='/preferences' element={<HawtioPreferences />}>
               <Route path='*' element={<HawtioPreferences />} />
             </Route>
-            <Route key='index' path='index.html' element={<Navigate to='/' />} />
+            <Route key='index' path='index.html' element={<Navigate to={{ pathname: '/', search }} />} />
             <Route key='root' index element={defaultPage} />
           </Routes>
         </PluginNodeSelectionContext.Provider>

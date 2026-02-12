@@ -14,7 +14,7 @@ export function useCamelTree() {
   const [tree, setTree] = useState(MBeanTree.createEmpty(pluginName))
   const [loaded, setLoaded] = useState(false)
   const { selectedNode, setSelectedNode } = useContext(PluginNodeSelectionContext)
-  const { pathname } = useLocation()
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
 
   /*
@@ -90,12 +90,12 @@ export function useCamelTree() {
       // On population of tree, ensure the url path is returned to the base plugin path.
       // If the location is already in the Camel plugin, skip navigation.
       if (!pathname.startsWith(pluginPath)) {
-        navigate(pluginPath)
+        navigate(`${pluginPath}${search}`)
       }
     } else {
       setTree(wkspTree)
       // No camel contexts so redirect to the JMX view and select the first tree node
-      navigate('/jmx')
+      navigate(`/jmx${search}`)
       eventService.notify({
         type: 'warning',
         message: 'No Camel domain detected in target. Redirecting to back to jmx.',

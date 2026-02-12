@@ -150,7 +150,7 @@ export const CamelContent: React.FunctionComponent = () => {
         {navItems.length > 0 && (
           <Routes>
             {camelNavRoutes}
-            <Route key='root' path='/' element={<Navigate to={navItems[0]?.id ?? ''} />} />
+            <Route key='root' path='/' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} />} />
           </Routes>
         )}
         {navItems.length === 0 && !selectedNode.objectName && <JmxContentMBeans />}
@@ -163,6 +163,7 @@ const CamelContentContextToolbar: React.FunctionComponent = () => {
   const { selectedNode, setSelectedNode } = useContext(CamelContext)
   const [contextState, setContextState] = useState<ContextState | null>(null)
   const navigate = useNavigate()
+  const { search } = useLocation()
 
   useEffect(() => {
     // Attributes only needed if a context has been selected
@@ -208,7 +209,7 @@ const CamelContentContextToolbar: React.FunctionComponent = () => {
     setSelectedNode(null)
 
     // Navigate away from this context as it no longer exists
-    navigate('/jmx')
+    navigate(`/jmx${search}`)
 
     eventService.notify({
       type: 'warning',

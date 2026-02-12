@@ -91,7 +91,7 @@ export const JmxContent: React.FunctionComponent = () => {
       >
         <Routes>
           {mbeanRoutes}
-          <Route key='root' path='/' element={<Navigate to={navItems[0]?.id ?? ''} />} />
+          <Route key='root' path='/' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} />} />
         </Routes>
       </PageSection>
     </PageGroup>

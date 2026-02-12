@@ -1,7 +1,7 @@
 import { MBeanNode, MBeanTree, PluginTreeViewToolbar } from '@hawtiosrc/plugins/shared'
 import { TreeView, TreeViewDataItem } from '@patternfly/react-core'
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import './CamelTreeView.css'
 import { CamelContext } from './context'
 import { pluginPath } from './globals'
@@ -30,6 +30,7 @@ export const CamelTreeView: React.FunctionComponent = () => {
   const { tree, selectedNode, setSelectedNode } = useContext(CamelContext)
   const [expanded, setExpanded] = useState(ExpansionValue.Default)
   const navigate = useNavigate()
+  const { search } = useLocation()
 
   const [filteredTree, setFilteredTree] = useState(tree.getTree())
 
@@ -61,7 +62,7 @@ export const CamelTreeView: React.FunctionComponent = () => {
   const onSelect = (event: React.MouseEvent<Element, MouseEvent>, item: TreeViewDataItem) => {
     setSelectedNode(item as MBeanNode)
     /* On change of node selection update the url to the base plugin path */
-    navigate(pluginPath)
+    navigate(`${pluginPath}${search}`)
   }
 
   const getActiveItems = (): TreeViewDataItem[] => {
