@@ -1,3 +1,4 @@
+import { connectService } from '@hawtiosrc/plugins/shared/connect-service'
 import { jolokiaService } from '@hawtiosrc/plugins/shared/jolokia-service'
 import { TooltipHelpIcon } from '@hawtiosrc/ui/icons'
 import {
@@ -15,22 +16,21 @@ import {
   ModalVariant,
   TextInput,
 } from '@patternfly/react-core'
+import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RESET } from './connections'
 import { useConnections } from './context'
 import { log } from './globals'
-import { connectService } from '@hawtiosrc/plugins/shared/connect-service'
-import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon'
 
 export const ConnectPreferences: React.FunctionComponent = () => (
   <CardBody>
     <Form isHorizontal>
       <JolokiaForm />
-      <ConnectForm />
+      <ConnectionForm />
       <ResetForm />
-    </Form>
-  </CardBody>
+    </Form >
+  </CardBody >
 )
 const ValidatedHelperText: React.FunctionComponent<{
   validated: 'default' | 'error' | 'success' | 'warning' | 'indeterminate' | undefined
@@ -201,30 +201,41 @@ const JolokiaForm: React.FunctionComponent = () => {
   )
 }
 
-const ConnectForm: React.FunctionComponent = () => {
+const ConnectionForm: React.FunctionComponent = () => {
+  const navigate = useNavigate()
   const [useConnectionParam, setUseConnectionParam] = useState(connectService.loadUseConnectionParam() ?? false)
 
-  const updateUseConnectionParam = (updated: boolean) => {
-    connectService.saveUseConnectionParam(updated)
-    setUseConnectionParam(updated)
+  const applyConnection = () => {
+    connectService.saveUseConnectionParam(useConnectionParam)
+    navigate(0)
   }
 
   return (
-    <FormSection title='Connect' titleElement='h2'>
+    <FormSection title='Connection' titleElement='h2'>
       <FormGroup
         label='Keep connection parameter'
-        fieldId='connect-form-use-connection-param'
+        fieldId='connection-form-use-connection-param'
         labelIcon={
           <TooltipHelpIcon tooltip='Whether to keep the connection (con) query parameter in the URL after connecting to a remote instance' />
         }
       >
         <Checkbox
-          id='connect-form-use-connection-param-input'
+          id='connection-form-use-connection-param-input'
           isChecked={useConnectionParam}
-          onChange={(_event, useConnectionParam) => updateUseConnectionParam(useConnectionParam)}
+          onChange={(_event, useConnectionParam: boolean) => setUseConnectionParam(useConnectionParam)}
         />
       </FormGroup>
-    </FormSection>
+      <FormGroup fieldId='connection-form-apply'>
+        <Button data-testid='apply-connection' onClick={applyConnection}>
+          Apply
+        </Button>
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>Restart Hawtio with the new connection settings in effect.</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
+      </FormGroup>
+    </FormSection >
   )
 }
 
