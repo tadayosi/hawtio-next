@@ -87,6 +87,14 @@ class MockConnectService implements IConnectService {
   export(connections: Connections) {
     // no-op
   }
+
+  loadUseConnectionParam(): boolean | null {
+    return null
+  }
+
+  saveUseConnectionParam(value: boolean): void {
+    // no-op
+  }
 }
 
 export const connectService = new MockConnectService()

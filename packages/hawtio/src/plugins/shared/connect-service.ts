@@ -56,6 +56,7 @@ export type LoginResult =
 export type ConnectStatus = 'not-reachable' | 'reachable' | 'not-reachable-securely'
 
 const STORAGE_KEY_CONNECTIONS = 'connect.connections'
+const STORAGE_KEY_USE_CONNECTION_PARAM = 'connect.useConnectionParam'
 
 const SESSION_KEY_SALT = 'connect.salt'
 const SESSION_KEY_CREDENTIALS = 'connect.credentials' // Encrypted
@@ -86,6 +87,8 @@ export interface IConnectService {
   getJolokiaUrlFromId(name: string): string | null
   getLoginPath(): string
   export(connections: Connections): void
+  loadUseConnectionParam(): boolean | null
+  saveUseConnectionParam(value: boolean): void
 }
 
 class ConnectService implements IConnectService {
@@ -117,10 +120,13 @@ class ConnectService implements IConnectService {
         sessionStorage.setItem(SESSION_KEY_CURRENT_CONNECTION, JSON.stringify(connId))
       }
 
-      // clear "con" parameter - will be available in session storage only
-      searchParams.delete(PARAM_KEY_CONNECTION, idOrName)
-      url.search = searchParams.toString()
-      window.history.replaceState(null, '', url)
+      // Clear "con" parameter from URL (controlled by Connect plugin preferences)
+      const storedPref = localStorage.getItem(STORAGE_KEY_USE_CONNECTION_PARAM)
+      if (storedPref !== 'true') {
+        searchParams.delete(PARAM_KEY_CONNECTION, idOrName)
+        url.search = searchParams.toString()
+        window.history.replaceState(null, '', url)
+      }
 
       return connId
     }
@@ -631,6 +637,18 @@ class ConnectService implements IConnectService {
     link.click()
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
+  }
+
+  loadUseConnectionParam(): boolean | null {
+    const value = localStorage.getItem(STORAGE_KEY_USE_CONNECTION_PARAM)
+    if (value === null) {
+      return null
+    }
+    return value === 'true'
+  }
+
+  saveUseConnectionParam(value: boolean): void {
+    localStorage.setItem(STORAGE_KEY_USE_CONNECTION_PARAM, JSON.stringify(value))
   }
 }
 
