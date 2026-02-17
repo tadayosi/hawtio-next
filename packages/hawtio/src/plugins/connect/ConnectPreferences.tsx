@@ -26,7 +26,7 @@ export const ConnectPreferences: React.FunctionComponent = () => (
   <CardBody>
     <Form isHorizontal>
       <JolokiaForm />
-      <ConnectionForm />
+      <ConnectForm />
       <ResetForm />
     </Form>
   </CardBody>
@@ -200,39 +200,28 @@ const JolokiaForm: React.FunctionComponent = () => {
   )
 }
 
-const ConnectionForm: React.FunctionComponent = () => {
-  const navigate = useNavigate()
+const ConnectForm: React.FunctionComponent = () => {
   const [useConnectionParam, setUseConnectionParam] = useState(connectService.loadUseConnectionParam() ?? false)
 
-  const applyConnection = () => {
-    connectService.saveUseConnectionParam(useConnectionParam)
-    navigate(0)
+  const updateUseConnectionParam = (updated: boolean) => {
+    connectService.saveUseConnectionParam(updated)
+    setUseConnectionParam(updated)
   }
 
   return (
-    <FormSection title='Connection' titleElement='h2'>
+    <FormSection title='Connect' titleElement='h2'>
       <FormGroup
         label='Keep connection parameter'
-        fieldId='connection-form-use-connection-param'
-        labelIcon={
+        fieldId='connect-form-use-connection-param'
+        labelHelp={
           <TooltipHelpIcon tooltip='Whether to keep the connection (con) query parameter in the URL after connecting to a remote instance' />
         }
       >
         <Checkbox
-          id='connection-form-use-connection-param-input'
+          id='connect-form-use-connection-param-input'
           isChecked={useConnectionParam}
-          onChange={(_event, useConnectionParam: boolean) => setUseConnectionParam(useConnectionParam)}
+          onChange={(_event, useConnectionParam) => updateUseConnectionParam(useConnectionParam)}
         />
-      </FormGroup>
-      <FormGroup fieldId='connection-form-apply'>
-        <Button data-testid='apply-connection' onClick={applyConnection}>
-          Apply
-        </Button>
-        <FormHelperText>
-          <HelperText>
-            <HelperTextItem>Restart Hawtio with the new connection settings in effect.</HelperTextItem>
-          </HelperText>
-        </FormHelperText>
       </FormGroup>
     </FormSection>
   )
