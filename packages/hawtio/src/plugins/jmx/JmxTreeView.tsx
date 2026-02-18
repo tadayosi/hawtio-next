@@ -3,9 +3,7 @@ import { TreeView, TreeViewDataItem } from '@patternfly/react-core'
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './JmxTreeView.css'
-import { MBeanTreeContext } from './context'
-import { pluginPath } from './globals'
-import { buildNidUrl } from './utils'
+import { MBeanTreeContext, pluginPathWithNodeId } from './context'
 
 /**
  * Expansion requires more than 2 states since the expandAll
@@ -62,7 +60,7 @@ export const JmxTreeView: React.FunctionComponent = () => {
   const onSelect = (event: React.MouseEvent<Element, MouseEvent>, item: TreeViewDataItem) => {
     const node = item as MBeanNode
     setSelectedNode(node)
-    navigate(buildNidUrl(node.path(), pluginPath))
+    navigate(pluginPathWithNodeId(node))
   }
 
   const setAllExpanded = (value: boolean) => {

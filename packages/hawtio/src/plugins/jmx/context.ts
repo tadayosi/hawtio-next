@@ -3,8 +3,7 @@ import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { log, pluginName, pluginPath } from './globals'
-import { buildNidUrl, decodeNodePath, PARAM_KEY_NODE } from './utils'
+import { log, PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
 /**
  * Custom React hook for using JMX MBean tree.
@@ -14,7 +13,7 @@ export function useMBeanTree() {
   const [loaded, setLoaded] = useState(false)
   const { selectedNode, setSelectedNode } = useContext(PluginNodeSelectionContext)
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   /*
    * Need to preserve the selected node between re-renders since the
@@ -24,49 +23,24 @@ export function useMBeanTree() {
   const refSelectedNode = useRef<MBeanNode | null>()
   refSelectedNode.current = selectedNode
 
-  /**
-   * Restore the selected node from the URL parameter if present
-   */
-  const restoreNodeFromUrl = (wkspTree: MBeanTree, nodeIdParam: string | null): MBeanNode | null => {
-    if (!nodeIdParam) return null
-
-    try {
-      const path = decodeNodePath(nodeIdParam)
-      const node = wkspTree.navigate(...path)
-
-      if (node) {
-        // Expand ancestors to make the node visible
-        wkspTree.forEach(path, n => {
-          n.defaultExpanded = true
-        })
-      }
-
-      return node
-    } catch (error) {
-      log.error('Failed to restore node from URL:', error)
-      return null
-    }
-  }
-
   const populateTree = async () => {
-    const wkspTree: MBeanTree = await workspace.getTree()
+    const wkspTree = await workspace.getTree()
     setTree(wkspTree)
 
-    const nodeId = searchParams.get(PARAM_KEY_NODE)
-
-    // Try to restore node from URL
-    const urlNode = restoreNodeFromUrl(wkspTree, nodeId)
-    if (urlNode) {
-      setSelectedNode(urlNode)
-      return
-    }
-
-    // If the URL contained a nid param, it was invalid. Clear it and reset to base path.
-    if (nodeId) {
-      const currentSearchParams = new URLSearchParams(window.location.search)
-      currentSearchParams.delete(PARAM_KEY_NODE)
-      const query = currentSearchParams.toString()
-      navigate(`${pluginPath}${query ? `?${query}` : ''}`)
+    const nodeId = searchParams.get(PARAM_KEY_NODE_ID)
+    if (nodeId && nodeId !== refSelectedNode.current?.id) {
+      log.debug('Restore selected node with nid:', nodeId)
+      // Try to restore node from URL
+      const urlNode = wkspTree.find(node => node.id === nodeId)
+      if (urlNode) {
+        setSelectedNode(urlNode)
+        refSelectedNode.current = urlNode
+      } else {
+        // Clear nid as it is invalid
+        log.debug('Clear invalid nid:', nodeId)
+        searchParams.delete(PARAM_KEY_NODE_ID)
+        setSearchParams(searchParams)
+      }
     }
 
     if (!refSelectedNode.current) return
@@ -83,7 +57,7 @@ export function useMBeanTree() {
     if (newSelected) {
       setSelectedNode(newSelected)
       // Reset to base path with nid to sync URL with restored selection
-      navigate(buildNidUrl(path, pluginPath))
+      navigate(pluginPathWithNodeId(newSelected))
     } else {
       // Node no longer exists - clear selection and go to base path
       navigate(pluginPath)
@@ -108,6 +82,17 @@ export function useMBeanTree() {
   }, [])
 
   return { tree, loaded, selectedNode, setSelectedNode }
+}
+
+/**
+ * Build URL query string with nid parameter, preserving other existing params
+ * @param node - The node to encode
+ */
+export function pluginPathWithNodeId(node: MBeanNode): string {
+  const searchParams = new URLSearchParams(window.location.search)
+  searchParams.set(PARAM_KEY_NODE_ID, node.id)
+  const query = `?${searchParams.toString()}`
+  return `${pluginPath}${query}`
 }
 
 type MBeanTreeContext = {
