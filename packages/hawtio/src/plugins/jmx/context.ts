@@ -2,7 +2,7 @@ import { EVENT_REFRESH, eventService } from '@hawtiosrc/core'
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { To, useNavigate, useSearchParams } from 'react-router-dom'
 import { log, PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
 /**
@@ -57,7 +57,7 @@ export function useMBeanTree() {
     if (newSelected) {
       setSelectedNode(newSelected)
       // Reset to base path with nid to sync URL with restored selection
-      navigate(pluginPathWithNodeId(newSelected))
+      navigate(pluginPathWithNodeId(newSelected, searchParams))
     } else {
       // Node no longer exists - clear selection and go to base path
       navigate(pluginPath)
@@ -87,12 +87,15 @@ export function useMBeanTree() {
 /**
  * Build URL query string with nid parameter, preserving other existing params
  * @param node - The node to encode
+ * @param searchParams - The current URL search params to preserve, defaults to the ones from the window location
  */
-export function pluginPathWithNodeId(node: MBeanNode): string {
-  const searchParams = new URLSearchParams(window.location.search)
+export function pluginPathWithNodeId(
+  node: MBeanNode,
+  searchParams: URLSearchParams = new URLSearchParams(window.location.search),
+): Partial<To> {
   searchParams.set(PARAM_KEY_NODE_ID, node.id)
   const query = `?${searchParams.toString()}`
-  return `${pluginPath}${query}`
+  return { pathname: pluginPath, search: query }
 }
 
 type MBeanTreeContext = {
