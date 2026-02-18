@@ -14,7 +14,7 @@ export const jmx: HawtioPlugin = () => {
       return {
         id: 'jmx',
         title: 'JMX',
-        path: pluginPath,
+        path: `${pluginPath}/*`,
         order,
         component: m.Jmx,
         isActive: async () => workspace.hasMBeans(),

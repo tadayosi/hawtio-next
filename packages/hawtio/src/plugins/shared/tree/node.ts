@@ -119,8 +119,12 @@ export class MBeanNode implements TreeViewDataItem {
     this.id = this.generateId(folder)
   }
 
+  private idWithoutPostfix(): string {
+    return this.children !== undefined ? this.id.replace(/-folder$/, '') : this.id
+  }
+
   private generateId(folder: boolean): string {
-    const idPrefix = this.parent ? this.parent.id + MBEAN_NODE_ID_SEPARATOR : ''
+    const idPrefix = this.parent ? this.parent.idWithoutPostfix() + MBEAN_NODE_ID_SEPARATOR : ''
     const idPostfix = folder ? '-folder' : ''
     let id = idPrefix + escapeHtmlId(this.name) + idPostfix
 
@@ -131,7 +135,9 @@ export class MBeanNode implements TreeViewDataItem {
 
         // id could still end up the same as another
         // but pretty unlikely and not really worth doing more
-        if (child.id === id) id = id + '-' + Math.floor(Math.random() * 100)
+        if (child.id === id) {
+          id = id + '-' + Math.floor(Math.random() * 100)
+        }
       })
     }
 

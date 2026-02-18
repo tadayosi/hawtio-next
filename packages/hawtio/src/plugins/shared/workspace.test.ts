@@ -37,7 +37,7 @@ describe('workspace', () => {
     ).resolves.toBeTruthy()
     await expect(
       workspace.treeContainsDomainAndProperties('quartz', {
-        id: 'quartz-folder-QuartzScheduler',
+        id: 'quartz-QuartzScheduler',
         name: 'QuartzScheduler',
       }),
     ).resolves.toBeTruthy()

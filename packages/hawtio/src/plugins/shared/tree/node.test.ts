@@ -186,12 +186,12 @@ describe('MBeanNode', () => {
     let path = ['org.apache.camel', 'SampleCamel', 'components', 'quartz']
     let qNode = domainNode.navigate(...path) as MBeanNode
     expect(qNode).not.toBeNull()
-    expect(qNode.id).toBe('org.apache.camel-folder-SampleCamel-folder-components-folder-quartz')
+    expect(qNode.id).toBe('org.apache.camel-SampleCamel-components-quartz')
 
     path = ['org.apache.camel', 'SampleCame*', 'c*ponents', '*artz']
     qNode = domainNode.navigate(...path) as MBeanNode
     expect(qNode).not.toBeNull()
-    expect(qNode.id).toBe('org.apache.camel-folder-SampleCamel-folder-components-folder-quartz')
+    expect(qNode.id).toBe('org.apache.camel-SampleCamel-components-quartz')
   })
 
   test('forEach', async () => {
@@ -216,12 +216,12 @@ describe('MBeanNode', () => {
 
     const ctxNode = camelNode.getIndex(0) as MBeanNode
     expect(ctxNode).not.toBeNull()
-    expect(ctxNode.id).toBe('org.apache.camel-folder-SampleCamel-folder')
+    expect(ctxNode.id).toBe('org.apache.camel-SampleCamel-folder')
     expect(ctxNode.name).toBe('SampleCamel')
 
     const compNode = ctxNode.get('components', true) as MBeanNode
     expect(compNode).not.toBeNull()
-    expect(compNode.id).toBe('org.apache.camel-folder-SampleCamel-folder-components-folder')
+    expect(compNode.id).toBe('org.apache.camel-SampleCamel-components-folder')
 
     const chain: string[] = [camelNode.name, ctxNode.name]
     expect(compNode.findAncestors().map((n: MBeanNode) => n.name)).toEqual(chain)
@@ -235,12 +235,12 @@ describe('MBeanNode', () => {
 
     const ctxNode = camelNode.getIndex(0) as MBeanNode
     expect(ctxNode).not.toBeNull()
-    expect(ctxNode.id).toBe('org.apache.camel-folder-SampleCamel-folder')
+    expect(ctxNode.id).toBe('org.apache.camel-SampleCamel-folder')
     expect(ctxNode.name).toBe('SampleCamel')
 
     const compNode = ctxNode.get('components', true) as MBeanNode
     expect(compNode).not.toBeNull()
-    expect(compNode.id).toBe('org.apache.camel-folder-SampleCamel-folder-components-folder')
+    expect(compNode.id).toBe('org.apache.camel-SampleCamel-components-folder')
 
     expect(compNode.findAncestor((node: MBeanNode) => node.name === ctxNode.name)).toBe(ctxNode)
     expect(compNode.findAncestor((node: MBeanNode) => node.name === camelNode.name)).toBe(camelNode)
