@@ -66,6 +66,22 @@ describe('workspace', () => {
         properties: { context: 'SampleCamel', type: 'endpoints' },
         expected: 4,
       },
+      {
+        // search by unquoted
+        domain: 'org.apache.camel',
+        properties: { context: 'SampleCamel', type: 'endpoints', name: 'quartz://cron?cron=0%2F10+*+*+*+*+%3F' },
+        expected: 1,
+      },
+      {
+        // search by quoted (original)
+        domain: 'org.apache.camel',
+        properties: {
+          context: 'SampleCamel',
+          type: 'endpoints',
+          name: '"quartz://cron\\?cron=0%2F10+\\*+\\*+\\*+\\*+%3F"',
+        },
+        expected: 1,
+      },
     ]
 
     for (const test of tests) {
