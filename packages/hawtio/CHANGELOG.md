@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.12.3](https://github.com/hawtio/hawtio-react/compare/v1.12.2...v1.12.3) (2026-02-19)
+
+
+### Bug Fixes
+
+* **jmx:** Ensure MBean finding works by quoted and unquoted values (fixes [#1955](https://github.com/hawtio/hawtio-react/issues/1955)) ([285a7fc](https://github.com/hawtio/hawtio-react/commit/285a7fcc5573a585fa68de7deb568c2d95479d77))
+
 ## [1.12.2](https://github.com/hawtio/hawtio-react/compare/v1.12.1...v1.12.2) (2026-02-19)
 
 
