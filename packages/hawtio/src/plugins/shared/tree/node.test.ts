@@ -277,9 +277,7 @@ describe('PropertyList', () => {
     expect(propList.objectName()).toEqual(
       'org.apache.activemq.artemis:broker="0.0.0.0",component=addresses,address="\\"\'<>",subcomponent=queues,routing-type="anycast",queue="\\"abc/def\\\\ghi.\\*.xxx\\""',
     )
-    expect(propList.getPaths()).toEqual(
-      ['0.0.0.0', 'addresses', '"\'<>', 'queues', 'anycast', '"abc/def\\ghi.*.xxx"' ]
-    )
+    expect(propList.getPaths()).toEqual(['0.0.0.0', 'addresses', '"\'<>', 'queues', 'anycast', '"abc/def\\ghi.*.xxx"'])
   })
 
   test('parsingNames', () => {
