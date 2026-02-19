@@ -1,6 +1,6 @@
 import { userService } from '@hawtiosrc/auth'
 import { workspace } from '../workspace'
-import { Icons, MBeanNode, PropertyList } from './node'
+import { Icons, MBeanNode, PropertyList, parseMBeanName } from './node'
 import { MBeanTree } from './tree'
 
 jest.mock('@hawtiosrc/plugins/shared/jolokia-service')
@@ -266,6 +266,143 @@ describe('PropertyList', () => {
     const node = new MBeanNode(null, 'org.apache.camel', false)
     const propList = new PropertyList(node, 'context=SampleContext,type=context,name="SampleCamel"')
     expect(propList.objectName()).toEqual('org.apache.camel:context=SampleContext,type=context,name="SampleCamel"')
+  })
+
+  test('complexObjectNames', () => {
+    const node = new MBeanNode(null, 'org.apache.activemq.artemis', true)
+    const propList = new PropertyList(
+      node,
+      'broker="0.0.0.0",component=addresses,address="\\"\'<>",subcomponent=queues,routing-type="anycast",queue="\\"abc/def\\\\ghi.\\*.xxx\\""',
+    )
+    expect(propList.objectName()).toEqual(
+      'org.apache.activemq.artemis:broker="0.0.0.0",component=addresses,address="\\"\'<>",subcomponent=queues,routing-type="anycast",queue="\\"abc/def\\\\ghi.\\*.xxx\\""',
+    )
+    expect(propList.getPaths()).toEqual(
+      ['0.0.0.0', 'addresses', '"\'<>', 'queues', 'anycast', '"abc/def\\ghi.*.xxx"' ]
+    )
+  })
+
+  test('parsingNames', () => {
+    let name = parseMBeanName('com.example:a=b')
+    expect(name.domain).toEqual('com.example')
+    expect(name.properties['a']).toEqual('b')
+    name = parseMBeanName('com.example:a=b,c=d')
+    expect(name.domain).toEqual('com.example')
+    expect(name.properties['c']).toEqual('d')
+
+    name = parseMBeanName('com.example:a=')
+    expect(name.domain).toEqual('com.example')
+    expect(name.properties['a']).toEqual('')
+    name = parseMBeanName('com.example:a=,c=d')
+    expect(name.domain).toEqual('com.example')
+    expect(name.properties['a']).toEqual('')
+    expect(name.properties['c']).toEqual('d')
+    name = parseMBeanName('com.example:a=,c=')
+    expect(name.domain).toEqual('com.example')
+    expect(name.properties['a']).toEqual('')
+    expect(name.properties['c']).toEqual('')
+
+    name = parseMBeanName('com.example:\\"a=b')
+    expect(name.properties['\\"a']).toEqual('b')
+
+    name = parseMBeanName('com.example:a="b=b"')
+    expect(name.properties['a']).toEqual('"b=b"')
+    expect(name.paths[0]!.value).toEqual('b=b')
+
+    name = parseMBeanName('com.example:a="\\"\\*\\?\\\\xxx\\n"')
+    expect(name.properties['a']).toEqual('"\\"\\*\\?\\\\xxx\\n"')
+    expect(name.paths[0]!.value).toEqual('"*?\\xxx\n')
+
+    expect(() => parseMBeanName('com.example:a=b=b')).toThrow()
+    expect(() => parseMBeanName('com.example:a')).toThrow()
+    expect(() => parseMBeanName('com.example:=a')).toThrow()
+    expect(() => parseMBeanName('com.example:a=\\"x')).toThrow()
+    expect(() => parseMBeanName('com.example:a=1,a=2')).toThrow()
+    expect(() => parseMBeanName('com.example:a=1,b=2,')).toThrow()
+  })
+
+  describe('parseMBeanName-ChatGPT', () => {
+    test('basic key=value parsing', () => {
+      const name = parseMBeanName('com.example:a=1,b=2')
+      expect(name.domain).toBe('com.example')
+      expect(name.properties).toEqual({ a: '1', b: '2' })
+      expect(name.paths).toEqual([
+        { key: 'a', value: '1' },
+        { key: 'b', value: '2' },
+      ])
+    })
+
+    test('empty value is allowed', () => {
+      const name = parseMBeanName('com.example:a=')
+      expect(name.properties['a']).toBe('')
+      expect(name.paths[0]!.value).toBe('')
+    })
+
+    test('quoted value parsing with escapes', () => {
+      const name = parseMBeanName('com.example:a="\\"*?\\\\n"')
+      expect(name.properties['a']).toBe('"\\"*?\\\\n"')
+      expect(name.paths[0]!.value).toBe('"*?\\n')
+    })
+
+    test('mixed quoted and unquoted', () => {
+      const name = parseMBeanName('com.example:a="quoted",b=unquoted')
+      expect(name.properties).toEqual({ a: '"quoted"', b: 'unquoted' })
+      expect(name.paths).toEqual([
+        { key: 'a', value: 'quoted' },
+        { key: 'b', value: 'unquoted' },
+      ])
+    })
+
+    test('duplicate key throws', () => {
+      expect(() => parseMBeanName('com.example:a=1,a=2')).toThrow(/duplicate key/)
+    })
+
+    test('missing key throws', () => {
+      expect(() => parseMBeanName('com.example:=1')).toThrow(/missing key value/)
+      const name = parseMBeanName('com.example:')
+      expect(name.paths).toEqual([])
+      expect(name.properties).toEqual({})
+    })
+
+    test('illegal characters in key throw', () => {
+      const illegal = [',', '?', '*', ':']
+      illegal.forEach(char => {
+        expect(() => parseMBeanName(`com.example:a${char}=1`)).toThrow(new RegExp(`'${char}' not allowed in the key`))
+      })
+    })
+
+    test('illegal characters in unquoted value throw', () => {
+      const illegal = ['=', ':', '"']
+      illegal.forEach(char => {
+        expect(() => parseMBeanName(`com.example:a=foo${char}bar`)).toThrow(new RegExp(`can't contain '${char}'`))
+      })
+    })
+
+    test('trailing comma throws', () => {
+      expect(() => parseMBeanName('com.example:a=1,')).toThrow(/trailing comma/)
+    })
+
+    test('missing closing quote throws', () => {
+      expect(() => parseMBeanName('com.example:a="unclosed')).toThrow(/missing closing quote/)
+    })
+
+    test('illegal escape throws', () => {
+      expect(() => parseMBeanName('com.example:a="\\x"')).toThrow(/illegal escape character/)
+    })
+
+    test('domain with newline throws', () => {
+      expect(() => parseMBeanName('com\n.example:a=1')).toThrow(/domain should not include new line/)
+    })
+
+    test('complex real-world example', () => {
+      const objName =
+        'org.apache.activemq.artemis:broker="0.0.0.0",component=addresses,address="\\"\'<>",subcomponent=queues,routing-type="anycast",queue="\\"abc/def\\\\ghi.\\*.xxx\\""'
+      const parsed = parseMBeanName(objName)
+      expect(parsed.domain).toBe('org.apache.activemq.artemis')
+      expect(parsed.properties['broker']).toBe('"0.0.0.0"')
+      expect(parsed.properties['address']).toBe('"\\"\'<>"')
+      expect(parsed.paths.find(p => p.key === 'queue')!.value).toBe('"abc/def\\ghi.*.xxx"')
+    })
   })
 
   test('getPaths', () => {

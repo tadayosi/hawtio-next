@@ -1,4 +1,3 @@
-import { escapeTags } from '@hawtiosrc/util/htmls'
 import { matchWithWildcard } from '@hawtiosrc/util/strings'
 import { log } from '../globals'
 import { MBeanNode, MBeanNodeFilterFn, OptimisedJmxDomain, OptimisedJmxDomains } from './node'
@@ -61,10 +60,7 @@ export class MBeanTree {
 
   private async populate(domains: OptimisedJmxDomains) {
     Object.entries(domains).forEach(([name, domain]) => {
-      // Domain name is displayed in the tree, so let's escape it here.
-      // Use a custom escaping method here as escaping '"' breaks Camel tree.
-      const escapedName = escapeTags(name)
-      this.populateDomain(escapedName, domain)
+      this.populateDomain(name, domain)
     })
 
     this.sortTree()
