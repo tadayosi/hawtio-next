@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0-dev.2](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.1...v2.0.0-dev.2) (2026-02-19)
+
+
+### Features
+
+* **connect:** optionally preserve con url parameter ([9a117ba](https://github.com/hawtio/hawtio-react/commit/9a117ba2fb15c124d40721f4b83d28b7bfd98f65)), closes [#1918](https://github.com/hawtio/hawtio-react/issues/1918)
+
+
+### Bug Fixes
+
+* **connect:** remove unnecessary apply button from Connect prefs ([e3c9fc2](https://github.com/hawtio/hawtio-react/commit/e3c9fc2a0ce58ffe62c6f3b1225abc93a1cc2fac))
+* **jmx:** refactor and align nid usage on JMX tree ([3ba5a95](https://github.com/hawtio/hawtio-react/commit/3ba5a95286328516dee7180fe58b079cca250af8)), closes [#903](https://github.com/hawtio/hawtio-react/issues/903)
+* **jmx:** try using searchParams from useSearchParams in JMX context ([a0adb63](https://github.com/hawtio/hawtio-react/commit/a0adb636af3da0a7ed2dcb2b75d7c195eed900ca))
+
 ## [2.0.0-dev.1](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.0...v2.0.0-dev.1) (2026-02-13)
 
 
