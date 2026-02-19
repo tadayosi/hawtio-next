@@ -1,6 +1,6 @@
 {
   "name": "@hawtio/react",
-  "version": "1.12.1",
+  "version": "1.12.2",
   "description": "A Hawtio reimplementation based on TypeScript + React.",
   "main": "./dist/index.js",
   "exports": {
