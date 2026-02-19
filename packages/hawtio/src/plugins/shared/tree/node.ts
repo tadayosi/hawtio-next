@@ -806,8 +806,14 @@ export class PropertyList {
 
   match(properties: Record<string, string>): boolean {
     return Object.entries(properties).every(([key, value]) => {
+      // match by unquoted/unescaped values
       const thisIndex = this.paths.findIndex(e => e.key === key)
-      return thisIndex >= 0 && matchWithWildcard(this.paths[thisIndex]!.value, value)
+      if (thisIndex >= 0 && matchWithWildcard(this.paths[thisIndex]!.value, value)) {
+        return true
+      }
+      // match by quoted/escaped values
+      const thisValue = this.properties[key]
+      return thisValue && matchWithWildcard(thisValue, value)
     })
   }
 
