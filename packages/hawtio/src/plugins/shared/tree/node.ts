@@ -1,6 +1,6 @@
-import { escapeHtmlId, escapeTags } from '@hawtiosrc/util/htmls'
+import { escapeHtmlId } from '@hawtiosrc/util/htmls'
 import { isEmpty } from '@hawtiosrc/util/objects'
-import { matchWithWildcard, stringSorter, trimQuotes } from '@hawtiosrc/util/strings'
+import { matchWithWildcard, stringSorter } from '@hawtiosrc/util/strings'
 import { type TreeViewDataItem } from '@patternfly/react-core'
 import { CubeIcon } from '@patternfly/react-icons/dist/esm/icons/cube-icon'
 import { FolderIcon } from '@patternfly/react-icons/dist/esm/icons/folder-icon'
@@ -598,6 +598,145 @@ export class MBeanNode implements TreeViewDataItem {
   }
 }
 
+export type MBeanName = {
+  domain?: string
+  // unordered map of key-values directly from javax.management.ObjectName#getKeyPropertyList()
+  // the values, when quoted are kept quoted (see javax.management.ObjectName#quote())
+  properties: Record<string, string>
+  // ordered (sometimes reordered by Hawtio) array of key-value pairs, where values are always unquoted
+  // (for display purpose)
+  paths: { key: string; value: string }[]
+}
+
+/**
+ * Parses a full ObjectName according to `javax.management.ObjectName` grammar
+ * @param name
+ */
+export function parseMBeanName(name: string): MBeanName {
+  const colon = name.indexOf(':')
+  if (colon === -1) {
+    throw new Error('Illegal ObjectName')
+  }
+
+  // there's no doubt here
+  const domain = name.substring(0, colon)
+  if (domain.includes('\n')) {
+    throw new Error('Illegal Object name - domain should not include new line characters')
+  }
+  const propsString = name.substring(colon + 1)
+
+  return { ...parseMBeanPropertyList(propsString), domain }
+}
+
+/**
+ * Parses the key=value list of an ObjectName according to `javax.management.ObjectName` grammar
+ * @param propsString
+ */
+export function parseMBeanPropertyList(propsString: string): MBeanName {
+  const res: MBeanName = { properties: {}, paths: [] }
+
+  let i = 0
+  const len = propsString.length
+
+  while (i < len) {
+    let key = ''
+    let value = ''
+    let rawValue = ''
+
+    // key
+    while (i < len && propsString[i] !== '=') {
+      const c = propsString[i]
+      if (',?*:'.includes(c!)) {
+        throw new Error("Illegal ObjectName - '" + c + "' not allowed in the key")
+      }
+      key += c
+      i++
+    }
+    if (i == len || key === '') {
+      throw new Error('Illegal ObjectName - missing key value')
+    }
+    i++
+
+    if (propsString[i] == '"') {
+      i++
+      value += '"'
+      // quoted value
+      while (i < len && propsString[i] !== '"') {
+        const c = propsString[i++]
+        if (c == '\\') {
+          // javax.management.ObjectName#quote() - only 4 escaped values; ", *, ? and <LF>
+          if (i < len) {
+            switch (propsString[i]) {
+              case '"':
+                value += '\\"'
+                rawValue += '"'
+                break
+              case '*':
+                value += '\\*'
+                rawValue += '*'
+                break
+              case '?':
+                value += '\\?'
+                rawValue += '?'
+                break
+              case '\\':
+                value += '\\\\'
+                rawValue += '\\'
+                break
+              case 'n':
+                value += '\\n'
+                rawValue += '\n'
+                break
+              default:
+                throw new Error("Illegal ObjectName - illegal escape character '" + propsString[i] + "'")
+            }
+            i++
+          } else {
+            throw new Error('Illegal ObjectName - illegal escape character at the end')
+          }
+        } else {
+          value += c
+          rawValue += c
+        }
+      }
+      if (i >= len || propsString[i] !== '"') {
+        throw new Error('Illegal ObjectName - missing closing quote for the quoted value')
+      }
+      i++
+      value += '"'
+    } else {
+      // unquoted value
+      while (i < len && propsString[i] !== ',') {
+        const c = propsString[i++]
+        if (',=:"'.includes(c!)) {
+          throw new Error("Illegal ObjectName - unquoted value can't contain '" + c + "' character")
+        }
+        value += c
+      }
+      rawValue = value
+    }
+
+    if (i < len && propsString[i] != ',') {
+      throw new Error('Illegal ObjectName - missing comma after the value')
+    }
+    if (i == len - 1 && propsString[i] == ',') {
+      throw new Error('Illegal ObjectName - trailing comma')
+    }
+    if (i < len) {
+      i++
+    }
+
+    // remember - no trimming!
+    if (key in res.properties) {
+      throw new Error('Illegal ObjectName - duplicate key "' + key + '"')
+    }
+    res.properties[key] = value
+    res.paths.push({ key, value: rawValue })
+  }
+
+  return res
+}
+
 export class PropertyList {
   private properties: Record<string, string> = {}
   private paths: { key: string; value: string }[] = []
@@ -605,11 +744,6 @@ export class PropertyList {
   typeName?: string
   // TODO: serviceName needed?
   serviceName?: string
-
-  private readonly propRegex = new RegExp(
-    '(([^=,]+)=(\\\\"[^"]+\\\\"|\\\\\'[^\']+\\\\\'|"[^"]+"|\'[^\']+\'|[^,]+))|([^=,]+)',
-    'g',
-  )
 
   constructor(
     private domain: MBeanNode,
@@ -619,51 +753,37 @@ export class PropertyList {
   }
 
   private parse(propList: string) {
-    let match
-    while ((match = this.propRegex.exec(propList))) {
-      const [propKey, propValue] = this.parseProperty(match[0])
-      this.properties[propKey] = propValue
+    const parsedName = parseMBeanPropertyList(propList)
+    this.properties = parsedName.properties
+    for (const kv of parsedName.paths) {
       let index = -1
-      const lowerKey = propKey.toLowerCase()
-      const path = { key: lowerKey, value: propValue }
-      switch (lowerKey) {
+      switch (kv.key) {
         case 'type':
-          this.typeName = propValue
-          if (this.domain.findChildren(propValue).length > 0) {
-            // if the type name value already exists in the root node
-            // of the domain then let's move this property around too
-            index = 0
-          } else if (this.properties['name']) {
-            // else if the name key already exists, insert the type key before it
-            index = this.paths.findIndex(p => p.key === 'name')
+          this.typeName = parsedName.properties[kv.key]
+          if (this.typeName) {
+            if (this.domain.findChildren(this.typeName).length > 0) {
+              // if the type name value already exists in the root node
+              // of the domain then let's move this property around too
+              index = 0
+            } else if ('name' in parsedName.properties) {
+              // else if the name key already exists, insert the type key before it
+              index = this.paths.findIndex(p => p.key === 'name')
+            }
           }
           break
         case 'service':
-          this.serviceName = propValue
+          this.serviceName = parsedName.properties[kv.key]
           break
       }
+      const p: { key: string; value: string } = { key: kv.key, value: kv.value }
       if (index >= 0) {
-        this.paths.splice(index, 0, path)
+        this.paths.splice(index, 0, p)
       } else {
-        this.paths.push(path)
+        this.paths.push(p)
       }
     }
 
     this.maybeReorderPaths()
-  }
-
-  private parseProperty(property: string): [string, string] {
-    let key = property
-    let value = property
-    // do not use split('=') as it splits wrong when there is a space in the mbean name
-    const pos = property.indexOf('=')
-    if (pos > 0) {
-      key = property.substring(0, pos)
-      value = property.substring(pos + 1)
-    }
-    // mbean property value is displayed in the tree, so let's escape it here
-    value = escapeTags(trimQuotes(value || key))
-    return [key, value]
   }
 
   /**
@@ -686,8 +806,8 @@ export class PropertyList {
 
   match(properties: Record<string, string>): boolean {
     return Object.entries(properties).every(([key, value]) => {
-      const thisValue = this.properties[key]
-      return thisValue && matchWithWildcard(thisValue, value)
+      const thisIndex = this.paths.findIndex(e => e.key === key)
+      return thisIndex >= 0 && matchWithWildcard(this.paths[thisIndex]!.value, value)
     })
   }
 
