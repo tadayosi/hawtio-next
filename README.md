@@ -5,9 +5,9 @@
 
 # Hawtio React
 
-[![Test](https://github.com/hawtio/hawtio-react/actions/workflows/test.yml/badge.svg)](https://github.com/hawtio/hawtio-react/actions/workflows/test.yml)
-[![E2E Test](https://github.com/hawtio/hawtio-react/actions/workflows/e2e-test.yml/badge.svg)](https://github.com/hawtio/hawtio-react/actions/workflows/e2e-test.yml)
-[![Lint](https://github.com/hawtio/hawtio-react/actions/workflows/lint.yml/badge.svg)](https://github.com/hawtio/hawtio-react/actions/workflows/lint.yml)
+[![Test](https://github.com/hawtio/hawtio-react/actions/workflows/test.yml/badge.svg?branch=1.x)](https://github.com/hawtio/hawtio-react/actions/workflows/test.yml)
+[![E2E Test](https://github.com/hawtio/hawtio-react/actions/workflows/e2e-test.yml/badge.svg?branch=1.x)](https://github.com/hawtio/hawtio-react/actions/workflows/e2e-test.yml)
+[![Lint](https://github.com/hawtio/hawtio-react/actions/workflows/lint.yml/badge.svg?branch=1.x)](https://github.com/hawtio/hawtio-react/actions/workflows/lint.yml)
 
 A Hawtio reimplementation based on TypeScript + React.
 This project reimplements the following Hawtio JS components in one project:
