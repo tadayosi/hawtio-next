@@ -145,7 +145,7 @@ class FlightRecorderService implements IFlightRecorderService {
         recording =>
           ({
             number: '' + recording.id,
-            size: `${recording.size}b`,
+            size: `${recording.size}`,
             file: `${recording.name}.jfr`,
             time: recording.stopTime,
             canDownload: true,
