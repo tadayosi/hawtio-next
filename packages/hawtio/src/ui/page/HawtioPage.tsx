@@ -10,13 +10,13 @@ import { SessionMonitor, sessionService } from '@hawtiosrc/ui/session'
 import { BackgroundImage, EmptyState, Page, PageSection } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
 import React, { useEffect } from 'react'
-import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { HawtioHeader } from './HawtioHeader'
 import { HawtioLoadingPage } from './HawtioLoadingPage'
 import './HawtioPage.css'
 import { HawtioSidebar } from './HawtioSidebar'
 import { PageContext } from './context'
-import { log } from './globals'
+import { KNOWN_COMMON_QUERY_PARAMS, log } from './globals'
 
 /**
  * One of two _main_ components to be displayed in `<Hawtio>` component. It is displayed when user is logged in.
@@ -26,7 +26,8 @@ export const HawtioPage: React.FunctionComponent = () => {
   const { plugins, pluginsLoaded } = usePlugins()
   const { hawtconfig, hawtconfigLoaded } = useHawtconfig()
   const navigate = useNavigate()
-  const { search } = useLocation()
+  const { pathname, search } = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const { selectedNode, setSelectedNode } = usePluginNodeSelected()
 
   // navigate should be used in effect
@@ -36,6 +37,22 @@ export const HawtioPage: React.FunctionComponent = () => {
       navigate({ pathname: '/login', search })
     }
   }, [isLogin, userLoaded, navigate])
+
+  // Centrally update the URL query parameters to remove any unknown parameters
+  // that may exist in the URL before the flow proceeds to each plugin's view.
+  useEffect(() => {
+    if (!pluginsLoaded) {
+      return
+    }
+
+    const plugin = plugins.find(p => p.path && pathname.startsWith(p.path))
+    if (!plugin) {
+      return
+    }
+    const knownParams = new Set([...KNOWN_COMMON_QUERY_PARAMS, ...(plugin.knownQueryParams ?? [])])
+    searchParams.forEach((_, key) => !knownParams.has(key) && searchParams.delete(key))
+    setSearchParams(searchParams)
+  }, [plugins, pluginsLoaded, pathname, searchParams, setSearchParams])
 
   if (!isLogin || !userLoaded || !pluginsLoaded || !hawtconfigLoaded) {
     return <HawtioLoadingPage />
@@ -81,11 +98,14 @@ export const HawtioPage: React.FunctionComponent = () => {
             {/* plugins */}
             {plugins
               .filter(plugin => plugin.path != null && plugin.component != null)
-              .map(plugin => (
-                <Route key={plugin.id} path={`${plugin.path}`} element={React.createElement(plugin.component!)}>
-                  <Route path='*' element={React.createElement(plugin.component!)} />
-                </Route>
-              ))}
+              .map(plugin => {
+                const component = React.createElement(plugin.component!)
+                return (
+                  <Route key={plugin.id} path={plugin.path} element={component}>
+                    <Route path='*' element={component} />
+                  </Route>
+                )
+              })}
             <Route key='help' path='/help' element={<HawtioHelp />}>
               <Route path='*' element={<HawtioHelp />} />
             </Route>
