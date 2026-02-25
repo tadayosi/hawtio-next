@@ -70,19 +70,20 @@ jobs:
         run: yarn build:all
       - name: Determine Hawtio branch
         id: determine-hawtio-branch
+        env:
+          CURRENT_BRANCH: ${{ github.base_ref || github.ref_name }}
         run: |
           # Map hawtio-next branch to corresponding hawtio/hawtio branch
-          current_branch="${{ github.base_ref || github.ref_name }}"
-          case "$current_branch" in
-            2.x)
-              hawtio_branch="5.x"
+          case "$CURRENT_BRANCH" in
+            "main")
+              image_tag="5.x"
               ;;
             *)
-              hawtio_branch="4.x"
+              image_tag="4.x"
               ;;
           esac
-          echo "HAWTIO_BRANCH=$hawtio_branch" >> $GITHUB_ENV
-          echo "Using hawtio branch: $hawtio_branch and for hawtio-next branch: $current_branch"
+          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
+          echo "Using image tag: $image_tag for hawtio-next branch: $CURRENT_BRANCH"
       - name: Start server
         run: |
           DISABLE_WS=true yarn start:app --no-color --no-hot --no-live-reload --no-client-overlay 2>&1 > log &
@@ -103,9 +104,9 @@ jobs:
               echo "branch=${BASH_REMATCH[3]}" >> $GITHUB_OUTPUT
             fi
           else
-            branch="${HAWTIO_BRANCH}"
-            app_image=quay.io/hawtio/hawtio-${{ matrix.runtime }}-test-app:$branch-${{ matrix.java }}
-            testsuite_image=quay.io/hawtio/hawtio-test-suite:$branch-${{ matrix.java }}
+            tag="${IMAGE_TAG}"
+            app_image=quay.io/hawtio/hawtio-${{ matrix.runtime }}-test-app:$tag-${{ matrix.java }}
+            testsuite_image=quay.io/hawtio/hawtio-test-suite:$tag-${{ matrix.java }}
 
             docker pull $app_image
             docker pull $testsuite_image
@@ -192,19 +193,20 @@ jobs:
     steps:
       - name: Determine Hawtio branch
         id: determine-hawtio-branch
+        env:
+          CURRENT_BRANCH: ${{ github.base_ref || github.ref_name }}
         run: |
           # Map hawtio-next branch to corresponding hawtio/hawtio branch
-          current_branch="${{ github.base_ref || github.ref_name }}"
-          case "$current_branch" in
-            2.x)
-              hawtio_branch="5.x"
+          case "$CURRENT_BRANCH" in
+            "main")
+              image_tag="5.x"
               ;;
             *)
-              hawtio_branch="4.x"
+              image_tag="4.x"
               ;;
           esac
-          echo "HAWTIO_BRANCH=$hawtio_branch" >> $GITHUB_ENV
-          echo "Using hawtio branch: $hawtio_branch for hawtio-next branch: $current_branch"
+          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
+          echo "Using image tag: $image_tag for hawtio-next branch: $CURRENT_BRANCH"
       - name: Archive failed test reports
         uses: actions/upload-artifact/merge@v4
         if: always()
@@ -229,8 +231,8 @@ jobs:
       - name: Generate summary
         run: |
           export CHECK_URL=$(jq -r .check_url results.json)
-          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.HAWTIO_BRANCH }}/tests/hawtio-test-suite/process_test_results.sh
-          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.HAWTIO_BRANCH }}/tests/hawtio-test-suite/pr_results_template.xsl
+          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.IMAGE_TAG }}/tests/hawtio-test-suite/process_test_results.sh
+          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.IMAGE_TAG }}/tests/hawtio-test-suite/pr_results_template.xsl
           bash process_test_results.sh test-results > summary.md
       - name: Update summary
         run: |
