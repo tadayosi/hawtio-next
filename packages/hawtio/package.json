@@ -60,7 +60,7 @@
     "@jolokia.js/simple": "^2.5.0",
     "@module-federation/utilities": "^3.1.77",
     "@monaco-editor/react": "^4.6.0",
-    "@thumbmarkjs/thumbmarkjs": "^1.7.2",
+    "@thumbmarkjs/thumbmarkjs": "^1.7.4",
     "dagre": "^0.8.5",
     "dompurify": "^3.3.1",
     "eventemitter3": "^5.0.4",
