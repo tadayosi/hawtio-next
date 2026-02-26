@@ -1063,7 +1063,7 @@ __metadata:
     jolokia.js: "npm:^2.5.0"
     js-logger: "npm:^1.6.1"
     jwt-decode: "npm:^4.0.0"
-    keycloak-js: "npm:^26.2.1"
+    keycloak-js: "npm:^26.2.3"
     monaco-editor: "npm:^0.52.2"
     oauth4webapi: "npm:^3.8.5"
     react: "npm:^18.3.1"
@@ -9674,10 +9674,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"keycloak-js@npm:^26.2.1":
-  version: 26.2.1
-  resolution: "keycloak-js@npm:26.2.1"
-  checksum: 10/7aa07eaeb2f540f4af9665ef55f57bed4187de9cca81e2970ced44effe30bf7980a8f37462628acf974d57cb6568396bd36592fe5cc2fc99c7e3f56141257a12
+"keycloak-js@npm:^26.2.3":
+  version: 26.2.3
+  resolution: "keycloak-js@npm:26.2.3"
+  checksum: 10/8718782ee0a3bde35c76fbe7fcb35d4456f4fa50628ef3fe5d69a9ed301a26ce5a7d8f6912614d65a46145d9cf19d2858ba11a5eda52d4654850bef6457f261c
   languageName: node
   linkType: hard
 
