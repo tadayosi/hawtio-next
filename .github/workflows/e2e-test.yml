@@ -35,7 +35,7 @@ jobs:
         node: ['22']
         java: ['17']
         runtime: ['springboot', 'quarkus']
-        browser: ['firefox'] # 'chrome' tests are unstable: https://github.com/hawtio/hawtio-next/issues/478
+        browser: ['firefox'] # 'chrome' tests are unstable: https://github.com/hawtio/hawtio-react/issues/478
     env:
       REPORT_DIR: results-${{matrix.runtime}}-node(${{matrix.node}})-java(${{matrix.java}})-${{matrix.browser}}
     runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
         env:
           CURRENT_BRANCH: ${{ github.base_ref || github.ref_name }}
         run: |
-          # Map hawtio-next branch to corresponding hawtio/hawtio branch
+          # Map hawtio-react branch to corresponding hawtio/hawtio branch
           case "$CURRENT_BRANCH" in
             "main")
               image_tag="5.x"
@@ -83,12 +83,12 @@ jobs:
               ;;
           esac
           echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
-          echo "Using image tag: $image_tag for hawtio-next branch: $CURRENT_BRANCH"
+          echo "Using image tag: $image_tag for hawtio-react branch: $CURRENT_BRANCH"
       - name: Start server
         run: |
           DISABLE_WS=true yarn start:app --no-color --no-hot --no-live-reload --no-client-overlay 2>&1 > log &
           # Check both CRACO and Webpack log messages until we migrate to Webpack
-          # https://github.com/hawtio/hawtio-next/pull/847
+          # https://github.com/hawtio/hawtio-react/pull/847
           timeout 360 bash -c "while ! grep -e 'Project is running at' -e 'webpack .\+ compiled' log ; do cat log; sleep 5; done"
       - name: Detect testsuite branch
         id: get-images
@@ -196,17 +196,17 @@ jobs:
         env:
           CURRENT_BRANCH: ${{ github.base_ref || github.ref_name }}
         run: |
-          # Map hawtio-next branch to corresponding hawtio/hawtio branch
+          # Map hawtio-react branch to corresponding hawtio/hawtio branch
           case "$CURRENT_BRANCH" in
             "main")
-              image_tag="5.x"
+              hawtio_branch="main"
               ;;
             *)
-              image_tag="4.x"
+              hawtio_branch="4.x"
               ;;
           esac
-          echo "IMAGE_TAG=$image_tag" >> $GITHUB_ENV
-          echo "Using image tag: $image_tag for hawtio-next branch: $CURRENT_BRANCH"
+          echo "HAWTIO_BRANCH=$hawtio_branch" >> $GITHUB_ENV
+          echo "Using hawtio branch: $hawtio_branch for hawtio-react branch: $CURRENT_BRANCH"
       - name: Archive failed test reports
         uses: actions/upload-artifact/merge@v4
         if: always()
@@ -231,8 +231,8 @@ jobs:
       - name: Generate summary
         run: |
           export CHECK_URL=$(jq -r .check_url results.json)
-          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.IMAGE_TAG }}/tests/hawtio-test-suite/process_test_results.sh
-          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.IMAGE_TAG }}/tests/hawtio-test-suite/pr_results_template.xsl
+          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.HAWTIO_BRANCH }}/tests/hawtio-test-suite/process_test_results.sh
+          wget https://raw.githubusercontent.com/hawtio/hawtio/${{ env.HAWTIO_BRANCH }}/tests/hawtio-test-suite/pr_results_template.xsl
           bash process_test_results.sh test-results > summary.md
       - name: Update summary
         run: |
