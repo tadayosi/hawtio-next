@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0-dev.3](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.2...v2.0.0-dev.3) (2026-03-02)
+
+
+### Features
+
+* **camel:** support Camel model 4.18 and drop 4.10 ([dfe3b38](https://github.com/hawtio/hawtio-react/commit/dfe3b38044bc9b38c43b70b308059e13c82aae5e)), closes [#1970](https://github.com/hawtio/hawtio-react/issues/1970)
+
 ## [2.0.0-dev.2](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.1...v2.0.0-dev.2) (2026-02-19)
 
 
