@@ -9,7 +9,7 @@ import { log } from './globals'
  * * a state for an array of Plugin objects
  * * a state for a flag indicating that plugins are loaded
  *
- * This hook synchronizes with interal Hawtio services that manage plugins state and configuration.
+ * This hook synchronizes with internal Hawtio services that manage plugins state and configuration.
  */
 export function usePlugins() {
   const [plugins, setPlugins] = useState<Plugin[]>([])
