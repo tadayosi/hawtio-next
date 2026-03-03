@@ -1,6 +1,6 @@
-import React from 'react'
 import { userService } from '@hawtiosrc/auth'
 import { importRemote, ImportRemoteOptions } from '@module-federation/utilities'
+import React from 'react'
 import { configManager, TaskState } from './config-manager'
 import { eventService } from './event-service'
 import { log } from './globals'

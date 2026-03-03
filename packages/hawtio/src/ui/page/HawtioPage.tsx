@@ -3,20 +3,20 @@ import { useHawtconfig, usePlugins } from '@hawtiosrc/core'
 import { HawtioHelp } from '@hawtiosrc/help/ui'
 import { background } from '@hawtiosrc/img'
 import { PluginNodeSelectionContext, usePluginNodeSelected } from '@hawtiosrc/plugins'
-import { HawtioPreferences } from '@hawtiosrc/preferences/ui'
 import { preferencesService } from '@hawtiosrc/preferences/preferences-service'
+import { HawtioPreferences } from '@hawtiosrc/preferences/ui'
+import { HawtioNotification } from '@hawtiosrc/ui/notification'
+import { SessionMonitor, sessionService } from '@hawtiosrc/ui/session'
 import { BackgroundImage, EmptyState, Page, PageSection } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
 import React, { useEffect } from 'react'
 import { Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
-import { HawtioNotification } from '@hawtiosrc/ui/notification'
 import { HawtioHeader } from './HawtioHeader'
 import { HawtioLoadingPage } from './HawtioLoadingPage'
+import './HawtioPage.css'
 import { HawtioSidebar } from './HawtioSidebar'
 import { PageContext } from './context'
 import { log } from './globals'
-import { sessionService, SessionMonitor } from '@hawtiosrc/ui/session'
-import './HawtioPage.css'
 
 /**
  * One of two _main_ components to be displayed in `<Hawtio>` component. It is displayed when user is logged in.
@@ -45,17 +45,17 @@ export const HawtioPage: React.FunctionComponent = () => {
 
   const defaultPlugin = plugins[0] ?? null
   let defaultPage = defaultPlugin ? <Navigate to={{ pathname: defaultPlugin.path, search }} /> : <HawtioHome />
-  const tr = sessionStorage.getItem('connect-login-redirect')
-  if (tr) {
+  const loginRedirect = sessionStorage.getItem('connect-login-redirect')
+  if (loginRedirect) {
     // this is required for OIDC, because we can't have redirect_uri with
     // wildcard on EntraID...
     // this session storage item is removed after successful login at connect/login page
-    defaultPage = <Navigate to={{ pathname: tr, search }} />
+    defaultPage = <Navigate to={{ pathname: loginRedirect, search }} />
   }
 
   const showVerticalNavByDefault = preferencesService.isShowVerticalNavByDefault()
 
-  const keepAlive = (): void => {
+  const keepAlive = () => {
     sessionService.userActivity()
   }
 
@@ -105,6 +105,6 @@ export const HawtioPage: React.FunctionComponent = () => {
 
 const HawtioHome: React.FunctionComponent = () => (
   <PageSection hasBodyWrapper={false}>
-    <EmptyState headingLevel='h1' icon={CubesIcon} titleText='Hawtio' variant='full'></EmptyState>
+    <EmptyState headingLevel='h1' icon={CubesIcon} titleText='Hawtio' variant='full' />
   </PageSection>
 )
