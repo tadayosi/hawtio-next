@@ -157,6 +157,7 @@ class KeycloakService implements IKeycloakService {
       .configureAuthenticationMethod({
         method: AUTH_METHOD,
         login: this.keycloakLogin,
+        position: 0,
       })
       .then(() => {
         // only now finish the initialization task
