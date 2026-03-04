@@ -17,6 +17,7 @@ export const jmx: HawtioPlugin = () => {
         path: pluginPath,
         order,
         component: m.Jmx,
+        knownQueryParams: ['nid'],
         isActive: async () => workspace.hasMBeans(),
       }
     })
