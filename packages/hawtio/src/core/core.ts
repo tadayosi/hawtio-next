@@ -110,6 +110,13 @@ export type Plugin = {
   headerItems?: HeaderItem[]
 
   /**
+   * List of URL query parameters known and handled by this plugin.
+   * Any query parameters not in this list will be centrally stripped out during
+   * routing.
+   */
+  knownQueryParams?: string[]
+
+  /**
    * Returns if this plugin should be activated.
    * This method needs to return a promise as the process of resolving if a plugin
    * should be activated may require information collected asynchronously such as
