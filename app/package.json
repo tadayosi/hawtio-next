@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@hawtio/backend-middleware": "workspace:*",
-    "@swc/core": "^1.15.13",
+    "@swc/core": "^1.15.18",
     "body-parser": "^2.2.2",
     "copy-webpack-plugin": "^13.0.1",
     "css-loader": "^7.1.4",
