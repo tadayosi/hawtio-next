@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0-pre.0](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.3...v2.0.0-pre.0) (2026-03-05)
+
+
+### Features
+
+* **core:** add new entry 'knownQueryParams' to Plugin type ([1657195](https://github.com/hawtio/hawtio-react/commit/1657195c07a9f22d780a16371dfd92aebe52cc65)), closes [#903](https://github.com/hawtio/hawtio-react/issues/903)
+* **frontend:** Jfr improvements ([d29fc5a](https://github.com/hawtio/hawtio-react/commit/d29fc5a28bc1676965467f187a057e642ec4497a))
+
+
+### Bug Fixes
+
+* **auth:** Ensure that Keycloak auth method is correctly augmented (fixes [#1974](https://github.com/hawtio/hawtio-react/issues/1974)) ([d27b80f](https://github.com/hawtio/hawtio-react/commit/d27b80f00972d257b9532a22d86af04b45512ce9))
+
 ## [2.0.0-dev.3](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.2...v2.0.0-dev.3) (2026-03-02)
 
 
