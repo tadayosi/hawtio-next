@@ -9,7 +9,7 @@ type NavItem = {
   component: JSX.Element
 }
 
-export const Diagnostics: React.FunctionComponent = () => {
+export const JvmDiagnostics: React.FunctionComponent = () => {
   const { pathname, search } = useLocation()
 
   const navItems: NavItem[] = [{ id: 'jfr', title: 'Flight Recorder', component: <FlightRecorder /> }]
@@ -17,14 +17,14 @@ export const Diagnostics: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <PageSection hasBodyWrapper={false}>
-        <Title headingLevel='h1'>Diagnostics</Title>
+        <Title headingLevel='h1'>JVM Diagnostics</Title>
       </PageSection>
       <PageGroup>
         <PageSection type='tabs' hasBodyWrapper={false}>
-          <Nav aria-label='Diagnostics Nav' variant='horizontal-subnav'>
+          <Nav aria-label='JVM Diagnostics Nav' variant='horizontal-subnav'>
             <NavList>
               {navItems.map(({ id, title }) => (
-                <NavItem key={id} isActive={pathname === `/diagnostics/${id}`}>
+                <NavItem key={id} isActive={pathname === `/jvm-diagnostics/${id}`}>
                   <NavLink to={{ pathname: id, search }}>{title}</NavLink>
                 </NavItem>
               ))}

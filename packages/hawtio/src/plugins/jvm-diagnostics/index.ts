@@ -7,15 +7,15 @@ import { jolokiaService } from '../shared'
 
 const order = 19
 
-export const diagnostics: HawtioPlugin = () => {
+export const jvmDiagnostics: HawtioPlugin = () => {
   hawtio.addDeferredPlugin(pluginId, async () => {
     return import('./ui').then(m => {
       return {
         id: pluginId,
-        title: 'Diagnostics',
+        title: 'JVM Diagnostics',
         path: pluginPath,
         order,
-        component: m.Diagnostics,
+        component: m.JvmDiagnostics,
         isActive: async () => {
           const jolokiaUrl = await jolokiaService.getFullJolokiaUrl()
 
@@ -29,5 +29,5 @@ export const diagnostics: HawtioPlugin = () => {
     })
   })
 
-  helpRegistry.add(pluginId, 'Diagnostics', help, order)
+  helpRegistry.add(pluginId, 'JVM Diagnostics', help, order)
 }
