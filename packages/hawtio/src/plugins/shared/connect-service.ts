@@ -6,6 +6,7 @@ import { joinPaths } from '@hawtiosrc/util/urls'
 import Jolokia, { IJolokiaSimple } from '@jolokia.js/simple'
 import { log } from './globals'
 import { isActive } from '@hawtiosrc/plugins/connect/init'
+import { preferencesService } from '@hawtiosrc/preferences/preferences-service'
 
 export type Connections = {
   // key is ID, not name, so we can alter the name
@@ -325,7 +326,7 @@ class ConnectService implements IConnectService {
   }
 
   saveConnections(connections: Connections) {
-    localStorage.setItem(STORAGE_KEY_CONNECTIONS, JSON.stringify(connections))
+    preferencesService.setProtectedItem(STORAGE_KEY_CONNECTIONS, JSON.stringify(connections))
   }
 
   generateId(connection: Connection, connections: Connections) {

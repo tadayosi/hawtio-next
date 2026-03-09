@@ -46,3 +46,4 @@ yarn-error.log*
 
 # any directories specifically labelled ignore
 **/ignore/**
+.aider*

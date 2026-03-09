@@ -11,6 +11,7 @@ import { jwtDecode } from 'jwt-decode'
 import * as oidc from 'oauth4webapi'
 import { AuthorizationResponseError, AuthorizationServer, Client, ClientAuth, OAuth2Error } from 'oauth4webapi'
 import { getCookie } from '@hawtiosrc/util/https'
+import { preferencesService } from '@hawtiosrc/preferences/preferences-service'
 
 const pluginName = 'hawtio-oidc'
 const AUTH_METHOD = 'oidc'
@@ -353,7 +354,10 @@ class OidcService implements IOidcService {
         if (!isNaN(exp_at) && now < exp_at * 1000) {
           // we're still before access_token expiration time, so we can do the silent login
           // to not show <HawtioInitialization> twice, we'll set another flag
-          localStorage.setItem('core.auth.silentLogin', '1')
+          //
+          // Since this cannot be updated via a preference, ensure it is protected
+          // from the preferences-service resetting it.
+          preferencesService.setProtectedItem('core.auth.silentLogin', '1')
           this.oidcLogin(idx, true)
         }
       }
@@ -458,7 +462,10 @@ class OidcService implements IOidcService {
     // instead we'll simply add a flag to be checked on refresh and to be cleared on logout
     // we'll use access_token expiration time as the hint - if user refreshes before the expiration
     // we start silent login
-    localStorage.setItem('core.auth.oidc', `${at_exp}`)
+    //
+    // Since this cannot be updated via a preference, ensure it is protected
+    // from the preferences-service resetting it.
+    preferencesService.setProtectedItem('core.auth.oidc', `${at_exp}`)
 
     this.setupFetch()
 
@@ -540,8 +547,11 @@ class OidcService implements IOidcService {
 
     // put some data to localStorage, so we can verify the OAuth2 response after redirect
     const verifyData = JSON.stringify({ st: state, cv: code_verifier, n: nonce, h: window.location.href })
-    localStorage.setItem('hawtio-oidc-login', verifyData)
-    localStorage.setItem('hawtio-oidc-login-idx', JSON.stringify(idx))
+    //
+    // Since these cannot be updated via preferences, ensure they are protected
+    // from the preferences-service resetting it.
+    preferencesService.setProtectedItem('hawtio-oidc-login', verifyData)
+    preferencesService.setProtectedItem('hawtio-oidc-login-idx', JSON.stringify(idx))
 
     log.info('Added to local storage', verifyData)
 
