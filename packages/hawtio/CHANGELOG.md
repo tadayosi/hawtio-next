@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.0.0](https://github.com/hawtio/hawtio-react/compare/v2.0.0-pre.0...v2.0.0) (2026-03-11)
+
+
+### Features
+
+* **jvm-diagnostics:** Added help.md ([96fd218](https://github.com/hawtio/hawtio-react/commit/96fd218e7d3d8a553ac6a1f203a78c6aaaedaa0c))
+
 ## [2.0.0-pre.0](https://github.com/hawtio/hawtio-react/compare/v2.0.0-dev.3...v2.0.0-pre.0) (2026-03-05)
 
 
