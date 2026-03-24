@@ -29,8 +29,8 @@ export const ConnectPreferences: React.FunctionComponent = () => (
       <JolokiaForm />
       <ConnectionForm />
       <ResetForm />
-    </Form >
-  </CardBody >
+    </Form>
+  </CardBody>
 )
 const ValidatedHelperText: React.FunctionComponent<{
   validated: 'default' | 'error' | 'success' | 'warning' | 'indeterminate' | undefined
@@ -235,7 +235,7 @@ const ConnectionForm: React.FunctionComponent = () => {
           </HelperText>
         </FormHelperText>
       </FormGroup>
-    </FormSection >
+    </FormSection>
   )
 }
 
