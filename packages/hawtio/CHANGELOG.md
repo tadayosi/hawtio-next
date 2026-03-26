@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.13.0](https://github.com/hawtio/hawtio-react/compare/v1.12.1...v1.13.0) (2026-03-26)
+
+
+### Features
+
+* **camel:** support Camel model 4.18 and drop 4.10 ([5206017](https://github.com/hawtio/hawtio-react/commit/520601789531a198ab3a8bdd6e1ff7e18fc5a134)), closes [#1970](https://github.com/hawtio/hawtio-react/issues/1970)
+* **connect:** optionally preserve con url parameter ([f34e371](https://github.com/hawtio/hawtio-react/commit/f34e3710c7cc898fee3335d4d970ecf451b2e90e)), closes [#1918](https://github.com/hawtio/hawtio-react/issues/1918)
+* **core:** add new entry 'knownQueryParams' to Plugin type ([c57ccd6](https://github.com/hawtio/hawtio-react/commit/c57ccd60e5fb8ecb49767b62d9f72a180e1a0d25)), closes [#903](https://github.com/hawtio/hawtio-react/issues/903)
+
+
+### Bug Fixes
+
+* **auth:** Ensure that Keycloak auth method is correctly augmented (fixes [#1974](https://github.com/hawtio/hawtio-react/issues/1974)) ([8558fdd](https://github.com/hawtio/hawtio-react/commit/8558fdd7dd454a5f65dd527722bb1e1f033f006b))
+* **auth:** Provide some information after failed OIDC login (fixes [#1853](https://github.com/hawtio/hawtio-react/issues/1853)) ([2d0a3e8](https://github.com/hawtio/hawtio-react/commit/2d0a3e885e7835dc1b487e46b92dbfffe2ae321f))
+* **connect:** remove unnecessary apply button from Connect prefs ([75804b1](https://github.com/hawtio/hawtio-react/commit/75804b126440166cee51f0c846b921dbb3260230))
+* **jmx:** Ensure MBean finding works by quoted and unquoted values (fixes [#1955](https://github.com/hawtio/hawtio-react/issues/1955)) ([10c7b8d](https://github.com/hawtio/hawtio-react/commit/10c7b8de378e14b28eac74ed28d81274e382c3a9))
+* **jmx:** Parse MBean names using parser, not RegExp (fixes [#1952](https://github.com/hawtio/hawtio-react/issues/1952)) ([5c466cd](https://github.com/hawtio/hawtio-react/commit/5c466cd7c877ec2084c2428f4233ab20e527b970))
+* **jmx:** refactor and align nid usage on JMX tree ([bf5bb62](https://github.com/hawtio/hawtio-react/commit/bf5bb6248161bd323653f6cf8e5dbb1d5e90c670)), closes [#903](https://github.com/hawtio/hawtio-react/issues/903)
+* **jmx:** try using searchParams from useSearchParams in JMX context ([109f417](https://github.com/hawtio/hawtio-react/commit/109f41755cde405c36547785fc31b170e38f137e))
+
 ## [1.12.1](https://github.com/hawtio/hawtio-next/compare/v1.12.0...v1.12.1) (2026-01-09)
 
 
