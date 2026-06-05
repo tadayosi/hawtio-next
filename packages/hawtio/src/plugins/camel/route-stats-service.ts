@@ -12,6 +12,7 @@ export type Statistics = {
   state: string
   exchangesInflight?: string
   exchangesCompleted?: string
+  exchangesTotal?: string
   failuresHandled?: string
   redeliveries?: string
   externalRedeliveries?: string
