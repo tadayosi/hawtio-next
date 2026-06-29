@@ -72,6 +72,18 @@ export const HawtioLoginForm: React.FunctionComponent<{ method: FormAuthenticati
           setIsValidUsername(false)
           setIsValidPassword(false)
           break
+        case 'unauthorized':
+          setLoginFailed(true)
+          setLoginFailedMessage('Invalid login credentials')
+          setIsValidUsername(false)
+          setIsValidPassword(false)
+          break
+        case 'forbidden':
+          setLoginFailed(true)
+          setLoginFailedMessage('Access forbidden')
+          setIsValidUsername(false)
+          setIsValidPassword(false)
+          break
         case 'throttled': {
           const { retryAfter } = result
           setLoginFailed(true)
