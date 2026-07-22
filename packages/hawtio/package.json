@@ -107,7 +107,7 @@
     "react-router-dom": "^6.30.4",
     "replace": "^1.2.2",
     "timezone-mock": "^1.4.3",
-    "ts-jest": "^29.4.11",
+    "ts-jest": "^29.4.12",
     "ts-node": "^10.9.2",
     "tsup": "^8.5.1",
     "typescript": "^5.9.3"
