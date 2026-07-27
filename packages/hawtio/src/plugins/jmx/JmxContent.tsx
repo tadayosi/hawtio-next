@@ -87,7 +87,6 @@ export const JmxContent: React.FunctionComponent = () => {
       <PageSection
         id='jmx-content-main'
         padding={{ default: 'noPadding' }}
-        hasOverflowScroll
         aria-label='jmx-content-main'
         hasBodyWrapper={false}
       >
