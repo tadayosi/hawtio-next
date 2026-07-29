@@ -50,7 +50,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - name: Audit
-        run: yarn npm audit --all
+        run: yarn npm audit --all --severity high --environment production
       - name: Install
         run: yarn install
       - name: Build
