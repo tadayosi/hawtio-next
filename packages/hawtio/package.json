@@ -97,7 +97,7 @@
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
     "@types/react-router-dom": "^5.3.3",
-    "commit-and-tag-version": "^13.1.0",
+    "commit-and-tag-version": "^13.1.2",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
     "jest-fetch-mock": "^4.2.0",
