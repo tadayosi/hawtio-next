@@ -44,7 +44,7 @@
   },
   "devDependencies": {
     "@eslint/compat": "^2.1.0",
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "concurrently": "^10.0.3",
     "cz-conventional-changelog": "3.3.0",
     "eslint": "^9.39.5",
