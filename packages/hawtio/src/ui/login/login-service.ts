@@ -3,7 +3,12 @@ import { log } from './globals'
 
 const STORAGE_KEY_LOGIN = 'login'
 
-export type LoginResult = { type: 'success' } | { type: 'failure' } | { type: 'unauthorized' } | { type: 'forbidden' } | { type: 'throttled'; retryAfter: number }
+export type LoginResult =
+  | { type: 'success' }
+  | { type: 'failure' }
+  | { type: 'unauthorized' }
+  | { type: 'forbidden' }
+  | { type: 'throttled'; retryAfter: number }
 
 export interface ILoginService {
   login(username: string, password: string, remember: boolean, method: FormAuthenticationMethod): Promise<LoginResult>
@@ -37,8 +42,7 @@ class LoginService implements ILoginService {
           // Login throttled
           const retryAfter = parseInt(res.headers.get('Retry-After') ?? '0')
           return { type: 'throttled', retryAfter }
-        }
-        else if (res.status === 401) {
+        } else if (res.status === 401) {
           return { type: 'unauthorized' }
         } else if (res.status === 403) {
           return { type: 'forbidden' }
