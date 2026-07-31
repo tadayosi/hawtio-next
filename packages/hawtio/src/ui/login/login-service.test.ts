@@ -46,10 +46,24 @@ describe('LoginService', () => {
   })
 
   test('login failed', async () => {
-    fetchMock.mockResponse('', { status: 403 })
+    fetchMock.mockResponse('', { status: 400 })
 
     const result = await loginService.login('test-user', 'password!', false, method)
     expect(result.type).toBe('failure')
+  })
+
+  test('login unauthorized', async () => {
+    fetchMock.mockResponse('', { status: 401 })
+
+    const result = await loginService.login('test-user', 'password!', false, method)
+    expect(result.type).toBe('unauthorized')
+  })
+
+  test('login forbidden', async () => {
+    fetchMock.mockResponse('', { status: 403 })
+
+    const result = await loginService.login('test-user', 'password!', false, method)
+    expect(result.type).toBe('forbidden')
   })
 
   test('login throttled', async () => {
