@@ -46,10 +46,7 @@ export type ConnectionCredentials = {
 }
 
 export type LoginResult =
-  | { type: 'success' }
-  | { type: 'failure' }
-  | { type: 'throttled'; retryAfter: number }
-  | { type: 'session-expired' }
+  { type: 'success' } | { type: 'failure' } | { type: 'throttled'; retryAfter: number } | { type: 'session-expired' }
 
 /**
  * Remote connection status. "not-reachable-securely" is for connections that can't be used in insecure contexts.

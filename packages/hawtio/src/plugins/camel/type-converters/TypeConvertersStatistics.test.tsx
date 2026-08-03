@@ -87,12 +87,7 @@ describe('TypeConvertersStatistics', () => {
     expect(contextNode).not.toBeNull()
 
     const selectedNode = contextNode
-    const setSelectedNode = () =>
-      void (
-        {
-          /* no op */
-        }
-      )
+    const setSelectedNode = () => void ({/* no op */})
     render(
       <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
         <TypeConvertersStatistics />
@@ -120,12 +115,7 @@ describe('TypeConvertersStatistics', () => {
     expect(contextNode).not.toBeNull()
 
     const selectedNode = contextNode
-    const setSelectedNode = () =>
-      void (
-        {
-          /* no op */
-        }
-      )
+    const setSelectedNode = () => void ({/* no op */})
     render(
       <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
         <TypeConvertersStatistics />
@@ -159,12 +149,7 @@ describe('TypeConvertersStatistics', () => {
     expect(contextNode).not.toBeNull()
 
     const selectedNode = contextNode
-    const setSelectedNode = () =>
-      void (
-        {
-          /* no op */
-        }
-      )
+    const setSelectedNode = () => void ({/* no op */})
     render(
       <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
         <TypeConvertersStatistics />
@@ -200,12 +185,7 @@ describe('TypeConvertersStatistics', () => {
     expect(contextNode).not.toBeNull()
 
     const selectedNode = contextNode
-    const setSelectedNode = () =>
-      void (
-        {
-          /* no op */
-        }
-      )
+    const setSelectedNode = () => void ({/* no op */})
 
     const ConverterStats = (
       <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>

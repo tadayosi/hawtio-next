@@ -121,14 +121,11 @@ export const FlightRecorder: React.FunctionComponent = () => {
     )
   }
 
-  if (
-    !(
-      initialized &&
-      jolokiaUrl &&
-      ['localhost', '127.0.0.1', '::1', '192.168.', '10.0'].filter(localUrl => jolokiaUrl.includes(localUrl)).length >=
-        1
-    )
-  )
+  if (!(
+    initialized &&
+    jolokiaUrl &&
+    ['localhost', '127.0.0.1', '::1', '192.168.', '10.0'].filter(localUrl => jolokiaUrl.includes(localUrl)).length >= 1
+  ))
     return (
       <PageSection hasBodyWrapper={false}>
         <EmptyState
