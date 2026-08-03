@@ -43,7 +43,7 @@
     "js-logger": "^1.6.1"
   },
   "devDependencies": {
-    "@types/express": "^5",
+    "@types/express": "^5.0.6",
     "@types/jest": "^30.0.0",
     "@types/node": "^26.1.2",
     "commit-and-tag-version": "^13.1.2",

@@ -978,7 +978,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@hawtio/backend-middleware@workspace:packages/backend-middleware"
   dependencies:
-    "@types/express": "npm:^5"
+    "@types/express": "npm:^5.0.6"
     "@types/jest": "npm:^30.0.0"
     "@types/node": "npm:^26.1.2"
     commit-and-tag-version: "npm:^13.1.2"
@@ -3265,7 +3265,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:*, @types/express@npm:^5":
+"@types/express@npm:*":
   version: 5.0.5
   resolution: "@types/express@npm:5.0.5"
   dependencies:
