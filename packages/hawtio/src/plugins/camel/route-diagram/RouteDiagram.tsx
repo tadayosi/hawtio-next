@@ -265,7 +265,7 @@ const CamelNode: React.FunctionComponent<NodeProps<CamelNodeData>> = ({
     const newline = label.indexOf('\n')
     if (label.length < 20 && newline === -1) return label
 
-    const newLabel = label.replace('\n', ' ')
+    const newLabel = label.replaceAll('\n', ' ')
     return newLabel.substring(0, 17) + '...'
   }
 

@@ -4,7 +4,7 @@
  * @param text string to be escaped
  */
 export function escapeTags(text: string): string {
-  return text.replace('<', '&lt;').replace('>', '&gt;')
+  return text.replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 }
 
 /**
