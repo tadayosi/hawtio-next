@@ -33,6 +33,31 @@ export const RouteStateLabel: React.FunctionComponent<{ state: string | null }> 
   return state === 'Started' ? <Label color='green'>{state}</Label> : <Label color='red'>{state}</Label>
 }
 
+const ConfirmDeleteModal: React.FunctionComponent<{
+  isConfirmDeleteOpen: boolean,
+  deleteRoutes: () => void,
+  handleConfirmDeleteToggle: () => void
+}> = ({ isConfirmDeleteOpen, deleteRoutes, handleConfirmDeleteToggle }) => (
+    <Modal
+        variant='small'
+        title='Delete Camel Routes'
+        titleIconVariant='danger'
+        isOpen={isConfirmDeleteOpen}
+        onClose={handleConfirmDeleteToggle}
+        actions={[
+          <Button key='delete' variant='danger' onClick={deleteRoutes}>
+            Delete
+          </Button>,
+          <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
+            Cancel
+          </Button>,
+        ]}
+    >
+      <p>You are about to delete the selected camel routes.</p>
+      <p>This operation cannot be undone so please be careful.</p>
+    </Modal>
+)
+
 export const CamelRoutes: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const [routes, setRoutes] = useState<CamelRoute[]>([])
@@ -143,27 +168,6 @@ export const CamelRoutes: React.FunctionComponent = () => {
     setIsConfirmDeleteOpen(false)
   }
 
-  const ConfirmDeleteModal = () => (
-    <Modal
-      variant='small'
-      title='Delete Camel Routes'
-      titleIconVariant='danger'
-      isOpen={isConfirmDeleteOpen}
-      onClose={handleConfirmDeleteToggle}
-      actions={[
-        <Button key='delete' variant='danger' onClick={deleteRoutes}>
-          Delete
-        </Button>,
-        <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      <p>You are about to delete the selected camel routes.</p>
-      <p>This operation cannot be undone so please be careful.</p>
-    </Modal>
-  )
-
   return (
     <React.Fragment>
       <CamelRoutesToolbar
@@ -239,7 +243,9 @@ export const CamelRoutes: React.FunctionComponent = () => {
           })}
         </Tbody>
       </Table>
-      <ConfirmDeleteModal />
+      <ConfirmDeleteModal isConfirmDeleteOpen={isConfirmDeleteOpen}
+                          deleteRoutes={deleteRoutes}
+                          handleConfirmDeleteToggle={handleConfirmDeleteToggle} />
     </React.Fragment>
   )
 }

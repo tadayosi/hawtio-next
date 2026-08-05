@@ -26,6 +26,31 @@ import {
   contextsService,
 } from './contexts-service'
 
+const ConfirmDeleteModal: React.FunctionComponent<{
+  isConfirmDeleteOpen: boolean,
+  handleConfirmDeleteToggle: () => void,
+  onDeleteConfirmClicked: () => void
+}> = ({ isConfirmDeleteOpen, handleConfirmDeleteToggle, onDeleteConfirmClicked }) => (
+    <Modal
+        variant={ModalVariant.small}
+        title='Delete Camel Contexts'
+        titleIconVariant='danger'
+        isOpen={isConfirmDeleteOpen}
+        onClose={handleConfirmDeleteToggle}
+        actions={[
+          <Button key='delete' variant='danger' onClick={onDeleteConfirmClicked}>
+            Delete
+          </Button>,
+          <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
+            Cancel
+          </Button>,
+        ]}
+    >
+      <p>You are about to delete this Camel Context.</p>
+      <p>This operation cannot be undone so please be careful.</p>
+    </Modal>
+)
+
 export const ContextToolbar: React.FunctionComponent<{
   contexts: ContextState[]
   deleteCallback: (contexts: ContextState[]) => void
@@ -179,27 +204,6 @@ export const ContextToolbar: React.FunctionComponent<{
     </React.Fragment>
   )
 
-  const ConfirmDeleteModal = () => (
-    <Modal
-      variant={ModalVariant.small}
-      title='Delete Camel Contexts'
-      titleIconVariant='danger'
-      isOpen={isConfirmDeleteOpen}
-      onClose={handleConfirmDeleteToggle}
-      actions={[
-        <Button key='delete' variant='danger' onClick={onDeleteConfirmClicked}>
-          Delete
-        </Button>,
-        <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      <p>You are about to delete this Camel Context.</p>
-      <p>This operation cannot be undone so please be careful.</p>
-    </Modal>
-  )
-
   const dropdownItems = [
     <DropdownItem
       key='delete'
@@ -236,7 +240,9 @@ export const ContextToolbar: React.FunctionComponent<{
           </ToolbarItem>
         </ToolbarContent>
       </Toolbar>
-      <ConfirmDeleteModal />
+      <ConfirmDeleteModal isConfirmDeleteOpen={isConfirmDeleteOpen}
+                          handleConfirmDeleteToggle={handleConfirmDeleteToggle}
+                          onDeleteConfirmClicked={onDeleteConfirmClicked} />
     </React.Fragment>
   )
 }

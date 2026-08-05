@@ -26,16 +26,18 @@ import { TrashIcon } from '@patternfly/react-icons/dist/esm/icons/trash-icon'
 import React, { useContext, useState } from 'react'
 import { LogsContext, useChildLoggers } from './context'
 
-export const LogsPreferences: React.FunctionComponent = () => {
-  const { childLoggers, availableChildLoggers, reloadChildLoggers } = useChildLoggers()
-
-  const ChildLoggerList = () => (
+const ChildLoggerList: React.FunctionComponent<{
+  childLoggers: ChildLogger[]
+}> = ({ childLoggers }) => (
     <DataList id='logs-child-logger-list' aria-label='logs child logger list' isCompact>
       {childLoggers.map(childLogger => (
         <ChildLoggerItem key={childLogger.name} logger={childLogger} />
       ))}
     </DataList>
-  )
+)
+
+export const LogsPreferences: React.FunctionComponent = () => {
+  const { childLoggers, availableChildLoggers, reloadChildLoggers } = useChildLoggers()
 
   return (
     <LogsContext.Provider value={{ childLoggers, availableChildLoggers, reloadChildLoggers }}>
@@ -46,7 +48,7 @@ export const LogsPreferences: React.FunctionComponent = () => {
           </FormSection>
           <FormSection title='Child loggers' titleElement='h2'>
             <ChildLoggerToolbar />
-            <ChildLoggerList />
+            <ChildLoggerList childLoggers={childLoggers} />
           </FormSection>
         </Form>
       </CardBody>

@@ -110,6 +110,31 @@ const RemoteToolbar: React.FunctionComponent = () => {
   )
 }
 
+const ConfirmDeleteModal: React.FunctionComponent<{
+  isConfirmDeleteOpen: boolean,
+  handleConfirmDeleteToggle: () => void,
+  deleteConnection: () => void,
+  connectionName: string,
+}> = ({ isConfirmDeleteOpen, handleConfirmDeleteToggle, deleteConnection, connectionName }) => (
+    <Modal
+        variant={ModalVariant.small}
+        title='Delete Connection'
+        titleIconVariant='danger'
+        isOpen={isConfirmDeleteOpen}
+        onClose={handleConfirmDeleteToggle}
+        actions={[
+          <Button key='delete' variant='danger' onClick={deleteConnection}>
+            Delete
+          </Button>,
+          <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
+            Cancel
+          </Button>,
+        ]}
+    >
+      You are about to delete the <b>{connectionName}</b> connection.
+    </Modal>
+)
+
 const ConnectionItem: React.FunctionComponent<{
   id: string
   connection: Connection
@@ -154,26 +179,6 @@ const ConnectionItem: React.FunctionComponent<{
     dispatch({ type: DELETE, id })
     handleConfirmDeleteToggle()
   }
-
-  const ConfirmDeleteModal = () => (
-    <Modal
-      variant={ModalVariant.small}
-      title='Delete Connection'
-      titleIconVariant='danger'
-      isOpen={isConfirmDeleteOpen}
-      onClose={handleConfirmDeleteToggle}
-      actions={[
-        <Button key='delete' variant='danger' onClick={deleteConnection}>
-          Delete
-        </Button>,
-        <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      You are about to delete the <b>{connection.name}</b> connection.
-    </Modal>
-  )
 
   let icon = null
   switch (reachable) {
@@ -254,7 +259,10 @@ const ConnectionItem: React.FunctionComponent<{
               </DropdownItem>
             </DropdownList>
           </Dropdown>
-          <ConfirmDeleteModal />
+          <ConfirmDeleteModal isConfirmDeleteOpen={isConfirmDeleteOpen}
+                              handleConfirmDeleteToggle={handleConfirmDeleteToggle}
+                              deleteConnection={deleteConnection}
+                              connectionName={connection.name} />
         </DataListAction>
       </DataListItemRow>
       <ConnectionModal mode='edit' isOpen={isEditOpen} onClose={handleEditToggle} input={connection} />

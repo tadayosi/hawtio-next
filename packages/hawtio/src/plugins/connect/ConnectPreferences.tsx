@@ -227,6 +227,31 @@ const ConnectForm: React.FunctionComponent = () => {
   )
 }
 
+const ConfirmClearModal: React.FunctionComponent<{
+  isConfirmModalOpen: boolean,
+  confirmClear: () => void,
+  clear: () => void,
+}> = ({ isConfirmModalOpen, confirmClear, clear }) => (
+    <Modal
+        data-testid='clear-connections-modal'
+        variant={ModalVariant.small}
+        title='Clear saved connections'
+        titleIconVariant='danger'
+        isOpen={isConfirmModalOpen}
+        onClose={confirmClear}
+        actions={[
+          <Button key='reset' data-testid='clear-btn' variant='danger' onClick={clear}>
+            Clear
+          </Button>,
+          <Button key='cancel' data-testid='cancel-btn' variant='link' onClick={confirmClear}>
+            Cancel
+          </Button>,
+        ]}
+    >
+      You are about to clear all saved connection settings.
+    </Modal>
+)
+
 const ResetForm: React.FunctionComponent = () => {
   const { dispatch } = useConnections()
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
@@ -243,34 +268,15 @@ const ResetForm: React.FunctionComponent = () => {
     setIsConfirmModalOpen(!isConfirmModalOpen)
   }
 
-  const ConfirmClearModal = () => (
-    <Modal
-      data-testid='clear-connections-modal'
-      variant={ModalVariant.small}
-      title='Clear saved connections'
-      titleIconVariant='danger'
-      isOpen={isConfirmModalOpen}
-      onClose={confirmClear}
-      actions={[
-        <Button key='reset' data-testid='clear-btn' variant='danger' onClick={clear}>
-          Clear
-        </Button>,
-        <Button key='cancel' data-testid='cancel-btn' variant='link' onClick={confirmClear}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      You are about to clear all saved connection settings.
-    </Modal>
-  )
-
   return (
     <FormSection title='Reset' titleElement='h2'>
       <FormGroup label='Clear saved connections' fieldId='reset-form-clear'>
         <Button data-testid='clear-btn' variant='danger' onClick={confirmClear}>
           Clear
         </Button>
-        <ConfirmClearModal />
+        <ConfirmClearModal isConfirmModalOpen={isConfirmModalOpen}
+                           confirmClear={confirmClear}
+                           clear={clear} />
         <FormHelperText>
           <HelperText>
             <HelperTextItem>Clear all saved connection settings stored in your browser local storage.</HelperTextItem>

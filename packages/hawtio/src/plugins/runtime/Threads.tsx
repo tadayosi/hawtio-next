@@ -40,6 +40,25 @@ const ThreadsDumpModal: React.FunctionComponent<{
   )
 }
 
+const ExtraToolBar: React.FunctionComponent<{
+  handleConnectionThreadMonitoring: () => void,
+  threadConnectionMonitoring: boolean,
+  onThreadDumpClick: () => void,
+}> = ({ handleConnectionThreadMonitoring, threadConnectionMonitoring, onThreadDumpClick }) => (
+    <ToolbarGroup>
+      <ToolbarItem>
+        <Button variant='primary' onClick={handleConnectionThreadMonitoring} size='sm'>
+          {threadConnectionMonitoring ? 'Disable' : 'Enable'} connection thread monitoring
+        </Button>
+      </ToolbarItem>
+      <ToolbarItem>
+        <Button variant='secondary' onClick={onThreadDumpClick} size='sm'>
+          Thread dump
+        </Button>
+      </ToolbarItem>
+    </ToolbarGroup>
+)
+
 export const Threads: React.FunctionComponent = () => {
   const [threads, setThreads] = useState<Thread[]>([])
   const [currentThread, setCurrentThread] = useState<Thread | undefined>()
@@ -82,21 +101,6 @@ export const Threads: React.FunctionComponent = () => {
     </Button>
   )
 
-  const ExtraToolBar = () => (
-    <ToolbarGroup>
-      <ToolbarItem>
-        <Button variant='primary' onClick={handleConnectionThreadMonitoring} size='sm'>
-          {threadConnectionMonitoring ? 'Disable' : 'Enable'} connection thread monitoring
-        </Button>
-      </ToolbarItem>
-      <ToolbarItem>
-        <Button variant='secondary' onClick={onThreadDumpClick} size='sm'>
-          Thread dump
-        </Button>
-      </ToolbarItem>
-    </ToolbarGroup>
-  )
-
   return (
     <React.Fragment>
       <ThreadsDumpModal isOpen={isThreadsDumpModalOpen} setIsOpen={setIsThreadsDumpModalOpen} />
@@ -124,7 +128,9 @@ export const Threads: React.FunctionComponent = () => {
           },
         ]}
         rows={threads}
-        extraToolbarRight={<ExtraToolBar />}
+        extraToolbarRight={<ExtraToolBar handleConnectionThreadMonitoring={handleConnectionThreadMonitoring}
+                                         onThreadDumpClick={onThreadDumpClick}
+                                         threadConnectionMonitoring={threadConnectionMonitoring} />}
       />
     </React.Fragment>
   )

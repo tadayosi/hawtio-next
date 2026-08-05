@@ -6,6 +6,31 @@ import { Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import * as exs from './exchanges-service'
 
+const ConfirmUnblockModal: React.FunctionComponent<{
+  isConfirmUnblockOpen: boolean,
+  handleConfirmUnblockToggle: () => void,
+  onUnblockConfirmClicked: () => void
+}> = ({ isConfirmUnblockOpen, handleConfirmUnblockToggle, onUnblockConfirmClicked }) => (
+    <Modal
+        variant={ModalVariant.small}
+        title='Unblock Exchange'
+        titleIconVariant='danger'
+        isOpen={isConfirmUnblockOpen}
+        onClose={handleConfirmUnblockToggle}
+        actions={[
+          <Button key='unblock' variant='danger' data-testid='confirm-unblock' onClick={onUnblockConfirmClicked}>
+            Unblock
+          </Button>,
+          <Button key='cancel' variant='link' data-testid='confirm-cancel' onClick={handleConfirmUnblockToggle}>
+            Cancel
+          </Button>,
+        ]}
+    >
+      <p>You are about to unblock the selected thread.</p>
+      <p>This operation cannot be undone so please be careful.</p>
+    </Modal>
+)
+
 export const BlockedExchanges: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const [isReading, setIsReading] = useState(false)
@@ -70,27 +95,6 @@ export const BlockedExchanges: React.FunctionComponent = () => {
     return <HawtioEmptyCard title='Blocked Exchanges' message='No blocked exchanges found.' testid='no-exchanges' />
   }
 
-  const ConfirmUnblockModal = () => (
-    <Modal
-      variant={ModalVariant.small}
-      title='Unblock Exchange'
-      titleIconVariant='danger'
-      isOpen={isConfirmUnblockOpen}
-      onClose={handleConfirmUnblockToggle}
-      actions={[
-        <Button key='unblock' variant='danger' data-testid='confirm-unblock' onClick={onUnblockConfirmClicked}>
-          Unblock
-        </Button>,
-        <Button key='cancel' variant='link' data-testid='confirm-cancel' onClick={handleConfirmUnblockToggle}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      <p>You are about to unblock the selected thread.</p>
-      <p>This operation cannot be undone so please be careful.</p>
-    </Modal>
-  )
-
   return (
     <Card isPlain>
       <CardTitle>
@@ -125,7 +129,9 @@ export const BlockedExchanges: React.FunctionComponent = () => {
             ))}
           </Tbody>
         </Table>
-        <ConfirmUnblockModal />
+        <ConfirmUnblockModal isConfirmUnblockOpen={isConfirmUnblockOpen}
+                             handleConfirmUnblockToggle={handleConfirmUnblockToggle}
+                             onUnblockConfirmClicked={onUnblockConfirmClicked} />
       </CardBody>
     </Card>
   )

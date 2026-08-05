@@ -189,24 +189,17 @@ const OperationActions: React.FunctionComponent = () => {
   )
 }
 
-const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = ({ isExpanded }) => {
-  const { name } = useContext(OperationContext)
-  const [isFailed, setIsFailed] = useState(false)
-  const [result, setResult] = useState<string | null>(null)
-  const [isRenderHtmlMode, setIsRenderHtmlMode] = useState(true)
+const sanitizeHTML = (rawHtml: string) => {
+  return DOMPurify.sanitize(rawHtml)
+}
 
-  const isResultHtml = () => {
-    if (!result) {
-      return false
-    }
-    return result.startsWith('<!DOCTYPE html>') || /^<table[^>]*>/.test(result) || /^<ul[^>]*>/.test(result)
-  }
-
-  const sanitizeHTML = (rawHtml: string) => {
-    return DOMPurify.sanitize(rawHtml)
-  }
-
-  const OperationExecuteResult = () => (
+const OperationExecuteResult: React.FunctionComponent<{
+  isResultHtml: () => boolean,
+  isRenderHtmlMode: boolean,
+  isFailed: boolean,
+  setIsRenderHtmlMode: React.Dispatch<React.SetStateAction<boolean>>,
+  result?: string
+}> = ({ isResultHtml, isRenderHtmlMode, isFailed, setIsRenderHtmlMode, result }) => (
     <React.Fragment>
       <Flex>
         <FlexItem>
@@ -240,7 +233,20 @@ const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = 
         </ClipboardCopy>
       )}
     </React.Fragment>
-  )
+)
+
+const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = ({ isExpanded }) => {
+  const { name } = useContext(OperationContext)
+  const [isFailed, setIsFailed] = useState(false)
+  const [result, setResult] = useState<string | null>(null)
+  const [isRenderHtmlMode, setIsRenderHtmlMode] = useState(true)
+
+  const isResultHtml = () => {
+    if (!result) {
+      return false
+    }
+    return result.startsWith('<!DOCTYPE html>') || /^<table[^>]*>/.test(result) || /^<ul[^>]*>/.test(result)
+  }
 
   return (
     <React.Fragment>
@@ -249,7 +255,10 @@ const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = 
       </DataListContent>
       {result && (
         <DataListContent id={`operation-result-${name}`} aria-label={`operation result ${name}`} isHidden={!isExpanded}>
-          <OperationExecuteResult />
+          <OperationExecuteResult result={result}
+                                  isFailed={isFailed}
+                                  isResultHtml={isResultHtml}
+                                  isRenderHtmlMode={isRenderHtmlMode} setIsRenderHtmlMode={setIsRenderHtmlMode} />
         </DataListContent>
       )}
     </React.Fragment>

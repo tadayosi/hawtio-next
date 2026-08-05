@@ -56,17 +56,17 @@ const AttributeChart: React.FunctionComponent<{
   const [width, setWidth] = useState<number>(0)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const observer = getResizeObserver(containerRef.current!, handleResize, true)
-    handleResize()
-    return () => observer()
-  }, [])
-
   const handleResize = () => {
     if (containerRef.current && containerRef.current.clientWidth) {
       setWidth(containerRef.current.clientWidth)
     }
   }
+
+  useEffect(() => {
+    const observer = getResizeObserver(containerRef.current!, handleResize, true)
+    handleResize()
+    return () => observer()
+  }, [])
 
   return (
     <div ref={containerRef} style={{ width: '100%', height: '220px' }}>

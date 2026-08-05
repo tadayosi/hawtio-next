@@ -119,21 +119,11 @@ const UIForm: React.FunctionComponent = () => {
   )
 }
 
-const ResetForm: React.FunctionComponent = () => {
-  const navigate = useNavigate()
-  const [isConfirmResetOpen, setIsConfirmResetOpen] = useState(false)
-
-  const reset = () => {
-    preferencesService.reset()
-    // Reload page after reset
-    navigate(0)
-  }
-
-  const confirmReset = () => {
-    setIsConfirmResetOpen(!isConfirmResetOpen)
-  }
-
-  const ConfirmResetModal = () => (
+const ConfirmResetModal: React.FunctionComponent<{
+  isConfirmResetOpen: boolean,
+  confirmReset: () => void,
+  reset: () => void,
+}> = ({ isConfirmResetOpen, confirmReset, reset }) => (
     <Modal
       data-testid='reset-settings-modal'
       variant={ModalVariant.small}
@@ -152,7 +142,21 @@ const ResetForm: React.FunctionComponent = () => {
     >
       You are about to reset all the Hawtio settings.
     </Modal>
-  )
+)
+
+const ResetForm: React.FunctionComponent = () => {
+  const navigate = useNavigate()
+  const [isConfirmResetOpen, setIsConfirmResetOpen] = useState(false)
+
+  const reset = () => {
+    preferencesService.reset()
+    // Reload page after reset
+    navigate(0)
+  }
+
+  const confirmReset = () => {
+    setIsConfirmResetOpen(!isConfirmResetOpen)
+  }
 
   const resetSuccess = preferencesService.isResetSuccess()
 
@@ -169,7 +173,7 @@ const ResetForm: React.FunctionComponent = () => {
             </HelperTextItem>
           </HelperText>
         </FormHelperText>
-        <ConfirmResetModal />
+        <ConfirmResetModal confirmReset={confirmReset} reset={reset} isConfirmResetOpen={isConfirmResetOpen} />
       </FormGroup>
       {resetSuccess && <Alert variant='success' isInline title='Settings reset successfully!' />}
     </React.Fragment>

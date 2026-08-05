@@ -5,7 +5,17 @@ import { Content, DataList, Panel, PanelHeader, PanelMain, PanelMainBody } from 
 import React, { useContext } from 'react'
 import { OperationForm } from './OperationForm'
 import './Operations.css'
-import { createOperations } from './operation'
+import { createOperations, Operation } from './operation'
+
+const OperationList: React.FunctionComponent<{
+  operations: Operation[],
+}> = ({ operations }) => (
+    <DataList id='jmx-operation-list' aria-label='operation list' isCompact>
+      {operations.map(op => (
+          <OperationForm key={op.name} name={op.name} operation={op} />
+      ))}
+    </DataList>
+)
 
 export const Operations: React.FunctionComponent = () => {
   const { selectedNode } = useContext(PluginNodeSelectionContext)
@@ -22,14 +32,6 @@ export const Operations: React.FunctionComponent = () => {
 
   const operations = createOperations(mbean.op)
 
-  const OperationList = () => (
-    <DataList id='jmx-operation-list' aria-label='operation list' isCompact>
-      {operations.map(op => (
-        <OperationForm key={op.name} name={op.name} operation={op} />
-      ))}
-    </DataList>
-  )
-
   return (
     <Panel>
       <PanelHeader>
@@ -39,7 +41,7 @@ export const Operations: React.FunctionComponent = () => {
       </PanelHeader>
       <PanelMain>
         <PanelMainBody>
-          <OperationList />
+          <OperationList operations={operations} />
         </PanelMainBody>
       </PanelMain>
     </Panel>
