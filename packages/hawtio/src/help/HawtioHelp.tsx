@@ -6,6 +6,8 @@ import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
 import help from './help.md'
 import { helpRegistry } from './registry'
 
+const pluginPath = '/help'
+
 helpRegistry.add('home', 'Home', help, 1)
 
 export const HawtioHelp: React.FunctionComponent = () => {
@@ -32,8 +34,8 @@ export const HawtioHelp: React.FunctionComponent = () => {
         <Nav aria-label='Help Nav' variant='horizontal-subnav'>
           <NavList>
             {helps.map(help => (
-              <NavItem key={help.id} isActive={pathname === `/help/${help.id}`}>
-                <NavLink to={{ pathname: help.id, search }}>{help.title}</NavLink>
+              <NavItem key={help.id} isActive={pathname === `${pluginPath}/${help.id}`}>
+                <NavLink to={{ pathname: `${pluginPath}/${help.id}`, search }}>{help.title}</NavLink>
               </NavItem>
             ))}
           </NavList>
@@ -54,7 +56,7 @@ export const HawtioHelp: React.FunctionComponent = () => {
               }
             />
           ))}
-          <Route path='/' element={<Navigate to={{ pathname: 'home', search }} />} />
+          <Route path='' element={<Navigate to={{ pathname: 'home', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </PageGroup>

@@ -144,7 +144,7 @@ const HawtioHeaderToolbar: React.FunctionComponent<{
 
   const helpItems = [
     <DropdownItem key='help'>
-      <Link to={{ pathname: '../help', search: location.search }}>Help</Link>{' '}
+      <Link to={{ pathname: '/help', search: location.search }}>Help</Link>{' '}
     </DropdownItem>,
     <DropdownItem key='about' onClick={onAboutToggle}>
       About
@@ -153,7 +153,7 @@ const HawtioHeaderToolbar: React.FunctionComponent<{
 
   const userItems = [
     <DropdownItem key='preferences'>
-      <Link to={{ pathname: '../preferences', search: location.search }}>Preferences</Link>
+      <Link to={{ pathname: '/preferences', search: location.search }}>Preferences</Link>
     </DropdownItem>,
     <DropdownItem key='logout' onClick={logout}>
       Log out

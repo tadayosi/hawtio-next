@@ -23,7 +23,7 @@ export const Connect: React.FunctionComponent = () => {
       <NavList>
         {navItems.map(({ id, title }) => (
           <NavItem key={id} isActive={pathname === `${pluginPath}/${id}`}>
-            <NavLink to={{ pathname: id, search }}>{title}</NavLink>
+            <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title}</NavLink>
           </NavItem>
         ))}
       </NavList>
@@ -79,7 +79,7 @@ export const Connect: React.FunctionComponent = () => {
           {routes}
           {/* connect/login should be hidden to nav */}
           <Route key='login' path='login' element={<ConnectLogin />} />
-          <Route key='root' path='/' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} />} />
+          <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </ConnectContext.Provider>

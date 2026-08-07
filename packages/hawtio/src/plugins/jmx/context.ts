@@ -57,10 +57,10 @@ export function useMBeanTree() {
     if (newSelected) {
       setSelectedNode(newSelected)
       // Reset to base path with nid to sync URL with restored selection
-      navigate(pluginPathWithNodeId(newSelected, searchParams))
+      navigate(pluginPathWithNodeId(newSelected, searchParams), { replace: true })
     } else {
       // Node no longer exists - clear selection and go to base path
-      navigate(pluginPath)
+      navigate(pluginPath, { replace: true })
     }
   }
 

@@ -5,6 +5,7 @@ import { Metrics } from './Metrics'
 import './Runtime.css'
 import { SysProps } from './SysProps'
 import { Threads } from './Threads'
+import { pluginPath } from './globals'
 
 type NavItem = {
   id: string
@@ -30,8 +31,8 @@ export const Runtime: React.FunctionComponent = () => {
           <Nav aria-label='Runtime Nav' variant='horizontal-subnav'>
             <NavList>
               {navItems.map(({ id, title }) => (
-                <NavItem key={id} isActive={pathname === `/runtime/${id}`}>
-                  <NavLink to={{ pathname: id, search }}>{title}</NavLink>
+                <NavItem key={id} isActive={pathname === `${pluginPath}/${id}`}>
+                  <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title}</NavLink>
                 </NavItem>
               ))}
             </NavList>
@@ -43,7 +44,7 @@ export const Runtime: React.FunctionComponent = () => {
           {navItems.map(({ id, component }) => (
             <Route key={id} path={id} element={component} />
           ))}
-          <Route path='/' element={<Navigate to={{ pathname: 'sysprops', search }} />} />
+          <Route path='' element={<Navigate to={{ pathname: 'sysprops', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </React.Fragment>

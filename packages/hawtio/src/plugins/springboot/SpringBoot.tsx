@@ -6,6 +6,7 @@ import { Info } from './Info'
 import { Loggers } from './Loggers'
 import { TraceView } from './TraceView'
 import { springbootService } from './springboot-service'
+import { pluginPath } from './globals'
 
 type NavItem = {
   id: string
@@ -58,8 +59,8 @@ export const SpringBoot: React.FunctionComponent = () => {
         <Nav aria-label='Spring Boot Nav' variant='horizontal-subnav'>
           <NavList>
             {navItems.map(({ id, title }) => (
-              <NavItem key={id} isActive={pathname === `/springboot/${id}`}>
-                <NavLink to={{ pathname: id, search }}>{title}</NavLink>
+              <NavItem key={id} isActive={pathname === `${pluginPath}/${id}`}>
+                <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title}</NavLink>
               </NavItem>
             ))}
           </NavList>
@@ -70,7 +71,7 @@ export const SpringBoot: React.FunctionComponent = () => {
           {navItems.map(({ id, component }) => (
             <Route key={id} path={id} element={component} />
           ))}
-          <Route path='/' element={<Navigate to={{ pathname: 'health', search }} />} />
+          <Route path='' element={<Navigate to={{ pathname: 'health', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </React.Fragment>

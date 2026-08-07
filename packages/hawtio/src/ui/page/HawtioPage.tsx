@@ -43,13 +43,13 @@ export const HawtioPage: React.FunctionComponent = () => {
   log.debug(`Login state: username = ${username}, isLogin = ${isLogin}`)
 
   const defaultPlugin = plugins[0] ?? null
-  let defaultPage = defaultPlugin ? <Navigate to={{ pathname: defaultPlugin.path, search }} /> : <HawtioHome />
+  let defaultPage = defaultPlugin ? <Navigate to={{ pathname: defaultPlugin.path, search }} replace={true} /> : <HawtioHome />
   const loginRedirect = sessionStorage.getItem('connect-login-redirect')
   if (loginRedirect) {
     // this is required for OIDC, because we can't have redirect_uri with
     // wildcard on EntraID...
     // this session storage item is removed after successful login at connect/login page
-    defaultPage = <Navigate to={{ pathname: loginRedirect, search }} />
+    defaultPage = <Navigate to={{ pathname: loginRedirect, search }} replace={true} />
   }
 
   const showVerticalNavByDefault = preferencesService.isShowVerticalNavByDefault()
@@ -82,18 +82,12 @@ export const HawtioPage: React.FunctionComponent = () => {
             {plugins
               .filter(plugin => plugin.path != null && plugin.component != null)
               .map(plugin => (
-                <Route key={plugin.id} path={`${plugin.path}`} element={React.createElement(plugin.component!)}>
-                  <Route path='*' element={React.createElement(plugin.component!)} />
-                </Route>
+                <Route key={plugin.id} path={`${plugin.path}/*`} element={React.createElement(plugin.component!)} />
               ))}
-            <Route key='help' path='/help' element={<HawtioHelp />}>
-              <Route path='*' element={<HawtioHelp />} />
-            </Route>
-            <Route key='preferences' path='/preferences' element={<HawtioPreferences />}>
-              <Route path='*' element={<HawtioPreferences />} />
-            </Route>
-            <Route key='index' path='index.html' element={<Navigate to={{ pathname: '/', search }} />} />
-            <Route key='root' index element={defaultPage} />
+            <Route key='help' path='/help/*' element={<HawtioHelp />} />
+            <Route key='preferences' path='/preferences/*' element={<HawtioPreferences />} />
+            <Route key='index' path='index.html' element={<Navigate to={{ pathname: '/', search }} replace={true} />} />
+            <Route key='root' path='' element={defaultPage} />
           </Routes>
         </PluginNodeSelectionContext.Provider>
         <HawtioNotification />

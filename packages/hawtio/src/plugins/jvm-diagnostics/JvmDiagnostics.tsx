@@ -2,6 +2,7 @@ import { Nav, NavItem, NavList, PageGroup, PageSection, Title } from '@patternfl
 import React from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router'
 import { FlightRecorder } from './FlightRecorder'
+import { pluginPath } from './globals'
 
 type NavItem = {
   id: string
@@ -24,8 +25,8 @@ export const JvmDiagnostics: React.FunctionComponent = () => {
           <Nav aria-label='JVM Diagnostics Nav' variant='horizontal-subnav'>
             <NavList>
               {navItems.map(({ id, title }) => (
-                <NavItem key={id} isActive={pathname === `/jvm-diagnostics/${id}`}>
-                  <NavLink to={{ pathname: id, search }}>{title}</NavLink>
+                <NavItem key={id} isActive={pathname === `${pluginPath}/${id}`}>
+                  <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title}</NavLink>
                 </NavItem>
               ))}
             </NavList>
@@ -37,7 +38,7 @@ export const JvmDiagnostics: React.FunctionComponent = () => {
           {navItems.map(({ id, component }) => (
             <Route key={id} path={id} element={component} />
           ))}
-          <Route path='/' element={<Navigate to={{ pathname: 'jfr', search }} />} />
+          <Route path='' element={<Navigate to={{ pathname: 'jfr', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </React.Fragment>

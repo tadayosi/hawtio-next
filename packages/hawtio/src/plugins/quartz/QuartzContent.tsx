@@ -62,7 +62,7 @@ export const QuartzContent: React.FunctionComponent = () => {
       <NavList>
         {navItems.map(nav => (
           <NavItem key={nav.id} isActive={pathname === `${pluginPath}/${nav.id}`}>
-            <NavLink to={{ pathname: nav.id, search }}>{nav.title}</NavLink>
+            <NavLink to={{ pathname: `${pluginPath}/${nav.id}`, search }}>{nav.title}</NavLink>
           </NavItem>
         ))}
       </NavList>
@@ -90,7 +90,7 @@ export const QuartzContent: React.FunctionComponent = () => {
       >
         <Routes>
           {routes}
-          <Route key='root' path='/' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} />} />
+          <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} replace={true} />} />
         </Routes>
       </PageSection>
     </PageGroup>
