@@ -16,9 +16,9 @@ const sampleRoutesXml = fs.readFileSync(routesXmlPath, { encoding: 'utf8', flag:
  */
 const mockedUsedNavigate = jest.fn()
 const mockedUseLocation = jest.fn()
-jest.mock('react-router-dom', () => ({
+jest.mock('react-router', () => ({
   // eslint-disable-next-line  @typescript-eslint/no-explicit-any
-  ...(jest.requireActual('react-router-dom') as any),
+  ...(jest.requireActual('react-router') as any),
   useNavigate: () => mockedUsedNavigate,
   useLocation: () => mockedUseLocation,
 }))

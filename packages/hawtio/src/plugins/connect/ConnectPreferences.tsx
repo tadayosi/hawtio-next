@@ -17,7 +17,7 @@ import {
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated'
 import { ExclamationCircleIcon } from '@patternfly/react-icons/dist/esm/icons/exclamation-circle-icon'
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { RESET } from './connections'
 import { useConnections } from './context'
 import { log } from './globals'

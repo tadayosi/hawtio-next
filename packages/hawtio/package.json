@@ -96,7 +96,6 @@
     "@types/node": "^26.1.2",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
-    "@types/react-router-dom": "^5.3.3",
     "commit-and-tag-version": "^13.1.2",
     "jest": "^30.4.2",
     "jest-environment-jsdom": "^30.4.1",
@@ -104,7 +103,7 @@
     "monaco-editor": "^0.52.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-router-dom": "^6.30.4",
+    "react-router": "^7.18.2",
     "replace": "^1.2.2",
     "timezone-mock": "^1.4.3",
     "ts-jest": "^29.4.12",
@@ -123,7 +122,7 @@
     "monaco-editor": "^0.52",
     "react": "^17 || ^18 || ^19",
     "react-dom": "^17 || ^18 || ^19",
-    "react-router-dom": "^6.30"
+    "react-router": "^7"
   },
   "engines": {
     "node": ">=18"

@@ -1,6 +1,6 @@
 import { Nav, NavItem, NavList, PageGroup, PageSection, Title } from '@patternfly/react-core'
 import React from 'react'
-import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router'
 import { FlightRecorder } from './FlightRecorder'
 
 type NavItem = {

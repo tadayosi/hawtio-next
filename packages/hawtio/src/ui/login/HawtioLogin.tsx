@@ -14,7 +14,7 @@ import { HawtioNotification } from '@hawtiosrc/ui/notification'
 import { HawtioLoadingPage } from '@hawtiosrc/ui/page'
 import { Alert, Button, ListItem, ListVariant, LoginFooterItem, LoginPage } from '@patternfly/react-core'
 import React, { ReactNode, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import { HawtioLoginForm } from './HawtioLoginForm'
 import { log } from './globals'
 

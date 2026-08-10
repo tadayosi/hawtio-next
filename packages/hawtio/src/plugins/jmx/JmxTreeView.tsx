@@ -1,7 +1,7 @@
 import { MBeanNode, MBeanTree, PluginTreeViewToolbar } from '@hawtiosrc/plugins/shared'
 import { TreeView, TreeViewDataItem } from '@patternfly/react-core'
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router'
 import './JmxTreeView.css'
 import { MBeanTreeContext, pluginPathWithNodeId } from './context'
 

@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import { BrowserRouter } from 'react-router-dom'
+import { BrowserRouter } from 'react-router'
 import { HawtioLogin } from './HawtioLogin'
 
 describe('HawtioLogin', () => {
@@ -9,7 +9,7 @@ describe('HawtioLogin', () => {
 
   test('renders page', async () => {
     render(
-      <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <BrowserRouter>
         <HawtioLogin />
       </BrowserRouter>,
     )

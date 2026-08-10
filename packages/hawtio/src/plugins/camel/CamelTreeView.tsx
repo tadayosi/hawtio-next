@@ -1,7 +1,7 @@
 import { MBeanNode, MBeanTree, PluginTreeViewToolbar } from '@hawtiosrc/plugins/shared'
 import { TreeView, TreeViewDataItem } from '@patternfly/react-core'
 import React, { ChangeEvent, useContext, useEffect, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import './CamelTreeView.css'
 import { CamelContext } from './context'
 import { pluginPath } from './globals'

@@ -2,7 +2,7 @@ import { hawtio, usePlugins } from '@hawtiosrc/core'
 import { CardBody, Content, Nav, NavItem, NavList, PageGroup, PageSection, Title } from '@patternfly/react-core'
 import React, { useMemo } from 'react'
 import Markdown from 'react-markdown'
-import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
 import help from './help.md'
 import { helpRegistry } from './registry'
 
