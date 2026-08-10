@@ -185,7 +185,7 @@ export const Debug: React.FunctionComponent = () => {
   }, [selectedNode, handleAddBreakpoint, handleRemoveBreakpoint])
 
   const createAnnotation = useCallback((breakpointId: string, bkps: string[], suspendedBkps: string[]): Annotation => {
-    const element: JSX.Element = (
+    const element = (
       <div className='breakpoint-symbol'>
         {suspendedBkps.includes(breakpointId) && <LongArrowAltDownIcon />}
         {bkps.includes(breakpointId) && <ExclamationCircleIcon />}

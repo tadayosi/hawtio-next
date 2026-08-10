@@ -59,7 +59,7 @@ export const CamelTreeView: React.FunctionComponent = () => {
     }
   }
 
-  const onSelect = (event: React.MouseEvent<Element, MouseEvent>, item: TreeViewDataItem) => {
+  const onSelect = (_event: React.MouseEvent<Element, MouseEvent>, item: TreeViewDataItem) => {
     setSelectedNode(item as MBeanNode)
     /* On change of node selection update the url to the base plugin path */
     navigate(`${pluginPath}${search}`)

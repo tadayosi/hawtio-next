@@ -67,8 +67,8 @@ const SettingsModal: React.FunctionComponent<{
   return (
       <Modal
           title={`Settings for recording ${currentRecording?.number}`}
-          isOpen={isModalOpenState[0]}
-          onClose={() => isModalOpenState[1](false)}
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
       >
         <Form>
           <FormGroup label='Recording configuration'>

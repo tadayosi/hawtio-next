@@ -2,7 +2,6 @@ import { type ResolveUser, type UserAuthResult, userService } from '@hawtiosrc/a
 import {
   AuthenticationResult,
   configManager,
-  hawtio,
   Logger,
   OidcAuthenticationMethod,
   TaskState,
@@ -113,7 +112,7 @@ class OidcService implements IOidcService {
   // this is an array of promises, because each OidcConfig has own metadata which may be fetched at different time
   private oidcMetadata: Promise<AuthorizationServer | null>[] = []
 
-  // promise related to logged-in user. contains user name and tokens. This promise is resolved
+  // promise related to logged-in user. contains user's name and tokens. This promise is resolved
   // after completing OAuth2 authorization flow or retrieving existing user using OIDC session
   // if there's no information about the user however we resolve this promise with null and we
   // don't start Authorization Flow - it's started only on user request
@@ -236,7 +235,6 @@ class OidcService implements IOidcService {
    * @private
    */
   private async fetchOidcMetadata(cfg: OidcConfig): Promise<AuthorizationServer | null> {
-    let res = null
     if (!cfg) {
       return null
     }
@@ -248,7 +246,7 @@ class OidcService implements IOidcService {
     } else {
       log.info('Fetching .well-known/openid-configuration')
       const cfgUrl = new URL(cfg!.provider)
-      res = await oidc
+      const res = await oidc
         .discoveryRequest(cfgUrl, {
           [oidc.allowInsecureRequests]: true, // to also allow http requests (it's not "trust-all" flag)
         })
@@ -342,7 +340,7 @@ class OidcService implements IOidcService {
 
     if (!oauthSuccess /* && !oauthError */) {
       // no user information in URI/webStorage, so OidcService stays at _inactive_ state, waiting to start
-      // Authorization FLow on user demand
+      // Authorization Flow on user demand
 
       // however to let user refresh the browser we may have to perform silent login - but only when
       // there's no error and there's no state in URI
@@ -560,16 +558,9 @@ class OidcService implements IOidcService {
     authorizationUrl.searchParams.set('response_mode', config.response_mode)
     authorizationUrl.searchParams.set('client_id', config.client_id)
     authorizationUrl.searchParams.set('redirect_uri', config.redirect_uri)
-    const basePath = hawtio.getBasePath()
     const u = new URL(window.location.href)
     u.hash = ''
-    let redirect = u.pathname
-    if (basePath && redirect.startsWith(basePath)) {
-      redirect = redirect.slice(basePath.length)
-      if (redirect.startsWith('/')) {
-        redirect = redirect.slice(1)
-      }
-    }
+
     // we have to use react-router to do client-redirect to connect/login if necessary
     // and we can't do full redirect to URL that's not configured on OIDC provider
     // and Entra ID can't use redirect_uri with wildcards... (Keycloak can do it)
@@ -646,7 +637,7 @@ class OidcService implements IOidcService {
   registerUserHooks(helpRegistration: () => void) {
     // user fetching hook - either we find logged in user (because we're at the stage where IdP redirects
     // to Hawtio with code/state in fragment URI or we don't find the user.
-    // we never initiate Authorization FLow without user interaction
+    // we never initiate Authorization Flow without user interaction
     // note - finding proper state/session_state/iss/code after redirect may still cause issues when
     // exchanging code for token (timeouts, errors, session/cookie issues, ...). In this case
     // fetchUser should actually fetch the user, but with some error information

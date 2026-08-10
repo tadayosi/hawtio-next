@@ -254,7 +254,7 @@ class RouteStatsService {
      * multiple routes.
      */
 
-    let xml = null
+    let xml
     const mbeanName = routesNode.getMetadata(contextNodeType)
     const mbeanToQuery = mbeanName ? mbeanName : (routesNode.parent?.getMetadata(contextNodeType) ?? '')
 
@@ -279,7 +279,7 @@ class RouteStatsService {
     return routesStats
   }
 
-  createProcessorStats(routeId: string, pDoc: Element): ProcessorStats {
+  createProcessorStats(_routeId: string, pDoc: Element): ProcessorStats {
     let res: ProcessorStats = {
       id: '',
       index: '',
