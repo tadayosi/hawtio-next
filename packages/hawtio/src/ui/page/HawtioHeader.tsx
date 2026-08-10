@@ -36,7 +36,7 @@ import { QuestionCircleIcon } from '@patternfly/react-icons/dist/esm/icons/quest
 import React, { useContext, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import './HawtioHeader.css'
-import { PageContext } from './context'
+import { PageContext, useHawtioLocation } from './context'
 
 export const HawtioHeader: React.FunctionComponent<{ loginMethod: string }> = ({ loginMethod }) => {
   const { hawtconfig, hawtconfigLoaded } = useHawtconfig()
@@ -114,7 +114,8 @@ const HawtioHeaderToolbar: React.FunctionComponent<{
   loginMethod: string
 }> = ({ hawtconfig }) => {
   const { username, plugins } = useContext(PageContext)
-  const location = useLocation()
+  // calling useHawtioLocation() gives us "search" without plugin-specific parameters like "nid"
+  const location = useHawtioLocation()
 
   const isPublic = username === PUBLIC_USER
 

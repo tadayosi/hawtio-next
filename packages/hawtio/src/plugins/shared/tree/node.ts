@@ -69,7 +69,7 @@ export interface OptimisedMBeanOperation extends MBeanOperation {
 
 export type MBeanNodeFilterFn = (node: MBeanNode) => boolean
 
-export const MBEAN_NODE_ID_SEPARATOR = '-'
+export const MBEAN_NODE_ID_SEPARATOR = '/'
 
 export class MBeanNode implements TreeViewDataItem {
   /**
@@ -126,7 +126,11 @@ export class MBeanNode implements TreeViewDataItem {
   private generateId(folder: boolean): string {
     const idPrefix = this.parent ? this.parent.idWithoutPostfix() + MBEAN_NODE_ID_SEPARATOR : ''
     const idPostfix = folder ? '-folder' : ''
-    let id = idPrefix + escapeHtmlId(this.name) + idPostfix
+    let v = escapeHtmlId(this.name)
+    if (this.metadata['id']) {
+      v = this.metadata['id']
+    }
+    let id = idPrefix + v + idPostfix
 
     // Check id is unique against current siblings
     if (this.parent) {

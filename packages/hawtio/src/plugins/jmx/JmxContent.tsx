@@ -12,24 +12,19 @@ import {
   Title,
 } from '@patternfly/react-core'
 import { CubesIcon } from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
-import React, { useContext } from 'react'
+import React from 'react'
 import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
 import './JmxContent.css'
-import { MBeanTreeContext, pluginPathWithNodeId } from './context'
+import { pluginPathWithNodeId, useMBeanTreeContext } from './context'
 
 export const JmxContent: React.FunctionComponent = () => {
-  const { selectedNode } = useContext(MBeanTreeContext)
+  const { selectedNode } = useMBeanTreeContext()
   const { pathname, search } = useLocation()
 
   if (!selectedNode) {
     return (
       <PageSection hasBodyWrapper={false} isFilled>
-        <EmptyState
-          headingLevel='h1'
-          icon={CubesIcon}
-          titleText='Select MBean'
-          variant={EmptyStateVariant.full}
-        ></EmptyState>
+        <EmptyState headingLevel='h1' icon={CubesIcon} titleText='Select MBean' variant={EmptyStateVariant.full} />
       </PageSection>
     )
   }
@@ -57,14 +52,14 @@ export const JmxContent: React.FunctionComponent = () => {
   /* Filter the nav items to those applicable to the selected node */
   const navItems = allNavItems.filter(nav => nav.isApplicable(selectedNode))
 
-  const searchWithNid = (pluginPathWithNodeId(selectedNode, new URLSearchParams(search)) as { search: string }).search
+  const searchWithNid = (pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search))).search as string
 
   const mbeanNav = (
     <Nav aria-label='MBean Nav' variant='horizontal-subnav'>
       <NavList>
         {navItems.map(nav => (
           <NavItem key={nav.id} isActive={pathname === `${pluginPath}/${nav.id}`}>
-            <NavLink to={{ pathname: `${pluginPath}/${nav.id}`, search }}>{nav.title}</NavLink>
+            <NavLink to={{ pathname: `${pluginPath}/${nav.id}`, search: searchWithNid }}>{nav.title}</NavLink>
           </NavItem>
         ))}
       </NavList>

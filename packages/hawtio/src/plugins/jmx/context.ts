@@ -1,109 +1,132 @@
 import { EVENT_REFRESH, eventService } from '@hawtiosrc/core'
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
-import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { To, useNavigate, useSearchParams } from 'react-router'
-import { log, PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
+import { createContext, startTransition, useContext, useEffect, useState } from 'react'
+import { type To, useLocation, useNavigate, useSearchParams } from 'react-router'
+import { PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
 /**
- * Custom React hook for using JMX MBean tree.
+ * Custom React hook to use and manage the JMX MBean tree. This hook combines:
+ * * top-level context for the "selected node"
+ * * own state for the tree (taken from the `workspace` into the React state) and its loading status
+ * * effect for managing the synchronization with `nid` query parameter for the selected node
+ * * effect for loading the tree and refreshing it based on the background change (TreeWatcher)
  */
 export function useMBeanTree() {
+  // the top-level state declared at HawtioPage level which contains global "selected node" state
+  const { selectedNode, setSelectedNode } = useContext(PluginNodeSelectionContext)
+
+  // Jmx plugin specific state containing the full Jmx tree available outside the React state
   const [tree, setTree] = useState(MBeanTree.createEmpty(pluginName))
   const [loaded, setLoaded] = useState(false)
-  const { selectedNode, setSelectedNode } = useContext(PluginNodeSelectionContext)
+
+  // hooks from React Router to synchronize selected node with `nid` query parameter (in both directions)
+  const { pathname, search } = useLocation()
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  /*
-   * Need to preserve the selected node between re-renders since the
-   * populateTree function called via the refresh listener does not
-   * cache the value and stores it as null
-   */
-  const refSelectedNode = useRef<MBeanNode | null>()
-  refSelectedNode.current = selectedNode
-
-  const populateTree = async () => {
-    const wkspTree = await workspace.getTree()
-    setTree(wkspTree)
-
-    const nodeId = searchParams.get(PARAM_KEY_NODE_ID)
-    if (nodeId && nodeId !== refSelectedNode.current?.id) {
-      log.debug('Restore selected node with nid:', nodeId)
-      // Try to restore node from URL
-      const urlNode = wkspTree.find(node => node.id === nodeId)
-      if (urlNode) {
-        setSelectedNode(urlNode)
-        refSelectedNode.current = urlNode
-      } else {
-        // Clear nid as it is invalid
-        log.debug('Clear invalid nid:', nodeId)
-        searchParams.delete(PARAM_KEY_NODE_ID)
-        setSearchParams(searchParams)
-      }
-    }
-
-    if (!refSelectedNode.current) return
-
-    const path = [...refSelectedNode.current.path()]
-
-    // Expand the nodes to redisplay the path
-    wkspTree.forEach(path, node => {
-      node.defaultExpanded = true
-    })
-
-    // Ensure the new version of the selected node is selected
-    const newSelected = wkspTree.navigate(...path)
-    if (newSelected) {
-      setSelectedNode(newSelected)
-      // Reset to base path with nid to sync URL with restored selection
-      navigate(pluginPathWithNodeId(newSelected, searchParams), { replace: true })
-    } else {
-      // Node no longer exists - clear selection and go to base path
-      navigate(pluginPath, { replace: true })
-    }
-  }
-
+  // this effect loads the tree - both at initial render and when the tree is refreshed (by TreeWatcher)
+  // outside of React
   useEffect(() => {
+    let apply = true
     const loadTree = async () => {
-      await populateTree()
-      setLoaded(true)
+      const tree = await workspace.getTree()
+      if (apply) {
+        setTree(tree)
+        setLoaded(true)
+      }
     }
 
     const listener = () => {
       setLoaded(false)
+      apply = true
       loadTree()
     }
     eventService.onRefresh(listener)
 
     loadTree()
 
-    return () => eventService.removeListener(EVENT_REFRESH, listener)
+    return () => {
+      apply = false
+      eventService.removeListener(EVENT_REFRESH, listener)
+    }
   }, [])
+
+  // another effect synchronizes the `nid` query parameter and the global state for "selected node"
+  useEffect(() => {
+    const nid = searchParams.get('nid')
+    if (selectedNode && (!nid || nid !== selectedNode.id)) {
+      setSearchParams(params => {
+        // reflect the selected node in query parameter
+        params.set('nid', selectedNode.id)
+        return params
+      }, { replace: true })
+      // navigate(pluginPathWithNodeId(selectedNode, pathname, usp), { replace: true, flushSync: true })
+      return
+    }
+    if (loaded) {
+      if (!selectedNode && nid) {
+        // reflect the query parameter in selected node
+        const found = tree.find(node => node.id === nid)
+        if (found) {
+          tree.forEach(found.path(), n => {
+            workspace.expand(true, n)
+          })
+          setSelectedNode(found)
+        } else {
+          navigate(pluginPath, { replace: true })
+        }
+      }
+    }
+  }, [pathname, search, loaded, tree, selectedNode, setSelectedNode, navigate, searchParams, setSearchParams])
+
+  // this effect navigates the tree and expands relevant nodes if the selected node changes
+  useEffect(() => {
+    if (selectedNode) {
+      const path = [...selectedNode.path()]
+      // Ensure the new version of the selected node is selected in the reloaded tree
+      const newSelected = tree.navigate(...path)
+      if (newSelected) {
+        tree.forEach(path, n => {
+          workspace.expand(true, n)
+        })
+        // important to reselect the node upon refresh to point to a new instance
+        // with the same ID and path
+        if (!Object.is(newSelected, selectedNode)) {
+          setSelectedNode(newSelected)
+        }
+      }
+    }
+  }, [tree, selectedNode, setSelectedNode])
 
   return { tree, loaded, selectedNode, setSelectedNode }
 }
 
 /**
- * Build URL query string with nid parameter, preserving other existing params
- * @param node - The node to encode
- * @param searchParams - The current URL search params to preserve, defaults to the ones from the window location
+ * Build URL query string with `nid` parameter, preserving other existing params
+ * @param node The node to encode
+ * @param pathname the path to use for the prepared URL
+ * @param searchParams The current URL search params to preserve, defaults to the ones from the window location
  */
-export function pluginPathWithNodeId(
-  node: MBeanNode,
-  searchParams: URLSearchParams = new URLSearchParams(window.location.search),
-): Partial<To> {
+export function pluginPathWithNodeId(node: MBeanNode,
+                                     pathname: string,
+                                     searchParams: URLSearchParams = new URLSearchParams(window.location.search)): Partial<To> {
   searchParams.set(PARAM_KEY_NODE_ID, node.id)
-  const query = `?${searchParams.toString()}`
-  return { pathname: pluginPath, search: query }
+  return { pathname, search: searchParams.toString() }
 }
 
+/**
+ * Type for the state accessed by `useContext(MBeanTreeContext)`.
+ */
 type MBeanTreeContext = {
   tree: MBeanTree
   selectedNode: MBeanNode | null
   setSelectedNode: (selected: MBeanNode | null) => void
 }
 
+/**
+ * The Jmx context with default values to be shared and accessed by the split tree/content for Jmx plugin.
+ */
 export const MBeanTreeContext = createContext<MBeanTreeContext>({
   tree: MBeanTree.createEmpty(pluginName),
   selectedNode: null,
@@ -111,3 +134,14 @@ export const MBeanTreeContext = createContext<MBeanTreeContext>({
     /* no-op */
   },
 })
+
+/**
+ * Helper hook for accessing MBeanTreeContext data in a safe way
+ */
+export function useMBeanTreeContext() {
+  const ctx = useContext(MBeanTreeContext)
+  if (!ctx) {
+    throw new Error('Call useMBeanTreeContext() only within <MBeanTreeContext.Provider>')
+  }
+  return ctx
+}

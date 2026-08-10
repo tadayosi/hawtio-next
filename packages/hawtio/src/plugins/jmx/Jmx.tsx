@@ -11,6 +11,7 @@ export const Jmx: React.FunctionComponent = () => {
   const { tree, loaded, selectedNode, setSelectedNode } = useMBeanTree()
 
   if (!loaded) {
+    // the tree is not loaded yet
     return (
       <PageSection hasBodyWrapper={false}>
         <Spinner aria-label='Loading MBean tree' />
@@ -19,6 +20,7 @@ export const Jmx: React.FunctionComponent = () => {
   }
 
   if (tree.isEmpty()) {
+    // the tree is empty, so no need to show the split tree/content UI
     return (
       <PageSection hasBodyWrapper={false}>
         <EmptyState
@@ -31,6 +33,8 @@ export const Jmx: React.FunctionComponent = () => {
     )
   }
 
+  // actual UI that's showing synchronized tree/content UI. Both the tree and the content
+  // can access the shared state (tree, selected node) using useMBeanTreeContext() hook
   return (
     <MBeanTreeContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
       <Split className='jmx-split' sizes={[30, 70]} minSize={200} gutterSize={5}>

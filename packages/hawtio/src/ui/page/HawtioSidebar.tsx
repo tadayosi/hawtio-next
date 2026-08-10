@@ -1,12 +1,14 @@
 import { Nav, NavItem, NavList, PageSidebar, PageSidebarBody } from '@patternfly/react-core'
 import React, { useContext } from 'react'
-import { NavLink, useLocation } from 'react-router'
-import { PageContext } from './context'
+import { NavLink } from 'react-router'
+import { PageContext, useHawtioLocation } from './context'
 import './HawtioSideBar.css'
 
 export const HawtioSidebar: React.FunctionComponent = () => {
   const { plugins } = useContext(PageContext)
-  const { pathname, search } = useLocation()
+  // it's important to not call useLocation(), because `search` for the sidebar links should NOT
+  // include `nid` parameter (or any other plugin-specific parameters)
+  const { pathname, search } = useHawtioLocation()
 
   const pathMatch = (path: string, pluginPath: string) => {
     if (!pluginPath.startsWith('/')) {

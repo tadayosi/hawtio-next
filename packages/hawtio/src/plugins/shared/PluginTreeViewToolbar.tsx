@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
+import React, { ChangeEvent } from 'react'
 import { Button, Toolbar, ToolbarContent, ToolbarGroup, ToolbarItem, TreeViewSearch } from '@patternfly/react-core'
 
 interface ToolbarProps {
@@ -6,20 +6,16 @@ interface ToolbarProps {
   onSetExpanded: (newExpanded: boolean) => void
 }
 
-export const PluginTreeViewToolbar: React.FunctionComponent<ToolbarProps> = (props: ToolbarProps) => {
-  const [expanded, setExpanded] = useState(false)
-
+export const PluginTreeViewToolbar = (props: ToolbarProps) => {
   const onSearch = (event: ChangeEvent<HTMLInputElement>) => {
     if (props.onSearch) {
       props.onSearch(event)
     }
   }
 
-  const toggleExpanded = () => {
-    const newExpanded = !expanded
-    setExpanded(newExpanded)
+  const toggleExpanded = (expand: boolean) => {
     if (props.onSetExpanded) {
-      props.onSetExpanded(newExpanded)
+      props.onSetExpanded(expand)
     }
   }
 
@@ -36,8 +32,11 @@ export const PluginTreeViewToolbar: React.FunctionComponent<ToolbarProps> = (pro
             />
           </ToolbarItem>
           <ToolbarItem variant='expand-all'>
-            <Button variant='link' aria-label='Expand Collapse' onClick={toggleExpanded}>
-              {expanded ? 'Collapse all' : 'Expand all'}
+            <Button size='sm' variant='control' aria-label='Expand Collapse' onClick={() => toggleExpanded(true)}>
+              Expand all
+            </Button>
+            <Button size='sm' variant='control' aria-label='Expand Collapse' onClick={() => toggleExpanded(false)}>
+              Collapse all
             </Button>
           </ToolbarItem>
         </ToolbarGroup>

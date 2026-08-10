@@ -2,7 +2,7 @@ import { hawtio, type HawtioPlugin } from '@hawtiosrc/core'
 import { helpRegistry } from '@hawtiosrc/help/registry'
 import { workspace } from '@hawtiosrc/plugins/shared'
 import { preferencesRegistry } from '@hawtiosrc/preferences'
-import { pluginPath } from './globals'
+import { PARAM_KEY_NODE_ID, pluginPath } from './globals'
 import help from './help.md'
 
 const order = 13
@@ -17,7 +17,7 @@ export const jmx: HawtioPlugin = () => {
         path: pluginPath,
         order,
         component: m.Jmx,
-        knownQueryParams: ['nid'],
+        knownQueryParams: [PARAM_KEY_NODE_ID],
         isActive: async () => workspace.hasMBeans(),
       }
     })
