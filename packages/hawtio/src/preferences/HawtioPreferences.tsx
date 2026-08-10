@@ -1,7 +1,7 @@
 import { helpRegistry } from '@hawtiosrc/help/registry'
 import { Nav, NavItem, NavList, PageSection, Title } from '@patternfly/react-core'
 import React from 'react'
-import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes, useLocation } from 'react-router'
 import help from './help.md'
 import { HomePreferences } from './HomePreferences'
 import { LogsPreferences } from './LogsPreferences'

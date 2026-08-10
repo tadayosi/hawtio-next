@@ -45,7 +45,7 @@ And finally there is one confusing, but recommended configuration - a _peer depe
 ```json
 "devDependencies": {
   "react": "^18.2.0",
-  "react-router-dom": "6.30.1"
+  "react-router": "^7.18.2"
 },
 "peerDependencies": {
   "react": ">=16.8"

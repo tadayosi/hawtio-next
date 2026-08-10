@@ -4,7 +4,7 @@ import { Content, EmptyState, Nav, NavItem, NavList, PageGroup, PageSection, Tit
 import { CubesIcon } from '@patternfly/react-icons/dist/esm/icons/cubes-icon'
 import Jolokia, { JolokiaErrorResponse, JolokiaFetchErrorResponse, JolokiaSuccessResponse } from 'jolokia.js'
 import React, { useContext, useEffect, useState } from 'react'
-import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom'
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router'
 import './CamelContent.css'
 import * as camelService from './camel-service'
 import { CamelContext } from './context'

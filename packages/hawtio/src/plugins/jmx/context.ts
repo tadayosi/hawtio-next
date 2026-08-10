@@ -2,7 +2,7 @@ import { EVENT_REFRESH, eventService } from '@hawtiosrc/core'
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { To, useNavigate, useSearchParams } from 'react-router-dom'
+import { To, useNavigate, useSearchParams } from 'react-router'
 import { log, PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
 /**

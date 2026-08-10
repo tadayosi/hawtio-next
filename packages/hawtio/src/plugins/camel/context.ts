@@ -3,7 +3,7 @@ import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
 import { type TreeViewDataItem } from '@patternfly/react-core'
 import { createContext, useContext, useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router'
 import * as camelService from './camel-service'
 import { jmxDomain, pluginName, pluginPath } from './globals'
 
