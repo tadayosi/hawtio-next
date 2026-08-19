@@ -71,7 +71,7 @@
     "js-logger": "^1.6.1",
     "jwt-decode": "^4.0.0",
     "keycloak-js": "^26.2.4",
-    "oauth4webapi": "^3.8.6",
+    "oauth4webapi": "^3.8.7",
     "react-markdown": "^10.1.0",
     "react-split": "^2.0.14",
     "reactflow": "^11.11.4",
