@@ -67,7 +67,7 @@
     "dagre": "^0.8.5",
     "dompurify": "^3.4.13",
     "eventemitter3": "^5.0.4",
-    "jolokia.js": "^2.6.0",
+    "jolokia.js": "^2.6.1",
     "js-logger": "^1.6.1",
     "jwt-decode": "^4.0.0",
     "keycloak-js": "^26.2.4",
