@@ -219,6 +219,17 @@ describe('MBeanNode', () => {
     counter = 0
     domainNode.forEach(path, _ => (counter = counter + 1))
     expect(counter).toEqual(path.length)
+
+    // TODO: I'm not sure if this one should work while the above should not...
+    path = ['SampleCame*', 'c*ponents', '*artz']
+    counter = 0
+    domainNode.forEach(path, _ => (counter = counter + 1))
+    expect(counter).toEqual(path.length)
+
+    path = ['org.apache.cxf', 'SampleCame*', 'c*ponents', '*artz']
+    counter = 0
+    domainNode.forEach(path, _ => (counter = counter + 1))
+    expect(counter).toEqual(0)
   })
 
   test('findAncestors', async () => {

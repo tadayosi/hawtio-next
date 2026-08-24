@@ -126,7 +126,8 @@ export function matchWithWildcard(value: string, pattern: string): boolean {
   // the correct regex syntax.
   const rule = pattern
     .split('*')
-    // Escape any regex special characters
+    // Escape any regex special characters.
+    // RegExp.escape() should work in browser since 2025. Part of ECMAScript 2027
     .map(s => s.replace(/([.*+?^=!:${}()|[\]/\\])/g, '\\$1'))
     .join('.*')
   const regexp = new RegExp(`^${rule}$`, 'i')

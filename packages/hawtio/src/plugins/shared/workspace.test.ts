@@ -1,6 +1,7 @@
 import { userService } from '@hawtiosrc/auth'
 import { MBeanTree } from '@hawtiosrc/plugins/shared/tree'
 import { workspace } from './workspace'
+import { MBEAN_NODE_ID_SEPARATOR as SEP } from './tree/node'
 
 jest.mock('@hawtiosrc/plugins/shared/jolokia-service')
 
@@ -37,12 +38,31 @@ describe('workspace', () => {
     ).resolves.toBeTruthy()
     await expect(
       workspace.treeContainsDomainAndProperties('quartz', {
-        id: 'quartz-QuartzScheduler',
+        id: `quartz${SEP}QuartzScheduler`,
         name: 'QuartzScheduler',
       }),
     ).resolves.toBeTruthy()
     await expect(
       workspace.treeContainsDomainAndProperties('quartz', { id: 'SomeRandomChild', name: 'NoThisChildIsNotHere' }),
+    ).resolves.toBeFalsy()
+
+    // id is matched by `startsWith` (historically?)
+    await expect(
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans'})
+    ).resolves.toBeTruthy()
+    await expect(
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-fold'})
+    ).resolves.toBeTruthy()
+    await expect(
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-folder'})
+    ).resolves.toBeTruthy()
+
+    // name is matched by `===`
+    await expect(
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-MBeans'})
+    ).resolves.toBeTruthy()
+    await expect(
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-M'})
     ).resolves.toBeFalsy()
   })
 

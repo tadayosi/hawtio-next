@@ -67,9 +67,12 @@ export interface OptimisedMBeanOperation extends MBeanOperation {
   canInvoke?: boolean
 }
 
+/**
+ * A type of a node-filtering function
+ */
 export type MBeanNodeFilterFn = (node: MBeanNode) => boolean
 
-export const MBEAN_NODE_ID_SEPARATOR = '/'
+export const MBEAN_NODE_ID_SEPARATOR = '-'
 
 export class MBeanNode implements TreeViewDataItem {
   /**
@@ -126,11 +129,8 @@ export class MBeanNode implements TreeViewDataItem {
   private generateId(folder: boolean): string {
     const idPrefix = this.parent ? this.parent.idWithoutPostfix() + MBEAN_NODE_ID_SEPARATOR : ''
     const idPostfix = folder ? '-folder' : ''
-    let v = escapeHtmlId(this.name)
-    if (this.metadata['id']) {
-      v = this.metadata['id']
-    }
-    let id = idPrefix + v + idPostfix
+    const nodeId = this.metadata['id'] ?? escapeHtmlId(this.name)
+    let id = idPrefix + nodeId + idPostfix
 
     // Check id is unique against current siblings
     if (this.parent) {
@@ -347,6 +347,10 @@ export class MBeanNode implements TreeViewDataItem {
     }
   }
 
+  /**
+   * Returns a "path" to the node in the entire tree. Each element is a name of the node and
+   * the order is from root node to this node.
+   */
   path(): string[] {
     const path = [this.name]
     let p = this.parent
@@ -358,13 +362,24 @@ export class MBeanNode implements TreeViewDataItem {
     return path
   }
 
+  /**
+   * Similar to "find by name", but uses a path to match nested nodes in children order.
+   * Return the target node if found or null otherwise.
+   * @param namePath
+   */
   navigate(...namePath: string[]): MBeanNode | null {
-    if (namePath.length === 0) return this // path is empty so return this node
+    if (namePath.length === 0) {
+      // path is empty so return this node
+      return this
+    }
 
     const name = namePath[0]
-    if (!name) return null
+    if (!name) {
+      return null
+    }
 
-    const child = this.findByNamePattern(name)
+    // navigation should be performed strictly level by level without skipping
+    const child = this.children?.find(n => matchWithWildcard(n.name, name))
     return child?.navigate(...namePath.slice(1)) ?? null
   }
 
@@ -374,20 +389,27 @@ export class MBeanNode implements TreeViewDataItem {
    * this node
    */
   forEach(namePath: string[], eachFn: (node: MBeanNode) => void) {
-    if (namePath.length === 0) return // path empty so nothing to do
+    if (namePath.length === 0 || !namePath[0]) {
+      // path is empty or first segment is empty so nothing to do
+      return
+    }
 
     const name = namePath[0]
-    if (!name) return
 
-    const child = this.findByNamePattern(name)
-    if (!child) return
+    // find matching starting from "this"
+    // TODO: should it skip to children if "this" doesn't match?
+    const child = this.find(node => matchWithWildcard(node.name, name))
+    if (!child) {
+      return
+    }
 
     eachFn(child)
     child.forEach(namePath.slice(1), eachFn)
   }
 
   /**
-   * Searches this node and all its descendants for the first node to match the filter.
+   * Checks this node and all its descendants for the first node to match the filter. DFS is used
+   * and first matching node (first `this` then the children) is returned
    */
   find(filter: MBeanNodeFilterFn): MBeanNode | null {
     if (filter(this)) {
@@ -395,10 +417,6 @@ export class MBeanNode implements TreeViewDataItem {
     }
 
     return this.children?.map(child => child.find(filter)).find(node => node !== null) ?? null
-  }
-
-  private findByNamePattern(name: string): MBeanNode | null {
-    return this.find(node => matchWithWildcard(node.name, name))
   }
 
   /**
@@ -574,7 +592,7 @@ export class MBeanNode implements TreeViewDataItem {
       if (!canInvoke) {
         return
       }
-      let op = null
+      let op
       if (method.endsWith(')')) {
         op = opsByString[method]
       } else {

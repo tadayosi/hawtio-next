@@ -16,16 +16,5 @@ export function escapeTags(text: string): string {
  * @param text string to be escaped
  */
 export function escapeHtmlId(text: string): string {
-  if (!text) {
-    return ''
-  }
-  if (text === encodeURIComponent(text)) {
-    return text
-  }
-  let encoded = window.btoa(text)
-  encoded = encoded.replace(/=+$/, '')
-  encoded = encoded.replaceAll('+', '-')
-  encoded = encoded.replaceAll('/', '_')
-  return `b:${encoded}`
-  // return text.replace(/\s/g, '')
+  return text.replace(/\s/g, '')
 }
