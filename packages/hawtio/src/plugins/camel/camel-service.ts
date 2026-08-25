@@ -373,9 +373,9 @@ export function disableProcessor(node: MBeanNode, id: string) {
 // ----- Camel version helper functions ----------------------------------------
 
 export async function getCamelVersions(): Promise<string[]> {
-  const { version: camel4_14Version } = await import('@hawtio/camel-model-v4_14/package.json')
   const { version: camel4_18Version } = await import('@hawtio/camel-model-v4_18/package.json')
-  return [camel4_14Version, camel4_18Version]
+  const { version: camel4_22Version } = await import('@hawtio/camel-model-v4_22/package.json')
+  return [camel4_18Version, camel4_22Version]
 }
 
 /**
@@ -383,16 +383,16 @@ export async function getCamelVersions(): Promise<string[]> {
  * the given node.
  */
 export async function getCamelModel(node: MBeanNode): Promise<CamelModel> {
-  // 4.18 ~     => 4.18.x
-  // 4.0 ~ 4.17 => 4.14.x
+  // 4.22 ~     => 4.22.x
+  // 4.0 ~ 4.21 => 4.18.x
+  if (isCamelVersionEQGT(node, 4, 22)) {
+    return (await import('@hawtio/camel-model-v4_22')) as unknown as CamelModel
+  }
   if (isCamelVersionEQGT(node, 4, 18)) {
     return (await import('@hawtio/camel-model-v4_18')) as unknown as CamelModel
   }
-  if (isCamelVersionEQGT(node, 4, 14)) {
-    return (await import('@hawtio/camel-model-v4_14')) as unknown as CamelModel
-  }
-  // Fallback to 4.14.x model
-  return (await import('@hawtio/camel-model-v4_14')) as unknown as CamelModel
+  // Fallback to 4.18.x model
+  return (await import('@hawtio/camel-model-v4_18')) as unknown as CamelModel
 }
 
 /**

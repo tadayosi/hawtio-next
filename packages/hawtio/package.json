@@ -58,8 +58,8 @@
     "prepack": "yarn build && yarn replace-version"
   },
   "dependencies": {
-    "@hawtio/camel-model-v4_14": "npm:@hawtio/camel-model@~4.14.5",
-    "@hawtio/camel-model-v4_18": "npm:@hawtio/camel-model@~4.18.1",
+    "@hawtio/camel-model-v4_18": "npm:@hawtio/camel-model@~4.18.4",
+    "@hawtio/camel-model-v4_22": "npm:@hawtio/camel-model@~4.22.0",
     "@jolokia.js/simple": "^2.6.1",
     "@module-federation/utilities": "^3.1.77",
     "@monaco-editor/react": "^4.6.0",
