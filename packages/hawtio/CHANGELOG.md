@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.3.0](https://github.com/hawtio/hawtio-react/compare/v2.2.1...v2.3.0) (2026-08-26)
+
+### Features
+
+* **camel:** support Camel model 4.22 and drop 4.14 ([4cea70f](https://github.com/hawtio/hawtio-react/commit/4cea70f67edb69b0346b795faffbbd97820eeaa0))
+* Separate unauthorized/forbidden statuses ([e564d63](https://github.com/hawtio/hawtio-react/commit/e564d6350b6fb902878255215b7408022591a658))
+* **ui:** Add theme selector to Hawtio preferences (fixes [#2101](https://github.com/hawtio/hawtio-react/issues/2101)) ([2eee15a](https://github.com/hawtio/hawtio-react/commit/2eee15acf6723b1e3b6efa34c543609fc8b6e1b5))
+
+### Bug Fixes
+
+* **api:** export context from HawtioPage UI component ([a3e4528](https://github.com/hawtio/hawtio-react/commit/a3e45280cea8c0f43f7a4a5a15c1fbf41a1a1154))
+* **camel:** displayed number for ExchangesTotal is wrong ([c4e6702](https://github.com/hawtio/hawtio-react/commit/c4e670259eeb64d5551361ab3ed9431b39cb050c)), closes [hawtio/hawtio#4391](https://github.com/hawtio/hawtio-react/issues/4391)
+* **deps:** upgrade react-router to v7 ([45ef7af](https://github.com/hawtio/hawtio-react/commit/45ef7af3671d7199684df3ab4ff475fec2c24e95)), closes [#2187](https://github.com/hawtio/hawtio-react/issues/2187)
+* **jmx:** make attribute details follow page scroll ([2affc50](https://github.com/hawtio/hawtio-react/commit/2affc5071a9311bdcabfbce58badf77fcb5b0431))
+* **style:** Fix formatting errors ([60ebe37](https://github.com/hawtio/hawtio-react/commit/60ebe37d68bd000ba487e7fd488985da6dfc2822))
+* test failures around login statuses ([5d52bb8](https://github.com/hawtio/hawtio-react/commit/5d52bb81b125bc0f989191665d884ef2cd28dfc5))
+* **ui:** Fix runtime chart labels in dark mode (fixes HAWNG-2033) ([04be6ea](https://github.com/hawtio/hawtio-react/commit/04be6eac5a801403fbe48c4ff190993fde710a78))
+* **ui:** Review usage of SVG files imported through tsup/esbuild loaders (fixes [#2088](https://github.com/hawtio/hawtio-react/issues/2088)) ([fa39e95](https://github.com/hawtio/hawtio-react/commit/fa39e956dcda549a9a60681b5c3e2ffe77f5e0d7))
+* **ui:** Use better CSS for JMX operation error messages (fixes [#2110](https://github.com/hawtio/hawtio-react/issues/2110)) ([a11b789](https://github.com/hawtio/hawtio-react/commit/a11b7891475a4443ecf6be00f11f43343ebb5318))
+* use replaceAll for non-regexp replacements ([8e8eb8c](https://github.com/hawtio/hawtio-react/commit/8e8eb8cf4428318f5533e69f7128008ca9f96fe1))
 ## [2.3.0-pre.1](https://github.com/hawtio/hawtio-react/compare/v2.3.0-pre.0...v2.3.0-pre.1) (2026-06-12)
 
 
