@@ -27,11 +27,12 @@ import { CamelRoutes } from './routes/CamelRoutes'
 import { Source } from './routes/Source'
 import { Trace } from './trace'
 import { TypeConverters } from './type-converters'
+import { pluginPathWithNodeId } from '@hawtiosrc/plugins/jmx/context'
 
 type NavItem = {
   id: string
   title: string
-  component: JSX.Element
+  component: React.ReactNode
   isApplicable: (node: MBeanNode) => boolean
 }
 
@@ -114,12 +115,14 @@ export const CamelContent: React.FunctionComponent = () => {
   /* Filter the nav items to those applicable to the selected node */
   const navItems = allNavItems.filter(nav => nav.isApplicable(selectedNode))
 
+  const searchWithNid = (pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search))).search as string
+
   const camelNav = (
     <Nav aria-label='Camel Nav' variant='horizontal-subnav'>
       <NavList>
         {navItems.map(nav => (
           <NavItem key={nav.id} isActive={pathname === `${pluginPath}/${nav.id}`}>
-            <NavLink to={{ pathname: `${pluginPath}/${nav.id}`, search }}>{nav.title}</NavLink>
+            <NavLink to={{ pathname: `${pluginPath}/${nav.id}`, search: searchWithNid }}>{nav.title}</NavLink>
           </NavItem>
         ))}
       </NavList>
@@ -150,7 +153,7 @@ export const CamelContent: React.FunctionComponent = () => {
         {navItems.length > 0 && (
           <Routes>
             {camelNavRoutes}
-            <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} replace={true} />} />
+            <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search: searchWithNid }} replace={true} />} />
           </Routes>
         )}
         {navItems.length === 0 && !selectedNode.objectName && <JmxContentMBeans />}

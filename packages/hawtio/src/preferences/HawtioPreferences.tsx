@@ -24,7 +24,7 @@ export const HawtioPreferences: React.FunctionComponent = () => {
           <NavList>
             {preferencesRegistry.getPreferences().map(({ id, title }) => (
               <NavItem key={id} isActive={pathname === `${pluginPath}/${id}`}>
-                <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title} (id="{id}")</NavLink>
+                <NavLink to={{ pathname: `${pluginPath}/${id}`, search }}>{title}</NavLink>
               </NavItem>
             ))}
           </NavList>

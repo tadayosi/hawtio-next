@@ -5,6 +5,8 @@ export const pluginPath = '/camel'
 export const pluginName = 'hawtio-camel'
 export const log = Logger.get(pluginName)
 
+export const PARAM_KEY_NODE_ID = 'nid'
+
 export const camelContexts = 'Camel Contexts'
 
 export const domainNodeType = 'Camel Domain'

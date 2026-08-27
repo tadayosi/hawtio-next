@@ -67,14 +67,14 @@ export const JmxContent: React.FunctionComponent = () => {
   )
 
   const mbeanRoutes = navItems.map(nav => (
-    <Route key={nav.id} path={nav.id} element={React.createElement(nav.component)} />
+    <Route key={nav.id} path={nav.id} Component={nav.component} />
   ))
 
   return (
     <PageGroup id='jmx-content'>
       <PageSection id='jmx-content-header' hasBodyWrapper={false}>
         <Title headingLevel='h1'>{selectedNode.name}</Title>
-        <Content component='small'>{selectedNode.objectName}</Content>
+        {selectedNode.objectName && <Content component='small'>{selectedNode.objectName}</Content>}
       </PageSection>
       <PageSection type='tabs' hasBodyWrapper={false}>
         {mbeanNav}

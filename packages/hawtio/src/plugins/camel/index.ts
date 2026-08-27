@@ -3,7 +3,7 @@ import { helpRegistry } from '@hawtiosrc/help/registry'
 import { treeProcessorRegistry, workspace } from '@hawtiosrc/plugins/shared'
 import { preferencesRegistry } from '@hawtiosrc/preferences/registry'
 import { getCamelVersions } from './camel-service'
-import { jmxDomain, log, pluginPath } from './globals'
+import { PARAM_KEY_NODE_ID, jmxDomain, log, pluginPath } from './globals'
 import help from './help.md'
 import { camelTreeProcessor } from './tree-processor'
 
@@ -19,6 +19,7 @@ export const camel: HawtioPlugin = () => {
         path: pluginPath,
         order,
         component: m.Camel,
+        knownQueryParams: [PARAM_KEY_NODE_ID],
         isActive: async () => {
           return workspace.treeContainsDomainAndProperties(jmxDomain)
         },

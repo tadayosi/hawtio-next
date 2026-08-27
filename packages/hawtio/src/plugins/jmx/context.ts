@@ -1,7 +1,7 @@
 import { EVENT_REFRESH, eventService } from '@hawtiosrc/core'
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
-import { createContext, startTransition, useContext, useEffect, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 import { type To, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
@@ -30,6 +30,8 @@ export function useMBeanTree() {
   useEffect(() => {
     let apply = true
     const loadTree = async () => {
+      // Jmx plugin has easiest job when taking the tree into the React state.
+      // other plugins are using a subtree or even may create a brand new one based on some nodes
       const tree = await workspace.getTree()
       if (apply) {
         setTree(tree)
@@ -61,7 +63,7 @@ export function useMBeanTree() {
         params.set('nid', selectedNode.id)
         return params
       }, { replace: true })
-      // navigate(pluginPathWithNodeId(selectedNode, pathname, usp), { replace: true, flushSync: true })
+      // we don't have to navigate() - setSearchParams does it underneath (in React transition)
       return
     }
     if (loaded) {
@@ -74,7 +76,8 @@ export function useMBeanTree() {
           })
           setSelectedNode(found)
         } else {
-          navigate(pluginPath, { replace: true })
+          searchParams.delete('nid')
+          navigate({ pathname: pluginPath, search: searchParams.toString() }, { replace: true })
         }
       }
     }

@@ -11,6 +11,7 @@ export const Camel: React.FunctionComponent = () => {
   const { tree, loaded, selectedNode, setSelectedNode } = useCamelTree()
 
   if (!loaded) {
+    // the tree is not loaded yet
     return (
       <PageSection hasBodyWrapper={false}>
         <Spinner aria-label='Loading Camel Contexts tree' />
@@ -19,6 +20,7 @@ export const Camel: React.FunctionComponent = () => {
   }
 
   if (tree.isEmpty()) {
+    // the tree is empty, so no need to show the split tree/content UI
     return (
       <PageSection hasBodyWrapper={false}>
         <EmptyState
@@ -31,6 +33,8 @@ export const Camel: React.FunctionComponent = () => {
     )
   }
 
+  // actual UI that's showing synchronized tree/content UI. Both the tree and the content
+  // can access the shared state (tree, selected node) using useMBeanTreeContext() hook
   return (
     <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
       <Split className='camel-split' sizes={[25, 75]} minSize={200} gutterSize={5}>

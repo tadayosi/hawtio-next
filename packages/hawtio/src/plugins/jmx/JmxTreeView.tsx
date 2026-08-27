@@ -40,7 +40,9 @@ export const JmxTreeView: React.FunctionComponent = () => {
    * eg. new endpoint being created
    */
   useEffect(() => {
-    setFilteredTree(tree.getTree())
+    startTransition(() => {
+      setFilteredTree(tree.getTree())
+    })
 
     if (inputRef.current) {
       // it's available only if user searches something in the first place

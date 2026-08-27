@@ -31,7 +31,7 @@ export const PluginTreeViewToolbar = (props: ToolbarProps) => {
               aria-label='Search input example'
             />
           </ToolbarItem>
-          <ToolbarItem variant='expand-all'>
+          <ToolbarItem variant='expand-all' style={{ paddingRight: '0.5rem' }}>
             <Button size='sm' variant='control' aria-label='Expand Collapse' onClick={() => toggleExpanded(true)}>
               Expand all
             </Button>
