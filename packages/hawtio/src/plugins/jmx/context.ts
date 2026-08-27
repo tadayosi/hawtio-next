@@ -1,7 +1,7 @@
 import { EVENT_REFRESH, eventService } from '@hawtiosrc/core'
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins'
 import { MBeanNode, MBeanTree, workspace } from '@hawtiosrc/plugins/shared'
-import { createContext, useContext, useEffect, useState } from 'react'
+import { createContext, startTransition, useContext, useEffect, useState } from 'react'
 import { type To, useLocation, useNavigate, useSearchParams } from 'react-router'
 import { PARAM_KEY_NODE_ID, pluginName, pluginPath } from './globals'
 
@@ -86,21 +86,26 @@ export function useMBeanTree() {
   // this effect navigates the tree and expands relevant nodes if the selected node changes
   useEffect(() => {
     if (selectedNode) {
-      const path = [...selectedNode.path()]
-      // Ensure the new version of the selected node is selected in the reloaded tree
-      const newSelected = tree.navigate(...path)
-      if (newSelected) {
+      // the selected node may come from plugins that build a tree view from the "main" tree.
+      // if the nodes preserve the IDs, we may selected related node in the main tree by searching
+      // for actual node by id
+      const treeNode = tree.find(node => node.id === selectedNode.id)
+      if (treeNode) {
+        const path = [...treeNode.path()]
         tree.forEach(path, n => {
           workspace.expand(true, n)
         })
         // important to reselect the node upon refresh to point to a new instance
         // with the same ID and path
-        if (!Object.is(newSelected, selectedNode)) {
-          setSelectedNode(newSelected)
+        if (!Object.is(treeNode, selectedNode)) {
+          startTransition(() => {
+            setSelectedNode(treeNode)
+          })
+          navigate({ pathname: pluginPath, search: searchParams.toString() }, { replace: true })
         }
       }
     }
-  }, [tree, selectedNode, setSelectedNode])
+  }, [tree, selectedNode, setSelectedNode, navigate, searchParams])
 
   return { tree, loaded, selectedNode, setSelectedNode }
 }

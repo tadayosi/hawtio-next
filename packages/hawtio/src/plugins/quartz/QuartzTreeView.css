@@ -12,10 +12,7 @@
 }
 
 #quartz-tree-view .pf-v6-c-tree-view__node-toggle {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  padding-left: 6px;
-  padding-right: 6px;
+  padding: 0 6px;
 }
 
 #quartz-tree-view .pf-v6-c-tree-view__node-text {
@@ -24,6 +21,7 @@
 
 #quartz-tree-view .pf-v6-c-tree-view__node-icon {
   flex-shrink: 0;
+  padding-top: 4px;
 }
 
 #quartz-tree-view .pf-v6-c-tree-view__node-text {

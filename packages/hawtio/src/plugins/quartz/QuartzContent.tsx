@@ -69,7 +69,7 @@ export const QuartzContent: React.FunctionComponent = () => {
     </Nav>
   )
 
-  const routes = navItems.map(nav => <Route key={nav.id} path={nav.id} element={React.createElement(nav.component)} />)
+  const routes = navItems.map(nav => <Route key={nav.id} path={nav.id} Component={nav.component} />)
 
   return (
     <PageGroup id='quartz-content'>

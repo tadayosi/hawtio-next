@@ -206,7 +206,7 @@ export class MBeanNode implements TreeViewDataItem {
 
   /**
    * Copy the node to a new node with the given name, transferring the icons, children,
-   * metadata, and MBean info.
+   * metadata, and MBean info, but not its parent or ID.
    */
   copyTo(name: string): MBeanNode {
     const copy = new MBeanNode(null, name, this.folder)
