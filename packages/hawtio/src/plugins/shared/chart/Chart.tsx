@@ -275,6 +275,9 @@ export const Chart: React.FunctionComponent = () => {
       attributesToWatch.current = {}
       setInitialTime(-1)
     }
+    // TODO: I have to disable this warning for now. The code works, and if I add related dependencies
+    //  and use useCallbacks, it stops working...
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedNode])
 
   if (
