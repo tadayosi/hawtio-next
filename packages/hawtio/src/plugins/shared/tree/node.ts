@@ -379,7 +379,7 @@ export class MBeanNode implements TreeViewDataItem {
     }
 
     // navigation should be performed strictly level by level without skipping
-    const child = this.children?.find(n => matchWithWildcard(n.name, name))
+    const child = this.find(n => matchWithWildcard(n.name, name))
     return child?.navigate(...namePath.slice(1)) ?? null
   }
 

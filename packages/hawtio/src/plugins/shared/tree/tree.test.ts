@@ -90,13 +90,13 @@ describe('MBeanTree', () => {
     expect(xnio2MBean.childCount()).toEqual(0)
 
     const xnio1Addr = xnio1Folder.getChildren()[0] as MBeanNode
-    expect(xnio1Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-1${SEP}${base64url('/0:0:0:0:0:0:0:0:10000')}`)
+    expect(xnio1Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-1${SEP}/0:0:0:0:0:0:0:0:10000`)
     expect(xnio1Addr.name).toEqual('/0:0:0:0:0:0:0:0:10000')
     expect(xnio1Addr.mbean).toBeDefined()
     expect(xnio1Addr.childCount()).toEqual(0)
 
     const xnio2Addr = xnio2Folder.getChildren()[0] as MBeanNode
-    expect(xnio2Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-2${SEP}${base64url('/0:0:0:0:0:0:0:0:10001')}`)
+    expect(xnio2Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-2${SEP}/0:0:0:0:0:0:0:0:10001`)
     expect(xnio2Addr.name).toEqual('/0:0:0:0:0:0:0:0:10001')
     expect(xnio2Addr.mbean).toBeDefined()
     expect(xnio2Addr.childCount()).toEqual(0)
@@ -245,7 +245,7 @@ describe('MBeanTree', () => {
     const path = ['quartz', 'QuartzScheduler', 'NON_CLUSTERED']
     const qNode = wkspTree.navigate(...path) as MBeanNode
     expect(qNode).not.toBeNull()
-    expect(qNode.id).toBe(`quartz${SEP}QuartzScheduler${SEP}NON_CLUSTERED`)
+    expect(qNode.id).toBe(`quartz${SEP}QuartzScheduler${SEP}DefaultQuartzScheduler-SampleCamel${SEP}NON_CLUSTERED`)
   })
 
   test('forEach', () => {

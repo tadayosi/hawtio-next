@@ -7,6 +7,7 @@ import path from 'path'
 import { CamelTreeView } from './CamelTreeView'
 import { CamelContext } from './context'
 import { camelContexts, jmxDomain, pluginName } from './globals'
+import { MemoryRouter } from 'react-router'
 
 const routesXmlPath = path.resolve(__dirname, 'testdata', 'camel-sample-app-routes.xml')
 const sampleRoutesXml = fs.readFileSync(routesXmlPath, { encoding: 'utf8', flag: 'r' })
@@ -67,9 +68,11 @@ describe('CamelTreeView', () => {
     expect(domainNode).toBeNull()
 
     render(
-      <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
-        <CamelTreeView />
-      </CamelContext.Provider>,
+      <MemoryRouter>
+        <CamelContext.Provider value={{ tree, selectedNode, setSelectedNode }}>
+          <CamelTreeView />
+        </CamelContext.Provider>
+      </MemoryRouter>,
     )
 
     const domainItem = screen.queryByLabelText(jmxDomain)
