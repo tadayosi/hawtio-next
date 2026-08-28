@@ -1,11 +1,5 @@
 import { type ResolveUser, type UserAuthResult, userService } from '@hawtiosrc/auth/user-service'
-import {
-  AuthenticationResult,
-  configManager,
-  Logger,
-  OidcAuthenticationMethod,
-  TaskState,
-} from '@hawtiosrc/core'
+import { AuthenticationResult, configManager, Logger, OidcAuthenticationMethod, TaskState } from '@hawtiosrc/core'
 import { jwtDecode } from 'jwt-decode'
 import * as oidc from 'oauth4webapi'
 import { AuthorizationResponseError, AuthorizationServer, Client, ClientAuth, OAuth2Error } from 'oauth4webapi'

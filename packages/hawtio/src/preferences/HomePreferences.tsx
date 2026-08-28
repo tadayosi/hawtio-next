@@ -120,28 +120,28 @@ const UIForm: React.FunctionComponent = () => {
 }
 
 const ConfirmResetModal: React.FunctionComponent<{
-  isConfirmResetOpen: boolean,
-  confirmReset: () => void,
-  reset: () => void,
+  isConfirmResetOpen: boolean
+  confirmReset: () => void
+  reset: () => void
 }> = ({ isConfirmResetOpen, confirmReset, reset }) => (
-    <Modal
-      data-testid='reset-settings-modal'
-      variant={ModalVariant.small}
-      title='Reset settings'
-      titleIconVariant='danger'
-      isOpen={isConfirmResetOpen}
-      onClose={confirmReset}
-      actions={[
-        <Button key='reset' data-testid='reset-btn' variant='danger' onClick={reset}>
-          Reset
-        </Button>,
-        <Button key='cancel' data-testid='cancel-btn' variant='link' onClick={confirmReset}>
-          Cancel
-        </Button>,
-      ]}
-    >
-      You are about to reset all the Hawtio settings.
-    </Modal>
+  <Modal
+    data-testid='reset-settings-modal'
+    variant={ModalVariant.small}
+    title='Reset settings'
+    titleIconVariant='danger'
+    isOpen={isConfirmResetOpen}
+    onClose={confirmReset}
+    actions={[
+      <Button key='reset' data-testid='reset-btn' variant='danger' onClick={reset}>
+        Reset
+      </Button>,
+      <Button key='cancel' data-testid='cancel-btn' variant='link' onClick={confirmReset}>
+        Cancel
+      </Button>,
+    ]}
+  >
+    You are about to reset all the Hawtio settings.
+  </Modal>
 )
 
 const ResetForm: React.FunctionComponent = () => {

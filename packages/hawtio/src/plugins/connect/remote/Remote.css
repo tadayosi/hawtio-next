@@ -1,6 +1,7 @@
 .data-list-action-toggle {
   margin-right: 0 !important;
 }
-.pf-v6-c-data-list__item-content, .pf-v6-c-data-list.pf-m-compact .pf-v6-c-data-list__item-action {
-  align-items: center
+.pf-v6-c-data-list__item-content,
+.pf-v6-c-data-list.pf-m-compact .pf-v6-c-data-list__item-action {
+  align-items: center;
 }

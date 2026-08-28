@@ -90,7 +90,11 @@ export const QuartzContent: React.FunctionComponent = () => {
       >
         <Routes>
           {routes}
-          <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} replace={true} />} />
+          <Route
+            key='root'
+            path=''
+            element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search }} replace={true} />}
+          />
         </Routes>
       </PageSection>
     </PageGroup>

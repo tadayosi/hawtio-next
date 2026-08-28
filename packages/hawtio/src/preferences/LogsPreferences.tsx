@@ -29,11 +29,11 @@ import { LogsContext, useChildLoggers } from './context'
 const ChildLoggerList: React.FunctionComponent<{
   childLoggers: ChildLogger[]
 }> = ({ childLoggers }) => (
-    <DataList id='logs-child-logger-list' aria-label='logs child logger list' isCompact>
-      {childLoggers.map(childLogger => (
-        <ChildLoggerItem key={childLogger.name} logger={childLogger} />
-      ))}
-    </DataList>
+  <DataList id='logs-child-logger-list' aria-label='logs child logger list' isCompact>
+    {childLoggers.map(childLogger => (
+      <ChildLoggerItem key={childLogger.name} logger={childLogger} />
+    ))}
+  </DataList>
 )
 
 export const LogsPreferences: React.FunctionComponent = () => {

@@ -8,13 +8,13 @@ import './Operations.css'
 import { createOperations, Operation } from './operation'
 
 const OperationList: React.FunctionComponent<{
-  operations: Operation[],
+  operations: Operation[]
 }> = ({ operations }) => (
-    <DataList id='jmx-operation-list' aria-label='operation list' isCompact>
-      {operations.map(op => (
-          <OperationForm key={op.name} name={op.name} operation={op} />
-      ))}
-    </DataList>
+  <DataList id='jmx-operation-list' aria-label='operation list' isCompact>
+    {operations.map(op => (
+      <OperationForm key={op.name} name={op.name} operation={op} />
+    ))}
+  </DataList>
 )
 
 export const Operations: React.FunctionComponent = () => {

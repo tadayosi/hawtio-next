@@ -194,45 +194,45 @@ const sanitizeHTML = (rawHtml: string) => {
 }
 
 const OperationExecuteResult: React.FunctionComponent<{
-  isResultHtml: () => boolean,
-  isRenderHtmlMode: boolean,
-  isFailed: boolean,
-  setIsRenderHtmlMode: React.Dispatch<React.SetStateAction<boolean>>,
+  isResultHtml: () => boolean
+  isRenderHtmlMode: boolean
+  isFailed: boolean
+  setIsRenderHtmlMode: React.Dispatch<React.SetStateAction<boolean>>
   result?: string
 }> = ({ isResultHtml, isRenderHtmlMode, isFailed, setIsRenderHtmlMode, result }) => (
-    <React.Fragment>
-      <Flex>
+  <React.Fragment>
+    <Flex>
+      <FlexItem>
+        <Title headingLevel='h4'>Result</Title>
+      </FlexItem>
+
+      {isResultHtml() && (
         <FlexItem>
-          <Title headingLevel='h4'>Result</Title>
+          <Button variant='secondary' onClick={() => setIsRenderHtmlMode(!isRenderHtmlMode)}>
+            {isRenderHtmlMode ? 'Raw View' : 'Render HTML'}
+          </Button>
         </FlexItem>
-
-        {isResultHtml() && (
-          <FlexItem>
-            <Button variant='secondary' onClick={() => setIsRenderHtmlMode(!isRenderHtmlMode)}>
-              {isRenderHtmlMode ? 'Raw View' : 'Render HTML'}
-            </Button>
-          </FlexItem>
-        )}
-      </Flex>
-
-      {isRenderHtmlMode && isResultHtml() ? (
-        <Card>
-          <CardBody>
-            <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(result!) }} />
-          </CardBody>
-        </Card>
-      ) : (
-        <ClipboardCopy
-          variant={ClipboardCopyVariant.expansion}
-          isExpanded
-          isCode
-          isReadOnly
-          className={isFailed ? 'jmx-operation-error' : ''}
-        >
-          {result ?? ''}
-        </ClipboardCopy>
       )}
-    </React.Fragment>
+    </Flex>
+
+    {isRenderHtmlMode && isResultHtml() ? (
+      <Card>
+        <CardBody>
+          <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(result!) }} />
+        </CardBody>
+      </Card>
+    ) : (
+      <ClipboardCopy
+        variant={ClipboardCopyVariant.expansion}
+        isExpanded
+        isCode
+        isReadOnly
+        className={isFailed ? 'jmx-operation-error' : ''}
+      >
+        {result ?? ''}
+      </ClipboardCopy>
+    )}
+  </React.Fragment>
 )
 
 const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = ({ isExpanded }) => {
@@ -255,10 +255,13 @@ const OperationFormContents: React.FunctionComponent<{ isExpanded: boolean }> = 
       </DataListContent>
       {result && (
         <DataListContent id={`operation-result-${name}`} aria-label={`operation result ${name}`} isHidden={!isExpanded}>
-          <OperationExecuteResult result={result}
-                                  isFailed={isFailed}
-                                  isResultHtml={isResultHtml}
-                                  isRenderHtmlMode={isRenderHtmlMode} setIsRenderHtmlMode={setIsRenderHtmlMode} />
+          <OperationExecuteResult
+            result={result}
+            isFailed={isFailed}
+            isResultHtml={isResultHtml}
+            isRenderHtmlMode={isRenderHtmlMode}
+            setIsRenderHtmlMode={setIsRenderHtmlMode}
+          />
         </DataListContent>
       )}
     </React.Fragment>

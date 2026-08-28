@@ -12,17 +12,17 @@ const imgLogo = `data:image/svg+xml;base64,${imgLogoB64}`
 const AboutProductInfo: React.FunctionComponent<{
   productInfo: AboutProductInfoType[]
 }> = ({ productInfo }) => (
-    <Content id='hawtio-about-product-info'>
-      <Content component='h3'>Component versions</Content>
-      <Content component='dl'>
-        {productInfo.map(({ name, value }, index) => (
-            <React.Fragment key={`product-info-${index}`}>
-              <Content component='dt'>{name}</Content>
-              <Content component='dd'>{value}</Content>
-            </React.Fragment>
-        ))}
-      </Content>
+  <Content id='hawtio-about-product-info'>
+    <Content component='h3'>Component versions</Content>
+    <Content component='dl'>
+      {productInfo.map(({ name, value }, index) => (
+        <React.Fragment key={`product-info-${index}`}>
+          <Content component='dt'>{name}</Content>
+          <Content component='dd'>{value}</Content>
+        </React.Fragment>
+      ))}
     </Content>
+  </Content>
 )
 
 const AboutDescription: React.FunctionComponent<{
@@ -30,9 +30,9 @@ const AboutDescription: React.FunctionComponent<{
 }> = ({ about }) => {
   if (about.description) {
     return (
-        <Content id='hawtio-about-description'>
-          <Content component='p'>{about.description}</Content>
-        </Content>
+      <Content id='hawtio-about-description'>
+        <Content component='p'>{about.description}</Content>
+      </Content>
     )
   }
   return null

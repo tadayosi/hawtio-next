@@ -14155,7 +14155,6 @@
         "desc": "Information on the management interface of the MBean"
       }
     },
-    "domain-without-MBeans": {
-    }
+    "domain-without-MBeans": {}
   }
 }

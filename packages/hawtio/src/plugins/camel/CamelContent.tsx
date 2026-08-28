@@ -115,7 +115,7 @@ export const CamelContent: React.FunctionComponent = () => {
   /* Filter the nav items to those applicable to the selected node */
   const navItems = allNavItems.filter(nav => nav.isApplicable(selectedNode))
 
-  const searchWithNid = (pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search))).search as string
+  const searchWithNid = pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search)).search as string
 
   const camelNav = (
     <Nav aria-label='Camel Nav' variant='horizontal-subnav'>
@@ -153,7 +153,11 @@ export const CamelContent: React.FunctionComponent = () => {
         {navItems.length > 0 && (
           <Routes>
             {camelNavRoutes}
-            <Route key='root' path='' element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search: searchWithNid }} replace={true} />} />
+            <Route
+              key='root'
+              path=''
+              element={<Navigate to={{ pathname: navItems[0]?.id ?? '', search: searchWithNid }} replace={true} />}
+            />
           </Routes>
         )}
         {navItems.length === 0 && !selectedNode.objectName && <JmxContentMBeans />}

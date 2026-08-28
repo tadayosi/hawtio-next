@@ -34,28 +34,28 @@ export const RouteStateLabel: React.FunctionComponent<{ state: string | null }> 
 }
 
 const ConfirmDeleteModal: React.FunctionComponent<{
-  isConfirmDeleteOpen: boolean,
-  deleteRoutes: () => void,
+  isConfirmDeleteOpen: boolean
+  deleteRoutes: () => void
   handleConfirmDeleteToggle: () => void
 }> = ({ isConfirmDeleteOpen, deleteRoutes, handleConfirmDeleteToggle }) => (
-    <Modal
-        variant='small'
-        title='Delete Camel Routes'
-        titleIconVariant='danger'
-        isOpen={isConfirmDeleteOpen}
-        onClose={handleConfirmDeleteToggle}
-        actions={[
-          <Button key='delete' variant='danger' onClick={deleteRoutes}>
-            Delete
-          </Button>,
-          <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
-            Cancel
-          </Button>,
-        ]}
-    >
-      <p>You are about to delete the selected camel routes.</p>
-      <p>This operation cannot be undone so please be careful.</p>
-    </Modal>
+  <Modal
+    variant='small'
+    title='Delete Camel Routes'
+    titleIconVariant='danger'
+    isOpen={isConfirmDeleteOpen}
+    onClose={handleConfirmDeleteToggle}
+    actions={[
+      <Button key='delete' variant='danger' onClick={deleteRoutes}>
+        Delete
+      </Button>,
+      <Button key='cancel' variant='link' onClick={handleConfirmDeleteToggle}>
+        Cancel
+      </Button>,
+    ]}
+  >
+    <p>You are about to delete the selected camel routes.</p>
+    <p>This operation cannot be undone so please be careful.</p>
+  </Modal>
 )
 
 export const CamelRoutes: React.FunctionComponent = () => {
@@ -243,9 +243,11 @@ export const CamelRoutes: React.FunctionComponent = () => {
           })}
         </Tbody>
       </Table>
-      <ConfirmDeleteModal isConfirmDeleteOpen={isConfirmDeleteOpen}
-                          deleteRoutes={deleteRoutes}
-                          handleConfirmDeleteToggle={handleConfirmDeleteToggle} />
+      <ConfirmDeleteModal
+        isConfirmDeleteOpen={isConfirmDeleteOpen}
+        deleteRoutes={deleteRoutes}
+        handleConfirmDeleteToggle={handleConfirmDeleteToggle}
+      />
     </React.Fragment>
   )
 }

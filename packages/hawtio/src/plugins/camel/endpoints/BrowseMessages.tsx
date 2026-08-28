@@ -219,8 +219,13 @@ export const BrowseMessages: React.FunctionComponent = () => {
                 />
               </ToolbarItem>
               <ToolbarItem variant='pagination'>
-                <MessagesPagination page={page} perPage={perPage} setPage={setPage} setPerPage={setPerPage}
-                  filteredMessages={filteredMessages} />
+                <MessagesPagination
+                  page={page}
+                  perPage={perPage}
+                  setPage={setPage}
+                  setPerPage={setPerPage}
+                  filteredMessages={filteredMessages}
+                />
               </ToolbarItem>
             </ToolbarContent>
           </Toolbar>
@@ -345,48 +350,48 @@ const ForwardMessagesComponent: React.FunctionComponent<{
 }
 
 const MessageHeader: React.FunctionComponent<{
-  currentIndex: number,
-  maxValue: number,
+  currentIndex: number
+  maxValue: number
   switchToMessage: (index: number) => void
 }> = ({ currentIndex, maxValue, switchToMessage }) => {
   return (
-      <div
-          aria-label='message-details-header'
-          style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
-      >
-        <Title aria-label='message-header-tittle' headingLevel='h2' style={{ marginRight: '10px' }}>
-          Message
-        </Title>
-        <MessageSelect
-            aria-label='message-header-messageSelector'
-            value={currentIndex + 1}
-            min={1}
-            max={maxValue}
-            onPrevious={() => switchToMessage(currentIndex - 1)}
-            onNext={() => switchToMessage(currentIndex + 1)}
-            onLast={() => switchToMessage(maxValue - 1)}
-            onFirst={() => switchToMessage(0)}
-        />
-      </div>
+    <div
+      aria-label='message-details-header'
+      style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%' }}
+    >
+      <Title aria-label='message-header-tittle' headingLevel='h2' style={{ marginRight: '10px' }}>
+        Message
+      </Title>
+      <MessageSelect
+        aria-label='message-header-messageSelector'
+        value={currentIndex + 1}
+        min={1}
+        max={maxValue}
+        onPrevious={() => switchToMessage(currentIndex - 1)}
+        onNext={() => switchToMessage(currentIndex + 1)}
+        onLast={() => switchToMessage(maxValue - 1)}
+        onFirst={() => switchToMessage(0)}
+      />
+    </div>
   )
 }
 
 const MessagesPagination: React.FunctionComponent<{
-  page: number,
-  setPage: (page: number) => void,
-  perPage: number,
-  setPerPage: (perPage: number) => void,
-  filteredMessages: MessageData[],
-}> = ({ page, setPage, perPage, setPerPage, filteredMessages } ) => {
+  page: number
+  setPage: (page: number) => void
+  perPage: number
+  setPerPage: (perPage: number) => void
+  filteredMessages: MessageData[]
+}> = ({ page, setPage, perPage, setPerPage, filteredMessages }) => {
   return (
-      <Pagination
-          itemCount={filteredMessages.length}
-          page={page}
-          perPage={perPage}
-          onSetPage={(_evt, value) => setPage(value)}
-          onPerPageSelect={(_evt, value) => setPerPage(value)}
-          variant='top'
-      />
+    <Pagination
+      itemCount={filteredMessages.length}
+      page={page}
+      perPage={perPage}
+      onSetPage={(_evt, value) => setPage(value)}
+      onPerPageSelect={(_evt, value) => setPerPage(value)}
+      variant='top'
+    />
   )
 }
 
@@ -431,8 +436,14 @@ const MessageDetails: React.FunctionComponent<{
         title={'Message Details'}
         isOpen={isModalOpen}
         onClose={handleModalToggle}
-        header={<MessageHeader aria-label='header' currentIndex={currentIndex} maxValue={maxValue}
-                               switchToMessage={switchToMessage} />}
+        header={
+          <MessageHeader
+            aria-label='header'
+            currentIndex={currentIndex}
+            maxValue={maxValue}
+            switchToMessage={switchToMessage}
+          />
+        }
       >
         <br />
         <ForwardMessagesComponent

@@ -58,11 +58,14 @@ export function useMBeanTree() {
   useEffect(() => {
     const nid = searchParams.get('nid')
     if (selectedNode && (!nid || nid !== selectedNode.id)) {
-      setSearchParams(params => {
-        // reflect the selected node in query parameter
-        params.set('nid', selectedNode.id)
-        return params
-      }, { replace: true })
+      setSearchParams(
+        params => {
+          // reflect the selected node in query parameter
+          params.set('nid', selectedNode.id)
+          return params
+        },
+        { replace: true },
+      )
       // we don't have to navigate() - setSearchParams does it underneath (in React transition)
       return
     }
@@ -116,9 +119,11 @@ export function useMBeanTree() {
  * @param pathname the path to use for the prepared URL
  * @param searchParams The current URL search params to preserve, defaults to the ones from the window location
  */
-export function pluginPathWithNodeId(node: MBeanNode,
-                                     pathname: string,
-                                     searchParams: URLSearchParams = new URLSearchParams(window.location.search)): Partial<To> {
+export function pluginPathWithNodeId(
+  node: MBeanNode,
+  pathname: string,
+  searchParams: URLSearchParams = new URLSearchParams(window.location.search),
+): Partial<To> {
   searchParams.set(PARAM_KEY_NODE_ID, node.id)
   return { pathname, search: searchParams.toString() }
 }

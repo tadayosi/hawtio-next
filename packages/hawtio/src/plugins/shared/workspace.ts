@@ -41,7 +41,6 @@ export enum ExpansionValue {
 }
 
 export interface IWorkspace {
-
   // ---- JMX tree management backed by Jolokia list operation
 
   /**
@@ -393,9 +392,13 @@ class Workspace implements IWorkspace {
     this.refreshTree()
   }
 
-  private applyUIState(nodes: MBeanNode[], expandedFolders: Set<string>,
-                       allFolders: Map<string, MBeanNode>, domainFolders: Map<string, Map<string, MBeanNode>>,
-                       currentDomain?: string) {
+  private applyUIState(
+    nodes: MBeanNode[],
+    expandedFolders: Set<string>,
+    allFolders: Map<string, MBeanNode>,
+    domainFolders: Map<string, Map<string, MBeanNode>>,
+    currentDomain?: string,
+  ) {
     for (const n of nodes) {
       if (n.children) {
         allFolders.set(n.id, n)
@@ -409,7 +412,8 @@ class Workspace implements IWorkspace {
           while (s) {
             s.defaultExpanded = true
             expandedFolders.add(s.id)
-            s = null//s.parent
+            // not sure if we have to expand up to the parent...
+            s = s.parent
           }
         }
         this.applyUIState(n.children, expandedFolders, allFolders, domainFolders, currentDomain ?? n.name)
@@ -447,7 +451,7 @@ class Workspace implements IWorkspace {
         this.domainExpanded.set(domain, ExpansionValue.CollapseAll)
       }
     }
-    (!domain ? this.allFolders : this.domainFolders.get(domain)!).values().forEach(folder => {
+    ;(!domain ? this.allFolders : this.domainFolders.get(domain)!).values().forEach(folder => {
       folder.defaultExpanded = expanded
     })
   }

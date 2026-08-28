@@ -59,7 +59,11 @@ export const HawtioPage: React.FunctionComponent = () => {
 
   // First plugin that has a path and a component to display will be the one displayed at "home" page
   const defaultPlugin = plugins.find(p => p && p.path && p.component)
-  let defaultPage = defaultPlugin ? <Navigate to={{ pathname: defaultPlugin.path, search }} replace={true} /> : <HawtioHome />
+  let defaultPage = defaultPlugin ? (
+    <Navigate to={{ pathname: defaultPlugin.path, search }} replace={true} />
+  ) : (
+    <HawtioHome />
+  )
 
   // If a plugin that uses complex authentication flow involving redirects is active and in the process
   // of redirection, Hawtio will properly navigate

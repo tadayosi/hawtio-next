@@ -48,21 +48,21 @@ describe('workspace', () => {
 
     // id is matched by `startsWith` (historically?)
     await expect(
-      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans'})
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans' }),
     ).resolves.toBeTruthy()
     await expect(
-      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-fold'})
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-fold' }),
     ).resolves.toBeTruthy()
     await expect(
-      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-folder'})
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { id: 'domain-without-MBeans-folder' }),
     ).resolves.toBeTruthy()
 
     // name is matched by `===`
     await expect(
-      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-MBeans'})
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-MBeans' }),
     ).resolves.toBeTruthy()
     await expect(
-      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-M'})
+      workspace.treeContainsDomainAndProperties('domain-without-MBeans', { name: 'domain-without-M' }),
     ).resolves.toBeFalsy()
   })
 

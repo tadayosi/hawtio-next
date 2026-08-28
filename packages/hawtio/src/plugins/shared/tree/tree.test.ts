@@ -90,13 +90,13 @@ describe('MBeanTree', () => {
     expect(xnio2MBean.childCount()).toEqual(0)
 
     const xnio1Addr = xnio1Folder.getChildren()[0] as MBeanNode
-    expect(xnio1Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-1${SEP}${base64url("/0:0:0:0:0:0:0:0:10000")}`)
+    expect(xnio1Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-1${SEP}${base64url('/0:0:0:0:0:0:0:0:10000')}`)
     expect(xnio1Addr.name).toEqual('/0:0:0:0:0:0:0:0:10000')
     expect(xnio1Addr.mbean).toBeDefined()
     expect(xnio1Addr.childCount()).toEqual(0)
 
     const xnio2Addr = xnio2Folder.getChildren()[0] as MBeanNode
-    expect(xnio2Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-2${SEP}${base64url("/0:0:0:0:0:0:0:0:10001")}`)
+    expect(xnio2Addr.id).toEqual(`org.xnio${SEP}Xnio${SEP}nio${SEP}XNIO-2${SEP}${base64url('/0:0:0:0:0:0:0:0:10001')}`)
     expect(xnio2Addr.name).toEqual('/0:0:0:0:0:0:0:0:10001')
     expect(xnio2Addr.mbean).toBeDefined()
     expect(xnio2Addr.childCount()).toEqual(0)
@@ -162,33 +162,35 @@ describe('MBeanTree', () => {
   })
 
   test('find nodes', async () => {
-    const info = { 'desc': '' }
+    const info = { desc: '' }
     const tree = await MBeanTree.createFromDomains('test', {
-      'test1': {
-        'name=child1': info,
-        'name=child2': info
-      },
-      'test2': {
+      test1: {
         'name=child1': info,
         'name=child2': info,
-        'a=b,c=d,e=f,g=h,name=child3': info
       },
-      'test3': {
+      test2: {
+        'name=child1': info,
+        'name=child2': info,
+        'a=b,c=d,e=f,g=h,name=child3': info,
+      },
+      test3: {
         'type=service,name=child4': info,
         'type=transform,name=child4': info,
-        'type=transform,name=child5': info
+        'type=transform,name=child5': info,
       },
-      'test4': {
+      test4: {
         'type=service,name=child6': info,
         'group=service,name=child6': info,
-        'group=service,name=child7': info
-      }
+        'group=service,name=child7': info,
+      },
     })
 
     // DFS works here
     expect(tree.find(n => n.name === 'test1')!.id).toEqual(`test1-folder`)
     expect(tree.find(n => n.getProperty('name') === 'child1')!.id).toEqual(`test1${SEP}child1`)
-    expect(tree.find(n => n.getProperty('name') === 'child3')!.id).toEqual(`test2${SEP}b${SEP}d${SEP}f${SEP}h${SEP}child3`)
+    expect(tree.find(n => n.getProperty('name') === 'child3')!.id).toEqual(
+      `test2${SEP}b${SEP}d${SEP}f${SEP}h${SEP}child3`,
+    )
 
     // "type=service" and "type=transform" will create different intermediate nodes, still DFS
     expect(tree.find(n => n.getProperty('name') === 'child4')!.id).toEqual(`test3${SEP}service${SEP}child4`)
@@ -196,12 +198,15 @@ describe('MBeanTree', () => {
 
     // "type=service" and "groups=service" will use the same intermediate node and conflict resolver will be used
     // TODO: this is an indication we could do better with IDs.
-    expect(tree.find(n => n.getProperty('name') === 'child6')!.id)
-        .toMatch(new RegExp(`^test4${SEP}service${SEP}child6$`))
-    expect(tree.find(n => n.getProperty('name') === 'child6' && n.getProperty('group') === 'service')!.id)
-        .toMatch(new RegExp(`^test4${SEP}service${SEP}child6-.*$`))
-    expect(tree.find(n => n.getProperty('name') === 'child7')!.id)
-        .toMatch(new RegExp(`^test4${SEP}service${SEP}child7$`))
+    expect(tree.find(n => n.getProperty('name') === 'child6')!.id).toMatch(
+      new RegExp(`^test4${SEP}service${SEP}child6$`),
+    )
+    expect(tree.find(n => n.getProperty('name') === 'child6' && n.getProperty('group') === 'service')!.id).toMatch(
+      new RegExp(`^test4${SEP}service${SEP}child6-.*$`),
+    )
+    expect(tree.find(n => n.getProperty('name') === 'child7')!.id).toMatch(
+      new RegExp(`^test4${SEP}service${SEP}child7$`),
+    )
   })
 
   test('navigate', () => {

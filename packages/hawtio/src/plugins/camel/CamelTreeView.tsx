@@ -18,21 +18,26 @@ export const CamelTreeView: React.FunctionComponent = () => {
   // of a React component, instead it's set in first usage of search control
   const inputRef = useRef<HTMLInputElement>()
 
-  const applyFilter = useCallback((filter: string) => {
-    if (!filter || filter === '') {
-      setFilteredTree(tree.getTree())
-    } else {
-      const treeElements = MBeanTree.filter(tree.getTree(), node => node.name.toLowerCase().includes(filter.toLowerCase()))
-
-      if (treeElements.length === 0) {
+  const applyFilter = useCallback(
+    (filter: string) => {
+      if (!filter || filter === '') {
         setFilteredTree(tree.getTree())
-        setAllExpanded(ExpansionValue.Default)
       } else {
-        setFilteredTree(treeElements)
-        setAllExpanded(ExpansionValue.ExpandAll)
+        const treeElements = MBeanTree.filter(tree.getTree(), node =>
+          node.name.toLowerCase().includes(filter.toLowerCase()),
+        )
+
+        if (treeElements.length === 0) {
+          setFilteredTree(tree.getTree())
+          setAllExpanded(ExpansionValue.Default)
+        } else {
+          setFilteredTree(treeElements)
+          setAllExpanded(ExpansionValue.ExpandAll)
+        }
       }
-    }
-  }, [tree])
+    },
+    [tree],
+  )
 
   /**
    * Listen for changes to the tree that may occur as a result

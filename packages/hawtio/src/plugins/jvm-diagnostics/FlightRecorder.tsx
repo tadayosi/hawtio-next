@@ -40,7 +40,7 @@ import {
 } from './flight-recorder-service'
 import './FlightRecorder.css'
 
-type GenericStateType<T> = [ T, React.Dispatch<React.SetStateAction<T>> ]
+type GenericStateType<T> = [T, React.Dispatch<React.SetStateAction<T>>]
 type BooleanStateType = GenericStateType<boolean>
 type UserJfrSettingsStateType = ReturnType<typeof useState<UserJfrSettings>>
 
@@ -51,115 +51,121 @@ const LIMIT_TYPE: { label: string; value: string }[] = [
 ]
 
 const SettingsModal: React.FunctionComponent<{
-  isModalOpenState: BooleanStateType,
-  isConfigurationsDropdownOpenState: BooleanStateType,
-  isLimitTypeOpenState: BooleanStateType,
-  userJfrSettingsState: UserJfrSettingsStateType,
-  currentRecording?: CurrentRecording,
+  isModalOpenState: BooleanStateType
+  isConfigurationsDropdownOpenState: BooleanStateType
+  isLimitTypeOpenState: BooleanStateType
+  userJfrSettingsState: UserJfrSettingsStateType
+  currentRecording?: CurrentRecording
   configurations: JfrConfig[]
-}> = ({ isModalOpenState, isConfigurationsDropdownOpenState, isLimitTypeOpenState, userJfrSettingsState, currentRecording, configurations }) => {
-
-  const [ isModalOpen, setIsModalOpen ] = isModalOpenState
-  const [ isConfigurationsDropdownOpen, setIsConfigurationsDropdownOpen ] = isConfigurationsDropdownOpenState
-  const [ isLimitTypeOpen, setIsLimitTypeOpen ] = isLimitTypeOpenState
-  const [ userJfrSettings, setUserJfrSettings ] = userJfrSettingsState
+}> = ({
+  isModalOpenState,
+  isConfigurationsDropdownOpenState,
+  isLimitTypeOpenState,
+  userJfrSettingsState,
+  currentRecording,
+  configurations,
+}) => {
+  const [isModalOpen, setIsModalOpen] = isModalOpenState
+  const [isConfigurationsDropdownOpen, setIsConfigurationsDropdownOpen] = isConfigurationsDropdownOpenState
+  const [isLimitTypeOpen, setIsLimitTypeOpen] = isLimitTypeOpenState
+  const [userJfrSettings, setUserJfrSettings] = userJfrSettingsState
 
   return (
-      <Modal
-          title={`Settings for recording ${currentRecording?.number}`}
-          isOpen={isModalOpen}
-          onClose={() => setIsModalOpen(false)}
-      >
-        <Form>
-          <FormGroup label='Recording configuration'>
-            <Dropdown
-                isOpen={isConfigurationsDropdownOpen}
+    <Modal
+      title={`Settings for recording ${currentRecording?.number}`}
+      isOpen={isModalOpen}
+      onClose={() => setIsModalOpen(false)}
+    >
+      <Form>
+        <FormGroup label='Recording configuration'>
+          <Dropdown
+            isOpen={isConfigurationsDropdownOpen}
+            onSelect={(_event, value) => {
+              setUserJfrSettings({ ...userJfrSettings, configuration: value as string } as UserJfrSettings)
+              setIsConfigurationsDropdownOpen(false)
+            }}
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                onClick={() => setIsConfigurationsDropdownOpen(true)}
+                isExpanded={isConfigurationsDropdownOpen}
+              >
+                {configurations?.find(config => config.name === userJfrSettings?.configuration)?.label ??
+                  'Select configuration'}
+              </MenuToggle>
+            )}
+            onOpenChange={isOpen => setIsConfigurationsDropdownOpen(isOpen)}
+            shouldFocusToggleOnSelect
+          >
+            <DropdownList>
+              {configurations?.map(({ name, description, label }, index) => (
+                <DropdownItem value={name} key={index} description={description}>
+                  {label}
+                </DropdownItem>
+              ))}
+            </DropdownList>
+          </Dropdown>
+        </FormGroup>
+        <FormGroup label='Recording name'>
+          <TextInput
+            aria-label='Recording name'
+            value={userJfrSettings?.name}
+            onChange={(_event, value) =>
+              setUserJfrSettings({ ...userJfrSettings, name: value, isUserSelectedName: true } as UserJfrSettings)
+            }
+          />
+        </FormGroup>
+        <FormGroup label='Limit'>
+          <Stack hasGutter>
+            <DropdownGroup label='Type'>
+              <Dropdown
+                isOpen={isLimitTypeOpen}
                 onSelect={(_event, value) => {
-                  setUserJfrSettings({ ...userJfrSettings, configuration: value as string } as UserJfrSettings)
-                  setIsConfigurationsDropdownOpen(false)
+                  setUserJfrSettings({
+                    ...userJfrSettings,
+                    limitType: value as string,
+                    limitValue: value === 'unlimited' ? 0 : userJfrSettings?.limitValue,
+                  } as UserJfrSettings)
+                  setIsLimitTypeOpen(false)
                 }}
                 toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                    <MenuToggle
-                        ref={toggleRef}
-                        onClick={() => setIsConfigurationsDropdownOpen(true)}
-                        isExpanded={isConfigurationsDropdownOpen}
-                    >
-                      {configurations?.find(config => config.name === userJfrSettings?.configuration)?.label ??
-                          'Select configuration'}
-                    </MenuToggle>
+                  <MenuToggle ref={toggleRef} onClick={() => setIsLimitTypeOpen(true)} isExpanded={isLimitTypeOpen}>
+                    {LIMIT_TYPE.find(limitType => limitType.value === userJfrSettings?.limitType)?.label ||
+                      `Select limit type`}
+                  </MenuToggle>
                 )}
-                onOpenChange={isOpen => setIsConfigurationsDropdownOpen(isOpen)}
+                onOpenChange={(isOpen: boolean) => setIsLimitTypeOpen(isOpen)}
                 shouldFocusToggleOnSelect
-            >
-              <DropdownList>
-                {configurations?.map(({ name, description, label }, index) => (
-                    <DropdownItem value={name} key={index} description={description}>
+              >
+                <DropdownList>
+                  {LIMIT_TYPE.map(({ label, value }) => (
+                    <DropdownItem key={value} value={value}>
                       {label}
                     </DropdownItem>
-                ))}
-              </DropdownList>
-            </Dropdown>
-          </FormGroup>
-          <FormGroup label='Recording name'>
+                  ))}
+                </DropdownList>
+              </Dropdown>
+            </DropdownGroup>
             <TextInput
-                aria-label='Recording name'
-                value={userJfrSettings?.name}
-                onChange={(_event, value) =>
-                    setUserJfrSettings({ ...userJfrSettings, name: value, isUserSelectedName: true } as UserJfrSettings)
-                }
+              type='number'
+              label='Value'
+              aria-label='Value'
+              value={userJfrSettings?.limitValue || 0}
+              isDisabled={userJfrSettings?.limitType === 'unlimited'}
+              onChange={(_event, value) =>
+                setUserJfrSettings({ ...userJfrSettings, limitValue: Number(value) } as UserJfrSettings)
+              }
             />
-          </FormGroup>
-          <FormGroup label='Limit'>
-            <Stack hasGutter>
-              <DropdownGroup label='Type'>
-                <Dropdown
-                    isOpen={isLimitTypeOpen}
-                    onSelect={(_event, value) => {
-                      setUserJfrSettings({
-                        ...userJfrSettings,
-                        limitType: value as string,
-                        limitValue: value === 'unlimited' ? 0 : userJfrSettings?.limitValue,
-                      } as UserJfrSettings)
-                      setIsLimitTypeOpen(false)
-                    }}
-                    toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                        <MenuToggle ref={toggleRef} onClick={() => setIsLimitTypeOpen(true)} isExpanded={isLimitTypeOpen}>
-                          {LIMIT_TYPE.find(limitType => limitType.value === userJfrSettings?.limitType)?.label ||
-                              `Select limit type`}
-                        </MenuToggle>
-                    )}
-                    onOpenChange={(isOpen: boolean) => setIsLimitTypeOpen(isOpen)}
-                    shouldFocusToggleOnSelect
-                >
-                  <DropdownList>
-                    {LIMIT_TYPE.map(({ label, value }) => (
-                        <DropdownItem key={value} value={value}>
-                          {label}
-                        </DropdownItem>
-                    ))}
-                  </DropdownList>
-                </Dropdown>
-              </DropdownGroup>
-              <TextInput
-                  type='number'
-                  label='Value'
-                  aria-label='Value'
-                  value={userJfrSettings?.limitValue || 0}
-                  isDisabled={userJfrSettings?.limitType === 'unlimited'}
-                  onChange={(_event, value) =>
-                      setUserJfrSettings({ ...userJfrSettings, limitValue: Number(value) } as UserJfrSettings)
-                  }
-              />
-            </Stack>
-          </FormGroup>
-          <Checkbox
-              id='dump-on-exit-checkbox'
-              label='Dump on exit'
-              isChecked={userJfrSettings?.dumpOnExit}
-              onChange={(_event, value) => setUserJfrSettings({ ...userJfrSettings, dumpOnExit: value } as UserJfrSettings)}
-          />
-        </Form>
-      </Modal>
+          </Stack>
+        </FormGroup>
+        <Checkbox
+          id='dump-on-exit-checkbox'
+          label='Dump on exit'
+          isChecked={userJfrSettings?.dumpOnExit}
+          onChange={(_event, value) => setUserJfrSettings({ ...userJfrSettings, dumpOnExit: value } as UserJfrSettings)}
+        />
+      </Form>
+    </Modal>
   )
 }
 
@@ -183,9 +189,9 @@ const RecordingTimer: React.FunctionComponent<{
   }, [])
 
   return (
-      <React.Fragment>
-        <span>{timeRecording}s</span>
-      </React.Fragment>
+    <React.Fragment>
+      <span>{timeRecording}s</span>
+    </React.Fragment>
   )
 }
 
@@ -255,17 +261,16 @@ export const FlightRecorder: React.FunctionComponent = () => {
     jolokiaUrl &&
     ['localhost', '127.0.0.1', '::1', '192.168.', '10.0'].filter(localUrl => jolokiaUrl.includes(localUrl)).length >= 1
   ))
-
-  return (
-    <PageSection hasBodyWrapper={false}>
-      <EmptyState
-        headingLevel='h1'
-        icon={CubesIcon}
-        titleText='Tech preview only allows for local connections'
-        variant={EmptyStateVariant.full}
-      ></EmptyState>
-    </PageSection>
-  )
+    return (
+      <PageSection hasBodyWrapper={false}>
+        <EmptyState
+          headingLevel='h1'
+          icon={CubesIcon}
+          titleText='Tech preview only allows for local connections'
+          variant={EmptyStateVariant.full}
+        ></EmptyState>
+      </PageSection>
+    )
 
   if (initialized && !flightRecorderService.hasFlightRecorderMBean()) {
     return (
@@ -318,12 +323,14 @@ export const FlightRecorder: React.FunctionComponent = () => {
 
   return (
     <PageSection className='java-flight-recorder' hasBodyWrapper={false}>
-      <SettingsModal isModalOpenState={[ isModalOpen, setIsModalOpen ]}
-                     isConfigurationsDropdownOpenState={[ isConfigurationsDropdownOpen, setIsConfigurationsDropdownOpen ]}
-                     isLimitTypeOpenState={[ isLimitTypeOpen, setIsLimitTypeOpen ]}
-                     userJfrSettingsState={[ userJfrSettings, setUserJfrSettings ]}
-                     currentRecording={currentRecording}
-                     configurations={configurations} />
+      <SettingsModal
+        isModalOpenState={[isModalOpen, setIsModalOpen]}
+        isConfigurationsDropdownOpenState={[isConfigurationsDropdownOpen, setIsConfigurationsDropdownOpen]}
+        isLimitTypeOpenState={[isLimitTypeOpen, setIsLimitTypeOpen]}
+        userJfrSettingsState={[userJfrSettings, setUserJfrSettings]}
+        currentRecording={currentRecording}
+        configurations={configurations}
+      />
       <AlertGroup isToast isLiveRegion>
         {alerts}
       </AlertGroup>

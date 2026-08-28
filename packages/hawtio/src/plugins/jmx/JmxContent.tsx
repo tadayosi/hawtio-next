@@ -52,7 +52,7 @@ export const JmxContent: React.FunctionComponent = () => {
   /* Filter the nav items to those applicable to the selected node */
   const navItems = allNavItems.filter(nav => nav.isApplicable(selectedNode))
 
-  const searchWithNid = (pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search))).search as string
+  const searchWithNid = pluginPathWithNodeId(selectedNode, pluginPath, new URLSearchParams(search)).search as string
 
   const mbeanNav = (
     <Nav aria-label='MBean Nav' variant='horizontal-subnav'>
@@ -66,9 +66,7 @@ export const JmxContent: React.FunctionComponent = () => {
     </Nav>
   )
 
-  const mbeanRoutes = navItems.map(nav => (
-    <Route key={nav.id} path={nav.id} Component={nav.component} />
-  ))
+  const mbeanRoutes = navItems.map(nav => <Route key={nav.id} path={nav.id} Component={nav.component} />)
 
   return (
     <PageGroup id='jmx-content'>

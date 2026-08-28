@@ -41,22 +41,22 @@ const ThreadsDumpModal: React.FunctionComponent<{
 }
 
 const ExtraToolBar: React.FunctionComponent<{
-  handleConnectionThreadMonitoring: () => void,
-  threadConnectionMonitoring: boolean,
-  onThreadDumpClick: () => void,
+  handleConnectionThreadMonitoring: () => void
+  threadConnectionMonitoring: boolean
+  onThreadDumpClick: () => void
 }> = ({ handleConnectionThreadMonitoring, threadConnectionMonitoring, onThreadDumpClick }) => (
-    <ToolbarGroup>
-      <ToolbarItem>
-        <Button variant='primary' onClick={handleConnectionThreadMonitoring} size='sm'>
-          {threadConnectionMonitoring ? 'Disable' : 'Enable'} connection thread monitoring
-        </Button>
-      </ToolbarItem>
-      <ToolbarItem>
-        <Button variant='secondary' onClick={onThreadDumpClick} size='sm'>
-          Thread dump
-        </Button>
-      </ToolbarItem>
-    </ToolbarGroup>
+  <ToolbarGroup>
+    <ToolbarItem>
+      <Button variant='primary' onClick={handleConnectionThreadMonitoring} size='sm'>
+        {threadConnectionMonitoring ? 'Disable' : 'Enable'} connection thread monitoring
+      </Button>
+    </ToolbarItem>
+    <ToolbarItem>
+      <Button variant='secondary' onClick={onThreadDumpClick} size='sm'>
+        Thread dump
+      </Button>
+    </ToolbarItem>
+  </ToolbarGroup>
 )
 
 export const Threads: React.FunctionComponent = () => {
@@ -128,9 +128,13 @@ export const Threads: React.FunctionComponent = () => {
           },
         ]}
         rows={threads}
-        extraToolbarRight={<ExtraToolBar handleConnectionThreadMonitoring={handleConnectionThreadMonitoring}
-                                         onThreadDumpClick={onThreadDumpClick}
-                                         threadConnectionMonitoring={threadConnectionMonitoring} />}
+        extraToolbarRight={
+          <ExtraToolBar
+            handleConnectionThreadMonitoring={handleConnectionThreadMonitoring}
+            onThreadDumpClick={onThreadDumpClick}
+            threadConnectionMonitoring={threadConnectionMonitoring}
+          />
+        }
       />
     </React.Fragment>
   )
