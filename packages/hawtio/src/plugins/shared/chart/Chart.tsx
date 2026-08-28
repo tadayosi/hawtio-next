@@ -29,6 +29,9 @@ import { attributeService } from '../attributes/attribute-service'
 import { WatchableAttributesForm } from './WatchableAttributesForm'
 import './Chart.css'
 
+// TODO: this component has some eslint warnings about missing effect dependencies.
+//  But adding them and using callbacks breaks the behavior
+
 type MBeanChartData = {
   [name: string]: { attributes: AttributeChartEntries }
 }
@@ -260,6 +263,7 @@ export const Chart: React.FunctionComponent = () => {
     }
 
     if (initialTime === -1) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setInitialTime(new Date().getTime())
     }
     fetchChartData(selectedNode)

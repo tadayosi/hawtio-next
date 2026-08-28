@@ -56,9 +56,8 @@ export const RestServices: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
-    setIsReading(true)
-
     const fetchRest = async () => {
+      setIsReading(true)
       const restServices = await restServicesService.getRestServices(selectedNode)
       setRestSvcData(restServices)
       setIsReading(false)
@@ -127,6 +126,7 @@ export const RestServices: React.FunctionComponent = () => {
   )
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     filterRestSvcData(restSvcData, filters)
   }, [filterRestSvcData, restSvcData, filters])
 

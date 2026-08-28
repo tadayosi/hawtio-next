@@ -78,6 +78,7 @@ const ReactFlowRouteDiagram: React.FunctionComponent<{
   useEffect(() => {
     if (parent.current) {
       const { width, height } = parent.current.getBoundingClientRect()
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setWrapperDimensions({ width, height })
     }
   }, [parent])
@@ -124,6 +125,7 @@ const ReactFlowRouteDiagram: React.FunctionComponent<{
       setEdges([])
 
       if (!xml) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setError(new Error('Could not locate any XML for route.'))
       }
       return
@@ -249,6 +251,7 @@ const CamelNode: React.FunctionComponent<NodeProps<CamelNodeData>> = ({
 
   useEffect(() => {
     if (!annotations || annotations.length === 0) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setAnnotation(undefined)
       return
     }
@@ -371,6 +374,7 @@ const CamelNodeActions: React.FunctionComponent<{ data: CamelNodeData }> = ({ da
   const [disabled, setDisabled] = useState(false)
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRouteStopped(data.routeStopped)
     setDisabled(data.disabled)
   }, [data])

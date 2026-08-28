@@ -128,6 +128,7 @@ export function FilteredTable<T>({
 
     // If user is filtering - refreshing the threads themselves would reset the page count
     if (filtered.length != rows.length) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setPage(1)
     }
     setFilteredRows([...filtered])

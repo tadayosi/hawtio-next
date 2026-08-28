@@ -72,9 +72,9 @@ export const CamelRoutes: React.FunctionComponent = () => {
       return
     }
 
-    setIsReading(true)
     let timeoutHandle: NodeJS.Timeout
     const getRouteAttributes = async () => {
+      setIsReading(true)
       const routes = await routesService.getRoutesAttributes(selectedNode)
       setRoutes(routes)
       setIsReading(false)

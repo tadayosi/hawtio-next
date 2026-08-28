@@ -46,9 +46,9 @@ export const TypeConvertersStatistics: React.FunctionComponent = () => {
    * and set the flag accordingly
    */
   useEffect(() => {
-    setIsReading(true)
 
     const checkEnabled = async () => {
+      setIsReading(true)
       const enabled = await tcs.getStatisticsEnablement(selectedNode)
       setStatisticsEnabled(enabled)
       setIsReading(false)

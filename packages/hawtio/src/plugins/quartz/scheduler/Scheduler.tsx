@@ -34,6 +34,7 @@ export const Scheduler: React.FunctionComponent = () => {
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
     const { objectName } = selectedNode
     attributeService.readWithCallback(objectName, attrs => {
@@ -65,6 +66,7 @@ export const Scheduler: React.FunctionComponent = () => {
 
     log.debug('Reload scheduler attributes')
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
     const { objectName } = selectedNode
     attributeService.readWithCallback(objectName, attrs => {

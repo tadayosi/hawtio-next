@@ -34,8 +34,8 @@ export const Contexts: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
-    setIsReading(true)
     const readAttributes = async () => {
+      setIsReading(true)
       try {
         const ctxs = await contextsService.getContexts(selectedNode)
         setContexts(ctxs)

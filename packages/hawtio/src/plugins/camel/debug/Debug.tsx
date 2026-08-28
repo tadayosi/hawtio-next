@@ -250,6 +250,7 @@ export const Debug: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
 
     // Turn off statistics display in diagram view

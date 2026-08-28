@@ -42,6 +42,7 @@ export const AttributeModal: React.FunctionComponent<{
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAttributeValue(input.value)
 
     // Update Jolokia URL

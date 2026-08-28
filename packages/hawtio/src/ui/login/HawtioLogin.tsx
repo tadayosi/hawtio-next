@@ -41,12 +41,14 @@ export const HawtioLogin: React.FunctionComponent = () => {
     if (isLogin) {
       navigate('/')
     } else if (isLoginError) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoginError(loginErrorMessage)
     }
   }, [isLogin, navigate, isLoginError, loginErrorMessage])
 
   useEffect(() => {
     const methods = configManager.getAuthenticationConfig()
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setAuthenticationMethods(methods)
     setAuthenticationMethodsLoaded(true)
   }, [])

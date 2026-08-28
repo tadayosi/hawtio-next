@@ -137,6 +137,7 @@ export const Trace: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
 
     ts.isTracing(selectedNode).then((value: boolean) => {

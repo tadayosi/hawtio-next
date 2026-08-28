@@ -17,28 +17,25 @@ loader.config({ monaco })
 export const Source: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const isDarkTheme = useIsDarkTheme()
-  const [xmlSource, setXmlSource] = useState('')
+  // const [xmlSource, setXmlSource] = useState('')
   const [isUpdateEnabled, setIsUpdateEnabled] = useState(false)
   const [isWarningVisible, setIsWarningVisible] = useState(isUpdateEnabled)
   const [codeChanged, setCodeChanged] = useState(false)
   const isRoute: boolean = isRouteNode(selectedNode!) && !isRoutesFolder(selectedNode!)
 
+  const xmlSource = selectedNode?.getMetadata('xml')
+  if (selectedNode && !xmlSource) {
+    log.warn('Source - Unable to fetch XML from', selectedNode)
+  }
+
   useEffect(() => {
     if (!selectedNode) return
-
-    const xml = selectedNode.getMetadata('xml')
 
     if (isRoute) {
       routesService.isRouteUpdateEnabled(selectedNode).then(enabled => {
         setIsUpdateEnabled(enabled)
         setIsWarningVisible(enabled)
       })
-    }
-
-    if (xml) {
-      setXmlSource(xml)
-    } else {
-      log.warn('Source - Unable to fetch XML from', selectedNode)
     }
   }, [isRoute, selectedNode])
 

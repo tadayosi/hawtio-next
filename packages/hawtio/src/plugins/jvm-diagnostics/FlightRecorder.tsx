@@ -177,6 +177,7 @@ const RecordingTimer: React.FunctionComponent<{
 
   useEffect(() => {
     //This is a best effort as there were some problems trying to keep the state updated
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setTimeRecording(0)
 
     const intervalID = setInterval(() => {
@@ -206,7 +207,7 @@ export const FlightRecorder: React.FunctionComponent = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
   const [isConfigurationsDropdownOpen, setIsConfigurationsDropdownOpen] = useState<boolean>(false)
   const [isLimitTypeOpen, setIsLimitTypeOpen] = useState<boolean>(false)
-  const [startTimeRecording, setStartTimeRecording] = useState<number>(Date.now())
+  const [startTimeRecording, setStartTimeRecording] = useState<number>(0)
 
   const humanReadableBytes = (bytes: number) => {
     const BYTE_DIVISOR = 1024

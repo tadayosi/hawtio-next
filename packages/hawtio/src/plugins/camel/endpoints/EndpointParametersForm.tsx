@@ -31,6 +31,7 @@ export const EndpointParametersForm: React.FunctionComponent = () => {
 
   useEffect(() => {
     if (!ctx.componentSchema) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProperties(null)
       return
     }
@@ -110,7 +111,7 @@ export const EndpointParametersForm: React.FunctionComponent = () => {
     return value
   }
 
-  const inputControl = (name: string, index: number, propertySpec: PropertySpec): JSX.Element => {
+  const inputControl = (name: string, index: number, propertySpec: PropertySpec): React.ReactNode => {
     switch (propertySpec.type) {
       case 'string':
         return (

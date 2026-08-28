@@ -30,9 +30,9 @@ export const Triggers: React.FunctionComponent = () => {
       return
     }
 
-    setIsReading(true)
     const { objectName } = selectedNode
     const loadTriggers = async () => {
+      setIsReading(true)
       const triggers = await quartzService.loadTriggers(objectName)
       setTriggers(triggers)
       setIsReading(false)
@@ -59,10 +59,10 @@ export const Triggers: React.FunctionComponent = () => {
     const loadTriggers = async () => {
       const triggers = await quartzService.loadTriggers(objectName)
       setTriggers(triggers)
+      setReload(false)
     }
     loadTriggers()
 
-    setReload(false)
   }, [selectedNode, reload])
 
   if (!selectedNode || !selectedNode.objectName) {

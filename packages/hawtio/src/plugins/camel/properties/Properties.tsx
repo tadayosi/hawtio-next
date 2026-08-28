@@ -26,9 +26,8 @@ export const Properties: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
-    setIsReading(true)
-
     const init = async () => {
+      setIsReading(true)
       const localName = selectedNode.getMetadata(xmlNodeLocalName) ?? ''
       const schemaKey = localName ? localName : selectedNode.name
       const schema = await schemaService.getSchema(selectedNode, schemaKey)

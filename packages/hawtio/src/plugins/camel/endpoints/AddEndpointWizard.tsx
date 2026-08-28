@@ -25,19 +25,20 @@ const placeholder = 'Select Component Name'
 
 export const AddEndpointWizard: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
+  const { componentName, setComponentSchema } = useContext(AddEndpointContext)
   const ctx = useContext(AddEndpointContext)
   const [isOpen, setIsOpen] = useState(false)
   const [endpointValidated, setEndpointValidated] = useState<'success' | 'error' | 'default'>('default')
 
   useEffect(() => {
-    if (!selectedNode || !ctx.componentName) return
+    if (!selectedNode || !componentName) return
 
-    es.loadEndpointSchema(selectedNode, ctx.componentName).then(schema => {
+    es.loadEndpointSchema(selectedNode, componentName).then(schema => {
       if (schema) {
-        ctx.setComponentSchema(schema)
+        setComponentSchema(schema)
       }
     })
-  }, [selectedNode, ctx.componentName])
+  }, [selectedNode, componentName, setComponentSchema])
 
   if (!selectedNode) {
     return null

@@ -16,10 +16,9 @@ export const InflightExchanges: React.FunctionComponent = () => {
       return
     }
 
-    setIsReading(true)
-
     let timeoutHandle: NodeJS.Timeout
     const fetchExchanges = async () => {
+      setIsReading(true)
       const cb = await exs.canBrowseInflightExchanges(selectedNode)
       setCanDisplayInflight(cb)
       if (cb) setExchanges(await exs.getInflightExchanges(selectedNode))

@@ -62,6 +62,7 @@ export const SessionMonitor: React.FunctionComponent = () => {
     }
     if (sessionService.sessionEnding(time)) {
       sessionService.setRefresh(false)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setSessionAlertVisible(true)
     }
     if (sessionService.sessionEnded(time)) {

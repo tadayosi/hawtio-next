@@ -24,6 +24,7 @@ export const Attributes: React.FunctionComponent = () => {
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
     const { objectName } = selectedNode
     attributeService.readWithCallback(objectName, attrs => {
@@ -46,6 +47,7 @@ export const Attributes: React.FunctionComponent = () => {
       return
     }
 
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsReading(true)
     const { objectName } = selectedNode
     attributeService.readWithCallback(objectName, attrs => {

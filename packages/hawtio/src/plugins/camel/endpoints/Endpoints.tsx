@@ -12,6 +12,7 @@ import * as es from './endpoints-service'
 export const Endpoints: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const ctx = useAddEndpointContext()
+  const { setComponentNames } = useAddEndpointContext()
   const [isReading, setIsReading] = useState(false)
   const [endpoints, setEndpoints] = useState<es.Endpoint[]>([])
   const [activeSortDirection, setActiveSortDirection] = useState<'asc' | 'desc' | null>('asc')
@@ -19,13 +20,13 @@ export const Endpoints: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
-    setIsReading(true)
     const readEndpoints = async () => {
+      setIsReading(true)
       try {
         const endps = await es.getEndpoints(selectedNode)
         setEndpoints(endps)
         const cNames = await es.componentNames(selectedNode)
-        ctx.setComponentNames(cNames)
+        setComponentNames(cNames)
       } catch (error) {
         eventService.notify({
           type: 'warning',
@@ -35,7 +36,7 @@ export const Endpoints: React.FunctionComponent = () => {
       setIsReading(false)
     }
     readEndpoints()
-  }, [selectedNode])
+  }, [selectedNode, setComponentNames])
 
   if (!selectedNode) {
     return null
@@ -84,7 +85,7 @@ export const Endpoints: React.FunctionComponent = () => {
 
   return (
     <React.Fragment>
-      <Toolbar id='camel-endpoints-toolbar'>
+      <Toolbar id='camel-endpoints-toolbar' inset={{ default: 'insetSm' }}>
         <ToolbarContent>
           <ToolbarItem id='camel-endpoints-toolbar-item-add'>
             <Button

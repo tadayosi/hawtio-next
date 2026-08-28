@@ -68,6 +68,8 @@ export default [
         },
       ],
 
+      'preserve-caught-error': 'off',
+
       '@typescript-eslint/explicit-member-accessibility': [
         'warn',
         {

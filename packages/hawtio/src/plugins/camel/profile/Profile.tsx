@@ -15,9 +15,8 @@ export const Profile: React.FunctionComponent = () => {
   useEffect(() => {
     if (!selectedNode) return
 
-    setIsReading(true)
-
     const profile = async () => {
+      setIsReading(true)
       setProfileData(await profileService.getProfile(selectedNode))
       setIsReading(false)
     }

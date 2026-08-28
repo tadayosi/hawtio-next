@@ -21,9 +21,9 @@ export const Jobs: React.FunctionComponent = () => {
       return
     }
 
-    setIsReading(true)
     const { objectName } = selectedNode
     const loadJobs = async () => {
+      setIsReading(true)
       const jobs = await quartzService.loadJobs(objectName)
       setJobs(jobs)
       setIsReading(false)
