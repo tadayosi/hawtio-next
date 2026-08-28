@@ -17,9 +17,7 @@ class SpringBootService {
       'org.springframework.boot:type=Endpoint,name=Health',
       'health',
     )) as JolokiaHealthData
-    let healthComponents: HealthComponent[] = []
-
-    healthComponents = Object.entries(data.components).map(([componentName, component]) => {
+    const healthComponents: HealthComponent[] = Object.entries(data.components).map(([componentName, component]) => {
       let details
 
       if (component.details) {
@@ -115,7 +113,7 @@ class SpringBootService {
     const traces: Trace[] = []
     let mbeanName = 'Httpexchanges'
     let mbeanOperation = 'httpExchanges'
-    let jmxTraces: JmxTrace[] = []
+    let jmxTraces: JmxTrace[]
     if (!this.isSpringBoot3) {
       mbeanName = 'Httptrace'
       mbeanOperation = 'traces'
@@ -134,7 +132,7 @@ class SpringBootService {
       .filter(trace => {
         const path = trace.info ? trace.info.path : (trace.request?.uri ?? '')
         // Avoid including our own jolokia requests in the results
-        return /.*?\/jolokia\/?(?:\/.*(?=$))?$/.test(path) === false
+        return !/.*?\/jolokia\/?(?:\/.*(?=$))?$/.test(path)
       })
       .forEach(jmxTrace => {
         traces.push(new Trace(jmxTrace))

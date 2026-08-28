@@ -12,7 +12,7 @@ import * as es from './endpoints-service'
 export const Endpoints: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const ctx = useAddEndpointContext()
-  const { setComponentNames } = useAddEndpointContext()
+  const { setComponentNames } = ctx
   const [isReading, setIsReading] = useState(false)
   const [endpoints, setEndpoints] = useState<es.Endpoint[]>([])
   const [activeSortDirection, setActiveSortDirection] = useState<'asc' | 'desc' | null>('asc')

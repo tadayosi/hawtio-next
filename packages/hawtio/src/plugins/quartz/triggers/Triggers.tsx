@@ -62,7 +62,6 @@ export const Triggers: React.FunctionComponent = () => {
       setReload(false)
     }
     loadTriggers()
-
   }, [selectedNode, reload])
 
   if (!selectedNode || !selectedNode.objectName) {

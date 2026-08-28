@@ -25,11 +25,12 @@ export const Trace: React.FunctionComponent = () => {
     useRouteDiagramContext()
   const [isReading, setIsReading] = useState(true)
   const [isTracing, setIsTracing] = useState(false)
-  const previousMessages = useRef<MessageData[]>([])
-  const [parsedMessages, setParsedMessages] = useState<MessageData[]>(previousMessages.current)
+  const [parsedMessages, setParsedMessages] = useState<MessageData[]>([])
   const [message, setMessage] = useState<MessageData>()
 
   const [msgPanelExpanded, setMsgPanelExpanded] = React.useState(false)
+
+  const previousMessages = useRef<MessageData[]>([])
 
   const setMessages = (newMessages: MessageData[]) => {
     previousMessages.current = newMessages

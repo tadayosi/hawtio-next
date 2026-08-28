@@ -390,11 +390,3 @@ function createFolder(name: string, children: MBeanNode[]): MBeanNode {
   folder.initId(true)
   return folder
 }
-
-function base64url(value: string): string {
-  let encoded = btoa(value)
-  encoded = encoded.replace(/=+$/, '')
-  encoded = encoded.replaceAll('+', '-')
-  encoded = encoded.replaceAll('/', '_')
-  return encoded
-}

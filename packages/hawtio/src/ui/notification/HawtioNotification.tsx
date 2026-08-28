@@ -1,6 +1,6 @@
 import { eventService, EVENT_NOTIFY, Notification, NotificationType } from '@hawtiosrc/core'
 import { Alert, AlertActionCloseButton, AlertGroup, AlertProps } from '@patternfly/react-core'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 
 const MAX_ALERTS_TO_DISPLAY = 5
 
@@ -9,26 +9,35 @@ export const HawtioNotification: React.FunctionComponent = () => {
   const [overflowMessage, setOverflowMessage] = useState('')
   const [maxDisplayed, setMaxDisplayed] = useState(MAX_ALERTS_TO_DISPLAY)
 
-  const getOverflowMessage = (alertsNumber: number) => {
-    const overflow = alertsNumber - maxDisplayed
-    return overflow > 0 ? `View ${overflow} more alerts` : ''
-  }
+  const getOverflowMessage = useCallback(
+    (alertsNumber: number) => {
+      const overflow = alertsNumber - maxDisplayed
+      return overflow > 0 ? `View ${overflow} more alerts` : ''
+    },
+    [maxDisplayed],
+  )
 
-  const addAlert = (title: React.ReactNode, variant: NotificationType, key: React.Key) => {
-    const newAlerts = [...alerts, { title, variant, key }]
-    setAlerts(newAlerts)
-    setOverflowMessage(getOverflowMessage(newAlerts.length))
-    // reset max displayed every time a new alert is added
-    setMaxDisplayed(MAX_ALERTS_TO_DISPLAY)
-  }
+  const addAlert = useCallback(
+    (title: React.ReactNode, variant: NotificationType, key: React.Key) => {
+      const newAlerts = [...alerts, { title, variant, key }]
+      setAlerts(newAlerts)
+      setOverflowMessage(getOverflowMessage(newAlerts.length))
+      // reset max displayed every time a new alert is added
+      setMaxDisplayed(MAX_ALERTS_TO_DISPLAY)
+    },
+    [alerts, getOverflowMessage],
+  )
 
-  const removeAlert = (key: React.Key) => {
-    const newAlerts = alerts.filter(alert => alert.key !== key)
-    setAlerts(newAlerts)
-    setOverflowMessage(getOverflowMessage(newAlerts.length))
-    // reset max displayed every time an alert is removed
-    setMaxDisplayed(MAX_ALERTS_TO_DISPLAY)
-  }
+  const removeAlert = useCallback(
+    (key: React.Key) => {
+      const newAlerts = alerts.filter(alert => alert.key !== key)
+      setAlerts(newAlerts)
+      setOverflowMessage(getOverflowMessage(newAlerts.length))
+      // reset max displayed every time an alert is removed
+      setMaxDisplayed(MAX_ALERTS_TO_DISPLAY)
+    },
+    [alerts, getOverflowMessage],
+  )
 
   const getUniqueKey = () => new Date().getTime()
 
@@ -45,7 +54,7 @@ export const HawtioNotification: React.FunctionComponent = () => {
     eventService.onNotify(listener)
 
     return () => eventService.removeListener(EVENT_NOTIFY, listener)
-  }, [])
+  }, [addAlert, removeAlert])
 
   const onOverflowClick = () => {
     setMaxDisplayed(alerts.length)

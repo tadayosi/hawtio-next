@@ -107,7 +107,7 @@ const AttributeChart: React.FunctionComponent<{
 export const Chart: React.FunctionComponent = () => {
   const { selectedNode } = useContext(PluginNodeSelectionContext)
   const [chartData, setChartData] = useState<MBeanChartData>({})
-  const attributesToWatch = useRef<AttributesToWatch>({})
+  const [attributesToWatch, setAttributesToWatch] = useState<AttributesToWatch>({})
   const [initialTime, setInitialTime] = useState<number>(-1)
   const [showConstants, setShowConstants] = useState<boolean>(true)
   const [isWatchableAttributesModalOpen, setIsWatchableAttributesModalOpen] = useState<boolean>(false)
@@ -163,11 +163,11 @@ export const Chart: React.FunctionComponent = () => {
         }
       })
 
-      if (!attributesToWatch.current[mbeanObjectName]) {
-        attributesToWatch.current[mbeanObjectName] = {}
+      if (!attributesToWatch[mbeanObjectName]) {
+        attributesToWatch[mbeanObjectName] = {}
       }
 
-      const current = attributesToWatch.current[mbeanObjectName] ?? {}
+      const current = attributesToWatch[mbeanObjectName] ?? {}
       updateNumericAttributesToWatch(current, data)
 
       return { ...chartData }
@@ -197,7 +197,7 @@ export const Chart: React.FunctionComponent = () => {
     const attr = response.value as AttributeValues
 
     const attributesEntry: AttributesEntry = {}
-    Object.entries(attr)
+    Object.entries(attr ?? {})
       .flatMap(value => {
         if (isNumber(value[1])) {
           return [value]
@@ -289,7 +289,7 @@ export const Chart: React.FunctionComponent = () => {
     return <HawtioLoadingCard />
   }
 
-  if (Object.values(attributesToWatch.current).flatMap(node => Object.values(node)).length === 0) {
+  if (Object.values(attributesToWatch).flatMap(node => Object.values(node)).length === 0) {
     // Data has been loaded but there are no numeric attributes.
     return <HawtioEmptyCard message='There are no chartable data in the MBean or its children.' />
   }
@@ -298,13 +298,15 @@ export const Chart: React.FunctionComponent = () => {
     <WatchableAttributesForm
       isOpen={isWatchableAttributesModalOpen}
       onClose={isClosed => setIsWatchableAttributesModalOpen(isClosed)}
-      attributesToWatch={attributesToWatch.current}
-      onAttributesToWatchUpdate={update => (attributesToWatch.current = update)}
+      attributesToWatch={attributesToWatch}
+      onAttributesToWatchUpdate={update => {
+        setAttributesToWatch(update)
+      }}
     />
   )
 
   if (
-    !Object.values(attributesToWatch.current)
+    !Object.values(attributesToWatch)
       .flatMap(node => Object.values(node))
       .some(isWatched => isWatched)
   ) {
@@ -352,7 +354,7 @@ export const Chart: React.FunctionComponent = () => {
             .filter(([_, data]) => (showConstants ? true : !data.hasConstantValue))
             .map(
               ([attributeName, chartEntries]) =>
-                attributesToWatch.current[name]![attributeName] && (
+                attributesToWatch[name]![attributeName] && (
                   <GridItem key={attributeName}>
                     <Card key={attributeName} isCompact>
                       <CardHeader>
@@ -390,7 +392,7 @@ export const Chart: React.FunctionComponent = () => {
                     {Object.entries(chartData).map(([name, attributes]) =>
                       Object.entries(attributes.attributes).map(
                         ([attributeName, chartEntries]) =>
-                          attributesToWatch.current[name]![attributeName] &&
+                          attributesToWatch[name]![attributeName] &&
                           chartEntries.hasConstantValue && (
                             <Tr key={'obj-' + name + '-' + attributeName}>
                               <Td>{attributeName}</Td>

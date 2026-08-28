@@ -227,8 +227,9 @@ export const FlightRecorder: React.FunctionComponent = () => {
   const isCurrentlyRecording = useRef(() => flightRecorderService.currentRecording.state)
 
   useEffect(() => {
+    const currentRecording = isCurrentlyRecording.current
     return () => {
-      if (isCurrentlyRecording.current() == RecordingState.RECORDING) {
+      if (currentRecording?.() == RecordingState.RECORDING) {
         flightRecorderService.stopRecording()
       }
     }
