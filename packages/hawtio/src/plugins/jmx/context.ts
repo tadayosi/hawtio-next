@@ -23,7 +23,7 @@ export function useMBeanTree() {
   // hooks from React Router to synchronize selected node with `nid` query parameter (in both directions)
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
   // this effect loads the tree - both at initial render and when the tree is refreshed (by TreeWatcher)
   // outside of React
@@ -56,17 +56,11 @@ export function useMBeanTree() {
 
   // another effect synchronizes the `nid` query parameter and the global state for "selected node"
   useEffect(() => {
-    const nid = searchParams.get('nid')
+    const nid = searchParams.get('nid') ?? new URLSearchParams(window.location.href).get('nid')
     if (selectedNode && (!nid || nid !== selectedNode.id)) {
-      setSearchParams(
-        params => {
-          // reflect the selected node in query parameter
-          params.set('nid', selectedNode.id)
-          return params
-        },
-        { replace: true },
-      )
-      // we don't have to navigate() - setSearchParams does it underneath (in React transition)
+      // because we may retrieve "nid" being out of sync with React Router state, we have to
+      // navigate fully (not just setSearchParams())
+      navigate(pluginPathWithNodeId(selectedNode, pluginPath, searchParams), { replace: true })
       return
     }
     if (loaded) {
@@ -84,7 +78,7 @@ export function useMBeanTree() {
         }
       }
     }
-  }, [pathname, search, loaded, tree, selectedNode, setSelectedNode, navigate, searchParams, setSearchParams])
+  }, [pathname, search, loaded, tree, selectedNode, setSelectedNode, navigate, searchParams])
 
   // this effect navigates the tree and expands relevant nodes if the selected node changes
   useEffect(() => {

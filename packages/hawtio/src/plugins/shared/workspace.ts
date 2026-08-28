@@ -408,13 +408,9 @@ class Workspace implements IWorkspace {
           domainFolders.get(currentDomain)!.set(n.id, n)
         }
         if (this.expandedFolders.has(n.id)) {
-          let s: MBeanNode | null = n
-          while (s) {
-            s.defaultExpanded = true
-            expandedFolders.add(s.id)
-            // not sure if we have to expand up to the parent...
-            s = s.parent
-          }
+          // don't expand parent folders by if child node is expanded, because when you expand
+          // all and then collapse parent, on refresh it'll be expanded.
+          expandedFolders.add(n.id)
         }
         this.applyUIState(n.children, expandedFolders, allFolders, domainFolders, currentDomain ?? n.name)
       }

@@ -25,7 +25,7 @@ export function useCamelTree() {
   // hooks from React Router to synchronize selected node with `nid` query parameter (in both directions)
   const { pathname, search } = useLocation()
   const navigate = useNavigate()
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
 
   const camelContext = useRef<MBeanNode | null>(null)
 
@@ -107,17 +107,11 @@ export function useCamelTree() {
 
   // synchronize the `nid` query parameter and the global state for "selected node"
   useEffect(() => {
-    const nid = searchParams.get('nid')
+    const nid = searchParams.get('nid') ?? new URLSearchParams(window.location.href).get('nid')
     if (selectedNode && (!nid || nid !== selectedNode.id)) {
-      setSearchParams(
-        params => {
-          // reflect the selected node in query parameter
-          params.set('nid', selectedNode.id)
-          return params
-        },
-        { replace: true },
-      )
-      // we don't have to navigate() - setSearchParams does it underneath (in React transition)
+      // because we may retrieve "nid" being out of sync with React Router state, we have to
+      // navigate fully (not just setSearchParams())
+      navigate(pluginPathWithNodeId(selectedNode, pluginPath, searchParams), { replace: true })
       return
     }
     if (loaded) {
@@ -135,17 +129,17 @@ export function useCamelTree() {
       // all nodes from other JMX namespaces and additionally "org.apache.camel" and "Camel Contexts"
       // nodes are not displayed in Camel tree, so w ignore the "nid" parameter
 
+      const ctx = camelContext.current
+
       let selectedCamelNode = null
       let s = selectedFromQuery ?? selectedNode
       while (s) {
-        if (s.id === camelContext.current?.id) {
+        if (s.id === ctx?.id) {
           selectedCamelNode = selectedFromQuery ?? selectedNode
           break
         }
         s = s.parent
       }
-
-      const ctx = camelContext.current
 
       if (!selectedCamelNode && ctx) {
         // nid didn't point to anything we can select for Camel tab, so lets do the default selection
@@ -203,7 +197,7 @@ export function useCamelTree() {
         setInitial(false)
       })
     }
-  }, [pathname, search, loaded, tree, selectedNode, setSelectedNode, navigate, searchParams, setSearchParams, initial])
+  }, [pathname, search, loaded, tree, selectedNode, setSelectedNode, navigate, searchParams, initial])
 
   // this effect navigates the tree and expands relevant nodes if the selected node changes
   useEffect(() => {

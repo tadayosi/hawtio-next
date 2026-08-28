@@ -91,7 +91,7 @@ export const camelTreeProcessor: TreeProcessor = async (tree: MBeanTree) => {
   groupCtxsNode.addMetadata('class', 'org-apache-camel-context-folder')
   groupCtxsNode.addMetadata('key', camelContexts)
   groupCtxsNode.addMetadata('name', camelContexts)
-  groupCtxsNode.addMetadata('id', 'camel-contexts')
+  // groupCtxsNode.addMetadata('id', 'camel-contexts')
   groupCtxsNode.setType(contextsType)
   camelService.setDomain(groupCtxsNode)
 
