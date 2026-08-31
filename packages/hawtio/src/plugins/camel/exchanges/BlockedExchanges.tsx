@@ -43,7 +43,7 @@ export const BlockedExchanges: React.FunctionComponent = () => {
    * setTimeout will cache the original state so need to use a ref
    * to allow fetchExchanges() to retrieve the latest value
    */
-  const isConfirmUnblockOpenRef = useRef<boolean>()
+  const isConfirmUnblockOpenRef = useRef(isConfirmUnblockOpen)
   if (isConfirmUnblockOpenRef.current == null) {
     isConfirmUnblockOpenRef.current = isConfirmUnblockOpen
   }

@@ -17,7 +17,6 @@ loader.config({ monaco })
 export const Source: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
   const isDarkTheme = useIsDarkTheme()
-  // const [xmlSource, setXmlSource] = useState('')
   const [isUpdateEnabled, setIsUpdateEnabled] = useState(false)
   const [isWarningVisible, setIsWarningVisible] = useState(isUpdateEnabled)
   const [codeChanged, setCodeChanged] = useState(false)

@@ -25,8 +25,8 @@ const placeholder = 'Select Component Name'
 
 export const AddEndpointWizard: React.FunctionComponent = () => {
   const { selectedNode } = useContext(CamelContext)
-  const { componentName, setComponentSchema } = useContext(AddEndpointContext)
   const ctx = useContext(AddEndpointContext)
+  const { componentName, setComponentSchema } = ctx
   const [isOpen, setIsOpen] = useState(false)
   const [endpointValidated, setEndpointValidated] = useState<'success' | 'error' | 'default'>('default')
 

@@ -107,7 +107,7 @@ export function useCamelTree() {
 
   // synchronize the `nid` query parameter and the global state for "selected node"
   useEffect(() => {
-    const nid = searchParams.get('nid') ?? new URLSearchParams(window.location.href).get('nid')
+    const nid = searchParams.get('nid') ?? new URLSearchParams(window.location.search).get('nid')
     if (selectedNode && (!nid || nid !== selectedNode.id)) {
       // because we may retrieve "nid" being out of sync with React Router state, we have to
       // navigate fully (not just setSearchParams())
