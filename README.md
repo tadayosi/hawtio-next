@@ -1,5 +1,7 @@
 > [!IMPORTANT]
-> In January 2026, we renamed the repository from `hawtio-next` to `hawtio-react`. If you have an old local clone or external references, please update the URL. Note that NPM package names such as `@hawtio/react` will remain unchanged.
+> **2026-08-26** — `@hawtio/react` 2.3.0 upgrades React Router from v6 to v7. If your Hawtio console assembly or custom plugin depends on `react-router-dom`, upgrade the dependency to `react-router: ^7.18.2`. See the [React Router v7 upgrade guide](https://reactrouter.com/7.18.3/upgrading/v6).
+>
+> **2026-01-30** — We renamed the repository from `hawtio-next` to `hawtio-react`. If you have an old local clone or external references, please update the URL. Note that NPM package names such as `@hawtio/react` will remain unchanged.
 
 ---
 
