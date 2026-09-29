@@ -1,6 +1,6 @@
+import { PATH_LOGIN, PATH_LOGOUT } from '@hawtiosrc/auth/globals'
 import { type Plugin } from './core'
 import { Logger } from './logging'
-import { PATH_LOGIN, PATH_LOGOUT } from '@hawtiosrc/auth/globals'
 
 const log = Logger.get('hawtio-core-config')
 
@@ -117,6 +117,12 @@ export type AboutConfig = {
   backgroundDarkModeImgSrc?: string
   productInfo?: AboutProductInfo[]
   copyright?: string
+  /**
+   * Configuration for the "Report issue" entry in the Help menu.
+   * When set, a "Report issue" item is added to the Help dropdown that opens
+   * the given URL in a new browser tab.
+   */
+  issueReporting?: IssueReportingConfig
 }
 
 /**
@@ -125,6 +131,20 @@ export type AboutConfig = {
 export type AboutProductInfo = {
   name: string
   value: string
+}
+
+/**
+ * Configuration for the "Report issue" Help menu entry.
+ */
+export type IssueReportingConfig = {
+  /**
+   * The URL to open when the user clicks "Report issue".
+   */
+  url: string
+  /**
+   * The label shown in the Help menu. Defaults to "Report issue".
+   */
+  label?: string
 }
 
 /**

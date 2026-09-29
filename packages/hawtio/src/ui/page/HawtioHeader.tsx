@@ -140,10 +140,19 @@ const HawtioHeaderToolbar: React.FunctionComponent<{
   // If not defined then assume the default of shown
   const userHeaderShown = hawtconfig.appearance?.showUserHeader ?? true
 
+  const reportIssue = hawtconfig.about?.issueReporting
+
   const helpItems = [
     <DropdownItem key='help'>
-      <Link to={{ pathname: '/help', search: location.search }}>Help</Link>{' '}
+      <Link to={{ pathname: '/help', search: location.search }}>Help</Link>
     </DropdownItem>,
+    ...(reportIssue
+      ? [
+          <DropdownItem key='report-issue' to={reportIssue.url} component='a' target='_blank' rel='noopener noreferrer'>
+            {reportIssue.label ?? 'Report issue'}
+          </DropdownItem>,
+        ]
+      : []),
     <DropdownItem key='about' onClick={onAboutToggle}>
       About
     </DropdownItem>,
