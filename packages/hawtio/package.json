@@ -93,7 +93,7 @@
     "@testing-library/user-event": "^14.6.7",
     "@types/dagre": "^0.7.54",
     "@types/jest": "^30.0.0",
-    "@types/node": "^26.6.3",
+    "@types/node": "^26.6.4",
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "commit-and-tag-version": "^13.2.1",
