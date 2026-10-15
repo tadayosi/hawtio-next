@@ -1,5 +1,6 @@
 export * from './config-manager'
 export * from './core'
 export * from './event-service'
+export type { ExtensionEntry } from './extension-registry'
 export * from './hooks'
 export * from './logging'

@@ -1,6 +1,7 @@
 import { PluginNodeSelectionContext } from '@hawtiosrc/plugins/context'
 import { HawtioEmptyCard, HawtioLoadingCard } from '@hawtiosrc/plugins/shared'
 import { AttributeValues } from '@hawtiosrc/plugins/shared/jolokia-service'
+import { HawtioExtensionSlot } from '@hawtiosrc/ui/extension'
 import { isObject, objectSorter } from '@hawtiosrc/util/objects'
 import { Drawer, DrawerContent, DrawerContentBody, PageSection } from '@patternfly/react-core'
 import { Table, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table'
@@ -133,6 +134,7 @@ export const Attributes: React.FunctionComponent = () => {
   )
   return (
     <PageSection id='drawer-wrapper' isFilled hasBodyWrapper={false}>
+      <HawtioExtensionSlot id='jmx-attributes-toolbar' props={{ node: selectedNode }} />
       <Drawer isExpanded={isModalOpen}>
         <DrawerContent panelContent={panelContent}>
           <DrawerContentBody>{attributesTable}</DrawerContentBody>

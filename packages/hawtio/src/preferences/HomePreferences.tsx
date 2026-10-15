@@ -1,4 +1,5 @@
 import { hawtio, uiTheme, useHawtconfig } from '@hawtiosrc/core'
+import { HawtioFormSection } from '@hawtiosrc/preferences/HawtioFormSection'
 import { HawtioLoadingPage } from '@hawtiosrc/ui'
 import {
   Alert,
@@ -20,7 +21,6 @@ import { Modal, ModalVariant } from '@patternfly/react-core/deprecated'
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router'
 import { preferencesService } from './preferences-service'
-import { HawtioFormSection } from '@hawtiosrc/preferences/HawtioFormSection'
 
 export const HomePreferences: React.FunctionComponent = () => {
   const { hawtconfig, hawtconfigLoaded } = useHawtconfig()
@@ -37,6 +37,9 @@ export const HomePreferences: React.FunctionComponent = () => {
             <UIForm />
           </HawtioFormSection>
         )}
+        <HawtioFormSection title='Extensions'>
+          <ExtensionsForm />
+        </HawtioFormSection>
         <HawtioFormSection title='Reset'>
           <ResetForm />
         </HawtioFormSection>
@@ -86,12 +89,12 @@ const UIForm: React.FunctionComponent = () => {
       <FormGroup label='Default vertical nav state' fieldId='ui-form-vertical-nav-switch'>
         <Switch
           data-testid='switch-vertical-nav-state'
-          label='Show vertical navigation'
+          label={(showVerticalNav ? 'Show' : 'Hide') + ' vertical navigation'}
           isChecked={showVerticalNav}
           onChange={(_event, value: boolean) => handleShowVerticalNavChange(value)}
         />
       </FormGroup>
-      <FormGroup label='UI Theme' fieldId='ui-form-vertical-nav-switch'>
+      <FormGroup label='UI Theme' fieldId='ui-form-theme-select'>
         <Select
           selected={theme}
           isOpen={themeLabelOpen}
@@ -116,6 +119,26 @@ const UIForm: React.FunctionComponent = () => {
         </Select>
       </FormGroup>
     </>
+  )
+}
+
+const ExtensionsForm: React.FunctionComponent = () => {
+  const [extensionsEnabled, setExtensionsEnabled] = useState(preferencesService.isExtensionsEnabled())
+
+  const handleExtensionsEnabledChange = (value: boolean) => {
+    setExtensionsEnabled(value)
+    preferencesService.saveExtensionsEnabled(value)
+  }
+
+  return (
+    <FormGroup label='Enable extensions' fieldId='extensions-form-enabled-switch'>
+      <Switch
+        data-testid='switch-extensions-enabled'
+        label={extensionsEnabled ? 'Enabled' : 'Disabled'}
+        isChecked={extensionsEnabled}
+        onChange={(_event, value: boolean) => handleExtensionsEnabledChange(value)}
+      />
+    </FormGroup>
   )
 }
 
