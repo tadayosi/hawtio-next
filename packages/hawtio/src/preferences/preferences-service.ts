@@ -1,11 +1,14 @@
 import { log } from './globals'
 
 const STORAGE_KEY_SHOW_VERTICAL_NAV_BY_DEFAULT = 'preferences.showVerticalNavByDefault'
+const STORAGE_KEY_EXTENSIONS_ENABLED = 'preferences.extensionsEnabled'
 const SESSION_KEY_RESET_SUCCESS = 'preferences.resetSuccess'
 
 export interface IPreferencesService {
   isShowVerticalNavByDefault(): boolean
   saveShowVerticalNavByDefault(value: boolean): void
+  isExtensionsEnabled(): boolean
+  saveExtensionsEnabled(value: boolean): void
   reset(): void
   isResetSuccess(): boolean
   setProtectedItem(setting: string, value: string): void
@@ -26,6 +29,15 @@ class PreferencesService implements IPreferencesService {
 
   saveShowVerticalNavByDefault(value: boolean): void {
     localStorage.setItem(STORAGE_KEY_SHOW_VERTICAL_NAV_BY_DEFAULT, JSON.stringify(value))
+  }
+
+  isExtensionsEnabled(): boolean {
+    const value = localStorage.getItem(STORAGE_KEY_EXTENSIONS_ENABLED)
+    return value ? JSON.parse(value) : true
+  }
+
+  saveExtensionsEnabled(value: boolean): void {
+    localStorage.setItem(STORAGE_KEY_EXTENSIONS_ENABLED, JSON.stringify(value))
   }
 
   /*

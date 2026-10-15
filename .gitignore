@@ -21,6 +21,9 @@ dist/
 build/
 build-remote/
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
 # misc
 !.gitignore
 !.editorconfig

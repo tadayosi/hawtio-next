@@ -1,4 +1,4 @@
-import { CodeBlock, CodeBlockCode, PageSection, Content } from '@patternfly/react-core'
+import { Button, CodeBlock, CodeBlockCode, Content, PageSection } from '@patternfly/react-core'
 import React from 'react'
 
 export const Example1: React.FunctionComponent = () => (
@@ -34,4 +34,14 @@ export const registerExample1Deferred: HawtioPlugin = () => {
       </CodeBlock>
     </Content>
   </PageSection>
+)
+
+/**
+ * Dummy extension button registered into the 'jmx-attributes-toolbar' slot.
+ * In a real plugin this would be replaced with a meaningful action component.
+ */
+export const Example1ExtensionButton: React.FunctionComponent = () => (
+  <Button variant='secondary' size='sm' onClick={() => alert('Extension button clicked!')}>
+    Example Extension
+  </Button>
 )

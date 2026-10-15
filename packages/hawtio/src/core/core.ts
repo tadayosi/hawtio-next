@@ -3,6 +3,7 @@ import { importRemote, ImportRemoteOptions } from '@module-federation/utilities'
 import React from 'react'
 import { configManager, TaskState } from './config-manager'
 import { eventService } from './event-service'
+import { ExtensionEntry, extensionRegistry } from './extension-registry'
 import { log } from './globals'
 
 const DEFAULT_REMOTE_ENTRY_FILE = 'remoteEntry.js'
@@ -186,6 +187,17 @@ export interface IHawtio {
    * This method returns a Promise. When resolved we can finally render the `<Hawtio>` React/PatternFly component
    */
   bootstrap(): Promise<boolean>
+
+  /**
+   * Registers a UI extension component for the given slot ID.
+   *
+   * Should be called during plugin loading (inside `addDeferredPlugin` loader or `HawtioPlugin` entry function),
+   * before `bootstrap()` completes. Calling after bootstrap logs a warning.
+   *
+   * @param slotId  Slot identifier following the `<plugin>-<view>-<area>` convention, e.g. `'jmx-attributes-toolbar'`.
+   * @param entry   Extension entry containing the component, pluginId, and optional display order.
+   */
+  addExtension<TProps = Record<string, unknown>>(slotId: string, entry: ExtensionEntry<TProps>): void
 }
 
 /**
@@ -234,6 +246,11 @@ export class HawtioCore implements IHawtio {
    * Flag set once the window theme listener has been added
    */
   private windowListenerAdded = false
+
+  /**
+   * Flag set once bootstrap() has fully completed. Used to warn when addExtension() is called too late.
+   */
+  private bootstrapped = false
 
   // --- External Public API (IHawtio)
 
@@ -296,8 +313,19 @@ export class HawtioCore implements IHawtio {
     // return a promise that waits for configManager to finish all its initialization items
     return configManager.ready().then(() => {
       log.debug('configManager.ready() resolved')
+      this.bootstrapped = true
       return true
     })
+  }
+
+  addExtension<TProps = Record<string, unknown>>(slotId: string, entry: ExtensionEntry<TProps>): void {
+    if (this.bootstrapped) {
+      log.warn(
+        `addExtension('${slotId}') called after bootstrap.`,
+        'Extensions should be registered during plugin loading.',
+      )
+    }
+    extensionRegistry.add(slotId, entry)
   }
 
   // --- Public API
