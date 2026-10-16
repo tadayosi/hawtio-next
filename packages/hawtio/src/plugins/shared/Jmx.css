@@ -146,7 +146,7 @@
   /* When a node doesn't have toggle, the horizontal guide can be wider by the toggle size */
   --pf-v6-c-tree-view--m-guides__node--before--Width: calc(
     var(--pf-v6-c-tree-view__node-toggle--PaddingInlineEnd) + var(--pf-v6-c-tree-view__node-toggle-icon--MinWidth) *
-      1.5 + var(--pf-v6-c-tree-view__node-icon--PaddingInlineStart)
+      1.5 - var(--pf-v6-c-tree-view__node-icon--PaddingInlineStart)
   );
 }
 
