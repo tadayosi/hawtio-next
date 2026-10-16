@@ -167,3 +167,39 @@ From Hawtio React perspective, Successful OIDC authentication results in:
 - `/user/*` endpoint returning non-null username (as with form login)
 - an OIDC JWT access, id and refresh tokens being available to Hawtio React application, which are then
   added to `Authorization: Bearer <token>` header for each `fetch()` API call
+
+## Camel plugin
+
+The Camel plugin (`packages/hawtio/src/plugins/camel/`) uses the
+[`@hawtio/camel-model`](https://www.npmjs.com/package/@hawtio/camel-model) npm package to obtain the
+EIP/component schema that drives the route diagram and properties panels.
+
+### `@hawtio/camel-model` versioning policy
+
+**Policy: support the two most recent active Camel LTS versions.**
+(Discussed in [hawtio-react#693](https://github.com/hawtio/hawtio-react/issues/693))
+
+Apache Camel publishes two LTS releases per year; each is supported for one year.
+Hawtio tracks the two currently active LTS lines and ships one bundled model package per LTS line.
+
+As of October 2026 the two active LTS lines are:
+
+| Camel LTS line | npm alias in `package.json` | npm package version | Support ends |
+| -------------- | --------------------------- | ------------------- | ------------ |
+| 4.22 LTS       | `@hawtio/camel-model-v4_22` | `~4.22.1`           | 2027-08-11   |
+| 4.18 LTS       | `@hawtio/camel-model-v4_18` | `~4.18.5`           | 2027-02-17   |
+
+**Non-LTS Camel releases (e.g. 4.19, 4.20, 4.21, 4.23) are intentionally not supported.**
+Users running a non-LTS version will be served the model of the nearest older LTS line.
+
+### How the model is selected at runtime
+
+`getCamelModel(node)` in `camel-service.ts` reads the `CamelVersion` JMX attribute from the running
+Camel context and returns the appropriate bundled model:
+
+```
+Camel 4.22+ => @hawtio/camel-model-v4_22
+Camel 4.0+  => @hawtio/camel-model-v4_18  (fallback for 4.0–4.21 and unknown versions)
+```
+
+See `camel-service.ts` → `getCamelModel()` for the current implementation.
