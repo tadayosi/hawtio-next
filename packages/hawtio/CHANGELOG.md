@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [2.4.0-pre.1](https://github.com/hawtio/hawtio-react/compare/v2.4.0-pre.0...v2.4.0-pre.1) (2026-10-16)
+
+### Features
+
+* add Hawtio Extension API ([#2080](https://github.com/hawtio/hawtio-react/issues/2080)) ([85717c8](https://github.com/hawtio/hawtio-react/commit/85717c82d7a6c3730ad98a6ee097f9ae9f60f35b))
+
+### Bug Fixes
+
+* **api:** export HawtioFormSection component for reuse ([91695f7](https://github.com/hawtio/hawtio-react/commit/91695f7807dc766f9ff06ddb44327e1aabbc6e79))
+* **ui:** Minor UI changes (overflow and attribute value scroll-y) ([8b13e66](https://github.com/hawtio/hawtio-react/commit/8b13e66ecfc104863df0e7eebc93342367dd6fd2))
+
 ## [2.4.0-pre.0](https://github.com/hawtio/hawtio-react/compare/v2.3.0...v2.4.0-pre.0) (2026-10-02)
 
 ### Features
